@@ -1,0 +1,4 @@
+﻿# MengFlix deploy marker
+# Last auto-deploy verification: 2026-06-22 02:13:31Z
+# Pipeline: git push origin main -> Netlify auto-deploy
+
