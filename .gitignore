@@ -1,0 +1,50 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & temp
+_server.err
+_server.log
+_patches/
+_fix_*.ps1
+_patch_*.ps1
+_test_*.py
+_test_*.png
+_test_*.ps1
+_tv_*.txt
+_tv_*.ps1
+_url_*.ps1
+_url_*.txt
+_shot_*.py
+_poster_urls.txt
+_ramoflix_scrape.json
+
+# Build/scrape scripts that aren't part of the deployed site
+build_posters.ps1
+build_site.ps1
+scrape_details.ps1
+scrape_ramoflix.py
+scrape_sources.py
+
+# Local poster assets used during build (if any end up here)
+gladiator_ii.png_local_backup/
+_patches/
+_server.*
+_*.ps1
+_*.py
+_*.txt
+_*.json
+_*.err
+_*.log
+_*.png
+scrape_*.py
+scrape_*.ps1
+build_*.ps1
+gladiator_ii.png
