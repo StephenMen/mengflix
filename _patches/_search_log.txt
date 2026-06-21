@@ -1,0 +1,13 @@
+'Shogun'                  yr=2024 -> 'Shōgun'                                           https://yflix.ws/tv/watch-j6ztar-shogun-2024
+'The Penguin'             yr=2024 -> 'The Penguin'                                      https://yflix.ws/tv/watch-vsl9gz-the-penguin-2024
+'The White Lotus'         yr=2021 -> 'The White Lotus'                                  https://yflix.ws/tv/watch-w28xbt-the-white-lotus-2021
+'Beef'                    yr=2023 -> 'BEEF'                                             https://yflix.ws/tv/watch-7pbw2a-beef-2023
+'Arcane'                  yr=2021 -> 'Arcane'                                           https://yflix.ws/tv/watch-px2m56-arcane-2021
+'Joker Folie'             yr=2024 -> NO match (no year in any result)
+'Society of Snow'         yr=2023 -> NO match (no year in any result)
+'Severance'               yr=2022 -> NO match (no year in any result)
+'Alien Romulus'           yr=2024 -> NO match (no year in any result)
+--- 'Joker Folie a Deux': 0 results ---
+--- 'Society of Snow': 0 results ---
+--- 'Severance 2022': 0 results ---
+--- 'Alien Romulus 2024': 0 results ---

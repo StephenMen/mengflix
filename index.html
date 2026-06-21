@@ -1,0 +1,2393 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MengFlix &mdash; Free Movies &amp; TV Series Online HD</title>
+<meta name="description" content="MengFlix is your platform for free HD movies and TV series. Discover trending titles, new releases, and binge-worthy shows with smooth streaming.">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="page-home">
+  <div class="bg-3d" aria-hidden="true">
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="#" class="site-logo" aria-label="MengFlix">
+        <span class="logo-mark" aria-hidden="true">
+          <span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span>
+        </span>
+        <span class="logo-text">MengFlix</span>
+      </a>
+      <nav class="header-left main-nav-desktop" aria-label="Primary">
+        <a href="#" class="nav-home-link active">Home</a>
+        <div class="browse-dropdown">
+          <button class="btn-browse" aria-haspopup="true" aria-expanded="false">
+            <span>Browse</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+          </button>
+          <div class="browse-dropdown-menu" role="menu">
+            <a href="#latest-movies" class="browse-item">Movies</a>
+            <a href="#latest-series" class="browse-item">TV Shows</a>
+            <a href="#trending" class="browse-item">Trending</a>
+            <a href="#top-rated" class="browse-item">Top Rated</a>
+          </div>
+        </div>
+        <a href="#latest-movies">Movies</a>
+        <a href="#latest-series">TV Shows</a>
+      </nav>
+      <div class="header-right">
+                <div class="theme-switcher" id="themeSwitcher">
+          <button type="button" class="nav-theme-link" id="themeBtn" aria-label="Change theme" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18c1.5 0 2-1 2-2v-1c0-1 1-2 2-2h2a3 3 0 0 0 3-3 9 9 0 0 0-9-10z" fill="currentColor" opacity=".4"/></svg>
+          </button>
+          <div class="theme-menu" role="menu" aria-label="Theme">
+            <button type="button" class="theme-option" data-theme="white" role="menuitem">
+              <span class="swatch swatch-white" aria-hidden="true"></span>
+              <span class="theme-name">Light</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="black" role="menuitem">
+              <span class="swatch swatch-black" aria-hidden="true"></span>
+              <span class="theme-name">Dark</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="orange" role="menuitem">
+              <span class="swatch swatch-orange" aria-hidden="true"></span>
+              <span class="theme-name">Orange</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="green" role="menuitem">
+              <span class="swatch swatch-green" aria-hidden="true"></span>
+              <span class="theme-name">Green</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="purple" role="menuitem">
+              <span class="swatch swatch-purple" aria-hidden="true"></span>
+              <span class="theme-name">Purple</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="blue" role="menuitem">
+              <span class="swatch swatch-blue" aria-hidden="true"></span>
+              <span class="theme-name">Blue</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="nav-search-link" id="searchOpenBtn" aria-label="Search">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <a href="#" class="btn-signin">Sign In</a>
+        <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+  <section class="yf-hero" aria-label="Featured content">
+    <div class="yf-hero-slides" id="heroSlides">
+        <nav class="mobile-menu" id="mobileMenu" hidden aria-label="Mobile navigation">
+          <a href="#" class="mobile-menu-link active"><span class="mm-dot" aria-hidden="true"></span>Home</a>
+          <a href="#latest-movies" class="mobile-menu-link"><span class="mm-dot" aria-hidden="true"></span>Movies</a>
+          <a href="#latest-series" class="mobile-menu-link"><span class="mm-dot" aria-hidden="true"></span>TV Shows</a>
+          <a href="#trending" class="mobile-menu-link"><span class="mm-dot" aria-hidden="true"></span>Trending</a>
+          <a href="#top-rated" class="mobile-menu-link"><span class="mm-dot" aria-hidden="true"></span>Top Rated</a>
+        </nav>
+
+        <div class="yf-hero-slide active" data-idx="0" style="--bg:url('https://yflix.ws/images/backdrops/movies/the-devil-wears-prada-2-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Drama</a> <a class="badge badge-genre" href="#">Comedy</a>
+              <a class="badge badge-imdb" href="#">&starf; 8.3</a>
+            </div>
+            <h2 class="yf-hero-title">The Devil Wears Prada 2</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>119 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">Miranda Priestly contemplates retirement and joins forces with Andy Sachs to confront a new rival: Emily Charlton.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play The Devil Wears Prada 2" data-open data-title="The Devil Wears Prada 2" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-devil-wears-prada-2-2026.webp" data-year="2026" data-runtime="119">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="The Devil Wears Prada 2" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-devil-wears-prada-2-2026.webp" data-year="2026" data-runtime="119">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="yf-hero-slide" data-idx="1" style="--bg:url('https://yflix.ws/images/backdrops/movies/swapped-1-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Animation</a> <a class="badge badge-genre" href="#">Adventure</a> <a class="badge badge-genre" href="#">Comedy</a> <a class="badge badge-genre" href="#">Family</a> <a class="badge badge-genre" href="#">Fantasy</a>
+              <a class="badge badge-imdb" href="#">&starf; 8.8</a>
+            </div>
+            <h2 class="yf-hero-title">Swapped</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>102 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">A tiny woodland creature and a majestic bird switch bodies, forming an unexpected alliance to survive.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play Swapped" data-open data-title="Swapped" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/swapped-1-2026.webp" data-year="2026" data-runtime="102">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="Swapped" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/swapped-1-2026.webp" data-year="2026" data-runtime="102">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="yf-hero-slide" data-idx="2" style="--bg:url('https://yflix.ws/images/backdrops/movies/michael-1-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Music</a> <a class="badge badge-genre" href="#">Drama</a> <a class="badge badge-genre" href="#">Biography</a>
+              <a class="badge badge-imdb" href="#">&starf; 8.4</a>
+            </div>
+            <h2 class="yf-hero-title">Michael</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>146 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">A sweeping look at the man behind the sequined glove. The music, the myth, and the moonwalk that defined a generation.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play Michael" data-open data-title="Michael" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/michael-1-2026.webp" data-year="2026" data-runtime="146">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="Michael" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/michael-1-2026.webp" data-year="2026" data-runtime="146">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="yf-hero-slide" data-idx="3" style="--bg:url('https://yflix.ws/images/backdrops/movies/apex-1-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Thriller</a> <a class="badge badge-genre" href="#">Action</a>
+              <a class="badge badge-imdb" href="#">&starf; 6.4</a>
+            </div>
+            <h2 class="yf-hero-title">Apex</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>96 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">In the untamed Australian wilderness, a grieving woman on a solo expedition finds herself hunted by something not human.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play Apex" data-open data-title="Apex" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/apex-1-2026.webp" data-year="2026" data-runtime="96">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="Apex" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/apex-1-2026.webp" data-year="2026" data-runtime="96">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="yf-hero-slide" data-idx="4" style="--bg:url('https://yflix.ws/images/backdrops/movies/the-gates-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Thriller</a> <a class="badge badge-genre" href="#">Mystery</a>
+              <a class="badge badge-imdb" href="#">&starf; 6.4</a>
+            </div>
+            <h2 class="yf-hero-title">The Gates</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>110 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">A small town wakes to find its ancient cemetery empty. By sundown, the missing are no longer missing. They are watching.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play The Gates" data-open data-title="The Gates" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-gates-2026.webp" data-year="2026" data-runtime="110">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="The Gates" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-gates-2026.webp" data-year="2026" data-runtime="110">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="yf-hero-slide" data-idx="5" style="--bg:url('https://yflix.ws/images/backdrops/movies/scream-7-2026.webp')">
+          <div class="yf-hero-backdrop"></div>
+          <div class="yf-hero-content">
+            <div class="yf-hero-badges">
+              <a class="badge badge-type" href="#">Movie</a>
+              <a class="badge badge-genre" href="#">Mystery</a> <a class="badge badge-genre" href="#">Crime</a> <a class="badge badge-genre" href="#">Horror</a>
+              <a class="badge badge-imdb" href="#">&starf; 6.0</a>
+            </div>
+            <h2 class="yf-hero-title">Scream 7</h2>
+            <div class="yf-hero-info">
+              <span>2026</span><span class="dot"></span><span>114 min</span><span class="dot"></span><span class="quality">HD</span>
+            </div>
+            <p class="yf-hero-desc">A new Ghostface terrorizes a quiet town, targeting Sidney Prescott's daughter.</p>
+            <div class="yf-hero-actions">
+              <a href="#" class="btn-play-circle" aria-label="Play Scream 7" data-open data-title="Scream 7" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/scream-7-2026.webp" data-year="2026" data-runtime="114">
+                <span class="play-circle-outer"><span class="play-circle-inner">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                </span></span>
+                <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+              </a>
+              <a href="#" class="btn-secondary-circle" aria-label="More info" data-open data-title="Scream 7" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/scream-7-2026.webp" data-year="2026" data-runtime="114">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+    </div>
+    <button type="button" id="heroPrev" class="yf-hero-nav-btn yf-hero-nav-btn--prev" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" id="heroNext" class="yf-hero-nav-btn yf-hero-nav-btn--next" aria-label="Next slide">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="yf-hero-dots" role="tablist">
+<button class="yf-hero-dot active" data-go="0" aria-label="Go to slide 1"></button>
+<button class="yf-hero-dot" data-go="1" aria-label="Go to slide 2"></button>
+<button class="yf-hero-dot" data-go="2" aria-label="Go to slide 3"></button>
+<button class="yf-hero-dot" data-go="3" aria-label="Go to slide 4"></button>
+<button class="yf-hero-dot" data-go="4" aria-label="Go to slide 5"></button>
+<button class="yf-hero-dot" data-go="5" aria-label="Go to slide 6"></button>
+    </div>
+  </section>
+
+  <section class="intro" aria-label="Welcome">
+    <div class="container">
+      <div class="intro-card">
+        <div class="intro-eyebrow">Welcome to MengFlix</div>
+        <h1 class="intro-title">Free Movies and TV Shows to Stream</h1>
+        <p>Discover trending titles, new releases, and binge-worthy series &mdash; all in crisp HD, no sign-up required.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="latest-movies" aria-labelledby="latest-movies-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="latest-movies-title">Latest Movies</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="The Devil Wears Prada 2" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-devil-wears-prada-2-2026.webp" data-year="2026" data-runtime="119" data-genre="Drama">
+    <a href="#The Devil Wears Prada 2" title="The Devil Wears Prada 2" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/the-devil-wears-prada-2-2026.webp" alt="The Devil Wears Prada 2" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Devil Wears Prada 2</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2026" itemprop="datePublished">2026</time>
+            <span class="sep">&middot;</span>
+            <span>119 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Swapped" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/swapped-1-2026.webp" data-year="2026" data-runtime="102" data-genre="Animation">
+    <a href="#Swapped" title="Swapped" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/swapped-1-2026.webp" alt="Swapped" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Swapped</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2026" itemprop="datePublished">2026</time>
+            <span class="sep">&middot;</span>
+            <span>102 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Michael" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/michael-1-2026.webp" data-year="2026" data-runtime="146" data-genre="Music">
+    <a href="#Michael" title="Michael" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/michael-1-2026.webp" alt="Michael" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Michael</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2026" itemprop="datePublished">2026</time>
+            <span class="sep">&middot;</span>
+            <span>146 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Apex" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/apex-1-2026.webp" data-year="2026" data-runtime="96" data-genre="Thriller">
+    <a href="#Apex" title="Apex" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/apex-1-2026.webp" alt="Apex" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Apex</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2026" itemprop="datePublished">2026</time>
+            <span class="sep">&middot;</span>
+            <span>96 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Scream 7" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/scream-7-2026.webp" data-year="2026" data-runtime="114" data-genre="Horror">
+    <a href="#Scream 7" title="Scream 7" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/scream-7-2026.webp" alt="Scream 7" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Scream 7</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2026" itemprop="datePublished">2026</time>
+            <span class="sep">&middot;</span>
+            <span>114 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Breaking Boundaries" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/breaking-boundaries-2024.webp" data-year="2024" data-runtime="76" data-genre="Documentary">
+    <a href="#Breaking Boundaries" title="Breaking Boundaries" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/breaking-boundaries-2024.webp" alt="Breaking Boundaries" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Breaking Boundaries</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>76 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Bangalore Days" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/bangalore-days-2014.webp" data-year="2014" data-runtime="171" data-genre="Drama">
+    <a href="#Bangalore Days" title="Bangalore Days" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/bangalore-days-2014.webp" alt="Bangalore Days" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Bangalore Days</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2014" itemprop="datePublished">2014</time>
+            <span class="sep">&middot;</span>
+            <span>171 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Baraka" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/baraka-1992.webp" data-year="1992" data-runtime="96" data-genre="Documentary">
+    <a href="#Baraka" title="Baraka" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/baraka-1992.webp" alt="Baraka" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Baraka</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="1992" itemprop="datePublished">1992</time>
+            <span class="sep">&middot;</span>
+            <span>96 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Chak De! India" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/chak-de-india-2007.webp" data-year="2007" data-runtime="153" data-genre="Drama">
+    <a href="#Chak De! India" title="Chak De! India" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/chak-de-india-2007.webp" alt="Chak De! India" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Chak De! India</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2007" itemprop="datePublished">2007</time>
+            <span class="sep">&middot;</span>
+            <span>153 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Seaspiracy" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/seaspiracy-2021.webp" data-year="2021" data-runtime="89" data-genre="Documentary">
+    <a href="#Seaspiracy" title="Seaspiracy" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/seaspiracy-2021.webp" alt="Seaspiracy" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Seaspiracy</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2021" itemprop="datePublished">2021</time>
+            <span class="sep">&middot;</span>
+            <span>89 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Dune: Part Two" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/dune-part-two-2024.webp" data-year="2024" data-runtime="166" data-genre="Sci-Fi">
+    <a href="#Dune: Part Two" title="Dune: Part Two" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/dune-part-two-2024.webp" alt="Dune: Part Two" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Dune: Part Two</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>166 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Oppenheimer" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/oppenheimer-2023.webp" data-year="2023" data-runtime="180" data-genre="Biography">
+    <a href="#Oppenheimer" title="Oppenheimer" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/oppenheimer-2023.webp" alt="Oppenheimer" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Oppenheimer</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>180 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Poor Things" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/poor-things-2023.webp" data-year="2023" data-runtime="141" data-genre="Comedy">
+    <a href="#Poor Things" title="Poor Things" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/poor-things-2023.webp" alt="Poor Things" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Poor Things</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>141 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="The Substance" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-substance-2024.webp" data-year="2024" data-runtime="141" data-genre="Horror">
+    <a href="#The Substance" title="The Substance" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/the-substance-2024.webp" alt="The Substance" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Substance</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>141 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="trending" aria-labelledby="trending-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="trending-title">Trending Now</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Wicked" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/wicked-2024.webp" data-year="2024" data-runtime="160" data-genre="Fantasy">
+    <a href="#Wicked" title="Wicked" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/wicked-2024.webp" alt="Wicked" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Wicked</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>160 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Conclave" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/conclave-2024.webp" data-year="2024" data-runtime="120" data-genre="Thriller">
+    <a href="#Conclave" title="Conclave" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/conclave-2024.webp" alt="Conclave" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Conclave</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>120 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Nosferatu" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/nosferatu-2024.webp" data-year="2024" data-runtime="132" data-genre="Horror">
+    <a href="#Nosferatu" title="Nosferatu" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/nosferatu-2024.webp" alt="Nosferatu" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Nosferatu</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>132 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="A Real Pain" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/a-real-pain-2024.webp" data-year="2024" data-runtime="90" data-genre="Drama">
+    <a href="#A Real Pain" title="A Real Pain" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/a-real-pain-2024.webp" alt="A Real Pain" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">A Real Pain</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>90 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Gladiator II" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/gladiator-ii-2024.webp" data-year="2024" data-runtime="148" data-genre="Action">
+    <a href="#Gladiator II" title="Gladiator II" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/gladiator-ii-2024.webp" alt="Gladiator II" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Gladiator II</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>148 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Heretic" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/heretic-2024.webp" data-year="2024" data-runtime="111" data-genre="Thriller">
+    <a href="#Heretic" title="Heretic" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/heretic-2024.webp" alt="Heretic" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Heretic</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>111 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="The Wild Robot" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-wild-robot-2024.webp" data-year="2024" data-runtime="102" data-genre="Animation">
+    <a href="#The Wild Robot" title="The Wild Robot" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/the-wild-robot-2024.webp" alt="The Wild Robot" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Wild Robot</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>102 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Civil War" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/civil-war-2024.webp" data-year="2024" data-runtime="109" data-genre="Action">
+    <a href="#Civil War" title="Civil War" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/civil-war-2024.webp" alt="Civil War" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Civil War</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>109 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Hit Man" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/hit-man-2024.webp" data-year="2024" data-runtime="115" data-genre="Comedy">
+    <a href="#Hit Man" title="Hit Man" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/hit-man-2024.webp" alt="Hit Man" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Hit Man</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>115 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Love Lies Bleeding" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/love-lies-bleeding-2024.webp" data-year="2024" data-runtime="104" data-genre="Thriller">
+    <a href="#Love Lies Bleeding" title="Love Lies Bleeding" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/love-lies-bleeding-2024.webp" alt="Love Lies Bleeding" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Love Lies Bleeding</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>104 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Furiosa" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/furiosa-a-mad-max-saga-2024.webp" data-year="2024" data-runtime="148" data-genre="Action">
+    <a href="#Furiosa" title="Furiosa" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/furiosa-a-mad-max-saga-2024.webp" alt="Furiosa" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Furiosa</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>148 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Alien: Romulus" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/alien-romulus-2024.webp" data-year="2024" data-runtime="119" data-genre="Sci-Fi">
+    <a href="#Alien: Romulus" title="Alien: Romulus" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/alien-romulus-2024.webp" alt="Alien: Romulus" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Alien: Romulus</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>119 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="It Ends With Us" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/it-ends-with-us-2024.webp" data-year="2024" data-runtime="130" data-genre="Drama">
+    <a href="#It Ends With Us" title="It Ends With Us" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/it-ends-with-us-2024.webp" alt="It Ends With Us" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">It Ends With Us</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>130 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Beetlejuice B." data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/beetlejuice-beetlejuice-2024.webp" data-year="2024" data-runtime="104" data-genre="Comedy">
+    <a href="#Beetlejuice B." title="Beetlejuice B." data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/beetlejuice-beetlejuice-2024.webp" alt="Beetlejuice B." loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Beetlejuice B.</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>104 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="top-rated" aria-labelledby="top-rated-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="top-rated-title">Top Rated</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Gladiator II" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/gladiator-ii-2024.webp" data-year="2024" data-runtime="148" data-genre="Action">
+    <a href="#Gladiator II" title="Gladiator II" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/gladiator-ii-2024.webp" alt="Gladiator II" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Gladiator II</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>148 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Heretic" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/heretic-2024.webp" data-year="2024" data-runtime="111" data-genre="Thriller">
+    <a href="#Heretic" title="Heretic" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/heretic-2024.webp" alt="Heretic" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Heretic</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>111 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="The Wild Robot" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/the-wild-robot-2024.webp" data-year="2024" data-runtime="102" data-genre="Animation">
+    <a href="#The Wild Robot" title="The Wild Robot" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/the-wild-robot-2024.webp" alt="The Wild Robot" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Wild Robot</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>102 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Civil War" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/civil-war-2024.webp" data-year="2024" data-runtime="109" data-genre="Action">
+    <a href="#Civil War" title="Civil War" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/civil-war-2024.webp" alt="Civil War" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Civil War</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>109 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Hit Man" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/hit-man-2024.webp" data-year="2024" data-runtime="115" data-genre="Comedy">
+    <a href="#Hit Man" title="Hit Man" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/hit-man-2024.webp" alt="Hit Man" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Hit Man</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>115 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Love Lies Bleeding" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/love-lies-bleeding-2024.webp" data-year="2024" data-runtime="104" data-genre="Thriller">
+    <a href="#Love Lies Bleeding" title="Love Lies Bleeding" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/love-lies-bleeding-2024.webp" alt="Love Lies Bleeding" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Love Lies Bleeding</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>104 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Furiosa" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/furiosa-a-mad-max-saga-2024.webp" data-year="2024" data-runtime="148" data-genre="Action">
+    <a href="#Furiosa" title="Furiosa" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/furiosa-a-mad-max-saga-2024.webp" alt="Furiosa" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Furiosa</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>148 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Alien: Romulus" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/alien-romulus-2024.webp" data-year="2024" data-runtime="119" data-genre="Sci-Fi">
+    <a href="#Alien: Romulus" title="Alien: Romulus" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/alien-romulus-2024.webp" alt="Alien: Romulus" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Alien: Romulus</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>119 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="It Ends With Us" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/it-ends-with-us-2024.webp" data-year="2024" data-runtime="130" data-genre="Drama">
+    <a href="#It Ends With Us" title="It Ends With Us" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/it-ends-with-us-2024.webp" alt="It Ends With Us" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">It Ends With Us</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>130 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Beetlejuice B." data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/beetlejuice-beetlejuice-2024.webp" data-year="2024" data-runtime="104" data-genre="Comedy">
+    <a href="#Beetlejuice B." title="Beetlejuice B." data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/beetlejuice-beetlejuice-2024.webp" alt="Beetlejuice B." loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Beetlejuice B.</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>104 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Joker: Folie 2" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/joker-2024.webp" data-year="2024" data-runtime="138" data-genre="Drama">
+    <a href="#Joker: Folie 2" title="Joker: Folie 2" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/joker-2024.webp" alt="Joker: Folie 2" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Joker: Folie 2</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>138 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Smile 2" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/smile-2-2024.webp" data-year="2024" data-runtime="118" data-genre="Horror">
+    <a href="#Smile 2" title="Smile 2" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/smile-2-2024.webp" alt="Smile 2" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Smile 2</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>118 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Terrifier 3" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/terrifier-3-2024.webp" data-year="2024" data-runtime="125" data-genre="Horror">
+    <a href="#Terrifier 3" title="Terrifier 3" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/terrifier-3-2024.webp" alt="Terrifier 3" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Terrifier 3</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>125 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/Movie" data-title="Society of Snow" data-type="Movie" data-poster="https://yflix.ws/images/posters/movies/society-of-the-snow-2023.webp" data-year="2023" data-runtime="144" data-genre="Drama">
+    <a href="#Society of Snow" title="Society of Snow" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/movies/society-of-the-snow-2023.webp" alt="Society of Snow" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Society of Snow</h3>
+          <div class="card-meta">
+            <span>Movie</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>144 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="latest-series" aria-labelledby="latest-series-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="latest-series-title">Latest TV Series</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Shogun" data-type="TVSeries" data-poster="assets/posters/shogun.svg" data-year="2024" data-runtime="60" data-genre="Drama">
+    <a href="#Shogun" title="Shogun" data-open>
+      <div class="card-poster-wrap">
+        <img src="assets/posters/shogun.svg" alt="Shogun" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Shogun</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Penguin" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-penguin-2024.webp" data-year="2024" data-runtime="60" data-genre="Crime">
+    <a href="#The Penguin" title="The Penguin" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-penguin-2024.webp" alt="The Penguin" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Penguin</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Severance" data-type="TVSeries" data-poster="assets/posters/severance.svg" data-year="2022" data-runtime="55" data-genre="Sci-Fi">
+    <a href="#Severance" title="Severance" data-open>
+      <div class="card-poster-wrap">
+        <img src="assets/posters/severance.svg" alt="Severance" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Severance</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Bear" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-bear-2022.webp" data-year="2022" data-runtime="30" data-genre="Drama">
+    <a href="#The Bear" title="The Bear" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-bear-2022.webp" alt="The Bear" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Bear</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>30 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="House of the Dragon" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/house-of-the-dragon-2022.webp" data-year="2022" data-runtime="60" data-genre="Fantasy">
+    <a href="#House of the Dragon" title="House of the Dragon" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/house-of-the-dragon-2022.webp" alt="House of the Dragon" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">House of the Dragon</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Andor" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/andor-2022.webp" data-year="2022" data-runtime="45" data-genre="Sci-Fi">
+    <a href="#Andor" title="Andor" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/andor-2022.webp" alt="Andor" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Andor</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>45 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Last of Us" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-last-of-us-2023.webp" data-year="2023" data-runtime="60" data-genre="Drama">
+    <a href="#The Last of Us" title="The Last of Us" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-last-of-us-2023.webp" alt="The Last of Us" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Last of Us</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Succession" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/succession-2018.webp" data-year="2018" data-runtime="60" data-genre="Drama">
+    <a href="#Succession" title="Succession" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/succession-2018.webp" alt="Succession" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Succession</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2018" itemprop="datePublished">2018</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The White Lotus" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-white-lotus-2021.webp" data-year="2021" data-runtime="60" data-genre="Drama">
+    <a href="#The White Lotus" title="The White Lotus" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-white-lotus-2021.webp" alt="The White Lotus" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The White Lotus</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2021" itemprop="datePublished">2021</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Reacher" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/reacher-2022.webp" data-year="2022" data-runtime="60" data-genre="Action">
+    <a href="#Reacher" title="Reacher" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/reacher-2022.webp" alt="Reacher" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Reacher</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Slow Horses" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/slow-horses-2022.webp" data-year="2022" data-runtime="60" data-genre="Thriller">
+    <a href="#Slow Horses" title="Slow Horses" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/slow-horses-2022.webp" alt="Slow Horses" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Slow Horses</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Morning Show" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-morning-show-2019.webp" data-year="2019" data-runtime="60" data-genre="Drama">
+    <a href="#Morning Show" title="Morning Show" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-morning-show-2019.webp" alt="Morning Show" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Morning Show</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2019" itemprop="datePublished">2019</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Beef" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/beef-2023.webp" data-year="2023" data-runtime="35" data-genre="Drama">
+    <a href="#Beef" title="Beef" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/beef-2023.webp" alt="Beef" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Beef</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>35 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Wednesday" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/wednesday-2022.webp" data-year="2022" data-runtime="55" data-genre="Comedy">
+    <a href="#Wednesday" title="Wednesday" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/wednesday-2022.webp" alt="Wednesday" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Wednesday</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="web-series" aria-labelledby="web-series-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="web-series-title">Web Series</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Last of Us" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-last-of-us-2023.webp" data-year="2023" data-runtime="60" data-genre="Drama">
+    <a href="#The Last of Us" title="The Last of Us" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-last-of-us-2023.webp" alt="The Last of Us" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Last of Us</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Succession" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/succession-2018.webp" data-year="2018" data-runtime="60" data-genre="Drama">
+    <a href="#Succession" title="Succession" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/succession-2018.webp" alt="Succession" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Succession</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2018" itemprop="datePublished">2018</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The White Lotus" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-white-lotus-2021.webp" data-year="2021" data-runtime="60" data-genre="Drama">
+    <a href="#The White Lotus" title="The White Lotus" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-white-lotus-2021.webp" alt="The White Lotus" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The White Lotus</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2021" itemprop="datePublished">2021</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Reacher" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/reacher-2022.webp" data-year="2022" data-runtime="60" data-genre="Action">
+    <a href="#Reacher" title="Reacher" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/reacher-2022.webp" alt="Reacher" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Reacher</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Slow Horses" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/slow-horses-2022.webp" data-year="2022" data-runtime="60" data-genre="Thriller">
+    <a href="#Slow Horses" title="Slow Horses" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/slow-horses-2022.webp" alt="Slow Horses" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Slow Horses</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Morning Show" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-morning-show-2019.webp" data-year="2019" data-runtime="60" data-genre="Drama">
+    <a href="#Morning Show" title="Morning Show" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-morning-show-2019.webp" alt="Morning Show" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Morning Show</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2019" itemprop="datePublished">2019</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Beef" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/beef-2023.webp" data-year="2023" data-runtime="35" data-genre="Drama">
+    <a href="#Beef" title="Beef" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/beef-2023.webp" alt="Beef" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Beef</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>35 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Wednesday" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/wednesday-2022.webp" data-year="2022" data-runtime="55" data-genre="Comedy">
+    <a href="#Wednesday" title="Wednesday" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/wednesday-2022.webp" alt="Wednesday" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Wednesday</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Stranger Things" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/stranger-things-2016.webp" data-year="2016" data-runtime="55" data-genre="Sci-Fi">
+    <a href="#Stranger Things" title="Stranger Things" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/stranger-things-2016.webp" alt="Stranger Things" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Stranger Things</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2016" itemprop="datePublished">2016</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Crown" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-crown-2016.webp" data-year="2016" data-runtime="60" data-genre="Biography">
+    <a href="#The Crown" title="The Crown" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-crown-2016.webp" alt="The Crown" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Crown</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2016" itemprop="datePublished">2016</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Peaky Blinders" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/peaky-blinders-2013.webp" data-year="2013" data-runtime="60" data-genre="Crime">
+    <a href="#Peaky Blinders" title="Peaky Blinders" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/peaky-blinders-2013.webp" alt="Peaky Blinders" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Peaky Blinders</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2013" itemprop="datePublished">2013</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Better Call Saul" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/better-call-saul-2015.webp" data-year="2015" data-runtime="55" data-genre="Crime">
+    <a href="#Better Call Saul" title="Better Call Saul" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/better-call-saul-2015.webp" alt="Better Call Saul" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Better Call Saul</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2015" itemprop="datePublished">2015</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Breaking Bad" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/breaking-bad-2008.webp" data-year="2008" data-runtime="50" data-genre="Crime">
+    <a href="#Breaking Bad" title="Breaking Bad" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/breaking-bad-2008.webp" alt="Breaking Bad" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Breaking Bad</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2008" itemprop="datePublished">2008</time>
+            <span class="sep">&middot;</span>
+            <span>50 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Boys" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-boys-2019.webp" data-year="2019" data-runtime="60" data-genre="Action">
+    <a href="#The Boys" title="The Boys" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-boys-2019.webp" alt="The Boys" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Boys</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2019" itemprop="datePublished">2019</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="binge" aria-labelledby="binge-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="binge-title">Binge-Worthy Series</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Beef" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/beef-2023.webp" data-year="2023" data-runtime="35" data-genre="Drama">
+    <a href="#Beef" title="Beef" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/beef-2023.webp" alt="Beef" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Beef</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>35 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Wednesday" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/wednesday-2022.webp" data-year="2022" data-runtime="55" data-genre="Comedy">
+    <a href="#Wednesday" title="Wednesday" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/wednesday-2022.webp" alt="Wednesday" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Wednesday</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2022" itemprop="datePublished">2022</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Stranger Things" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/stranger-things-2016.webp" data-year="2016" data-runtime="55" data-genre="Sci-Fi">
+    <a href="#Stranger Things" title="Stranger Things" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/stranger-things-2016.webp" alt="Stranger Things" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Stranger Things</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2016" itemprop="datePublished">2016</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Crown" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-crown-2016.webp" data-year="2016" data-runtime="60" data-genre="Biography">
+    <a href="#The Crown" title="The Crown" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-crown-2016.webp" alt="The Crown" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Crown</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2016" itemprop="datePublished">2016</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Peaky Blinders" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/peaky-blinders-2013.webp" data-year="2013" data-runtime="60" data-genre="Crime">
+    <a href="#Peaky Blinders" title="Peaky Blinders" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/peaky-blinders-2013.webp" alt="Peaky Blinders" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Peaky Blinders</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2013" itemprop="datePublished">2013</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Better Call Saul" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/better-call-saul-2015.webp" data-year="2015" data-runtime="55" data-genre="Crime">
+    <a href="#Better Call Saul" title="Better Call Saul" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/better-call-saul-2015.webp" alt="Better Call Saul" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Better Call Saul</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2015" itemprop="datePublished">2015</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Breaking Bad" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/breaking-bad-2008.webp" data-year="2008" data-runtime="50" data-genre="Crime">
+    <a href="#Breaking Bad" title="Breaking Bad" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/breaking-bad-2008.webp" alt="Breaking Bad" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Breaking Bad</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2008" itemprop="datePublished">2008</time>
+            <span class="sep">&middot;</span>
+            <span>50 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="The Boys" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/the-boys-2019.webp" data-year="2019" data-runtime="60" data-genre="Action">
+    <a href="#The Boys" title="The Boys" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/the-boys-2019.webp" alt="The Boys" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">The Boys</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2019" itemprop="datePublished">2019</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Invincible" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/invincible-2021.webp" data-year="2021" data-runtime="45" data-genre="Animation">
+    <a href="#Invincible" title="Invincible" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/invincible-2021.webp" alt="Invincible" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Invincible</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2021" itemprop="datePublished">2021</time>
+            <span class="sep">&middot;</span>
+            <span>45 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Arcane" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/arcane-2021.webp" data-year="2021" data-runtime="40" data-genre="Animation">
+    <a href="#Arcane" title="Arcane" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/arcane-2021.webp" alt="Arcane" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Arcane</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2021" itemprop="datePublished">2021</time>
+            <span class="sep">&middot;</span>
+            <span>40 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="One Piece" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/one-piece-2023.webp" data-year="2023" data-runtime="55" data-genre="Action">
+    <a href="#One Piece" title="One Piece" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/one-piece-2023.webp" alt="One Piece" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">One Piece</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2023" itemprop="datePublished">2023</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Fallout" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/fallout-2024.webp" data-year="2024" data-runtime="60" data-genre="Sci-Fi">
+    <a href="#Fallout" title="Fallout" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/fallout-2024.webp" alt="Fallout" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Fallout</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2024" itemprop="datePublished">2024</time>
+            <span class="sep">&middot;</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="True Detective" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/true-detective-2014.webp" data-year="2014" data-runtime="55" data-genre="Crime">
+    <a href="#True Detective" title="True Detective" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/true-detective-2014.webp" alt="True Detective" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">True Detective</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2014" itemprop="datePublished">2014</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+  <article class="content-card" itemscope itemtype="https://schema.org/TVSeries" data-title="Fargo" data-type="TVSeries" data-poster="https://yflix.ws/images/posters/series/fargo-2014.webp" data-year="2014" data-runtime="55" data-genre="Crime">
+    <a href="#Fargo" title="Fargo" data-open>
+      <div class="card-poster-wrap">
+        <img src="https://yflix.ws/images/posters/series/fargo-2014.webp" alt="Fargo" loading="lazy" decoding="async" width="342" height="513" itemprop="image">
+        <div class="card-play-overlay" aria-hidden="true">
+          <div class="card-play-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+        <div class="card-info-overlay">
+          <h3 class="card-title" itemprop="name">Fargo</h3>
+          <div class="card-meta">
+            <span>Series</span>
+            <span class="sep">&middot;</span>
+            <time datetime="2014" itemprop="datePublished">2014</time>
+            <span class="sep">&middot;</span>
+            <span>55 min</span>
+          </div>
+        </div>
+      </div>
+    </a>
+  </article>
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-logo-row">
+        <div class="footer-line footer-line--left"></div>
+        <a href="#" class="footer-logo-btn" aria-label="MengFlix">
+          <span class="footer-mark" aria-hidden="true">
+            <span class="footer-mark-m">M</span><span class="footer-mark-flix">FLIX</span>
+          </span>
+        </a>
+        <div class="footer-line footer-line--right"></div>
+      </div>
+      <p class="footer-desc">
+        <strong>MengFlix</strong> is your destination to watch free HD movies and stream premium TV series online. A curated library of trending titles, new releases, and binge-worthy shows &mdash; zero ads, zero sign-ups.
+      </p>
+    </div>
+    <div class="footer-bottom-bar">
+      <span class="footer-copy">&copy; 2026 MengFlix</span>
+      <p class="footer-legal">MengFlix is a demo UI. All artwork is sourced from yFlix (yflix.ws) and TMDb; no media is hosted. Built as a portfolio piece.</p>
+      <nav class="footer-nav" aria-label="Footer links">
+        <a href="#">Request Content</a>
+        <a href="#">DMCA</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <div class="search-overlay" id="searchOverlay" hidden>
+    <div class="search-overlay-backdrop" data-close></div>
+    <div class="search-overlay-body" role="dialog" aria-modal="true" aria-label="Search">
+      <button type="button" class="search-overlay-close" id="searchCloseBtn" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <form class="search-overlay-form" onsubmit="event.preventDefault();">
+        <span class="search-overlay-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <span class="search-overlay-input-wrap">
+          <input type="search" class="search-overlay-input" placeholder="Search for a movie, show, or genre&hellip;" autofocus>
+        </span>
+      </form>
+      <p class="search-overlay-hint">Try &ldquo;Dune&rdquo;, &ldquo;Shogun&rdquo;, or &ldquo;Comedy&rdquo;. Press <kbd>Enter</kbd> to watch the top result, <kbd>Esc</kbd> to close.</p>
+      <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
+      <p class="search-results-empty" id="searchResultsEmpty" hidden>No titles match your search.</p>
+    </div>
+  </div>
+
+  <div class="player-overlay" id="playerOverlay" hidden aria-hidden="true">
+    <div class="player-overlay-bg" data-close></div>
+    <div class="player-panel" role="dialog" aria-modal="true" aria-labelledby="playerTitle" tabindex="-1">
+      <button type="button" class="player-close" id="playerClose" aria-label="Close player" data-close>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="player-breadcrumbs" aria-label="Breadcrumb">
+        <a href="#" data-close>Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="#" data-close id="playerCrumbType">Movies</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" id="playerCrumbTitle">Ã¢â‚¬Â¦</span>
+      </nav>
+      <div class="player-head">
+        <h1 class="player-title" id="playerTitle">Ã¢â‚¬Â¦</h1>
+        <button type="button" class="player-reload" id="playerReload" aria-label="Reload current server">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3.5-7.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="21 4 21 10 15 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Reload</span>
+        </button>
+      </div>
+      <div class="player-servers" id="playerServers" role="tablist" aria-label="Servers"></div>
+      <div class="player-frame-wrap">
+        <iframe class="player-frame" id="playerFrame" allowfullscreen
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write"
+                referrerpolicy="no-referrer"
+                ></iframe>
+        <div class="player-placeholder" id="playerPlaceholder">
+          <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
+          <p>Choose a server above to start streaming.</p>
+        </div>
+      </div>
+      <p class="player-hint" id="playerHint">If a server doesn&#x2019;t load, try another. <a href="#" id="playerWatchLink" target="_blank" rel="noopener">Open on RamoFlix &#x2192;</a></p>
+    </div>
+  </div>
+
+  <div class="detail-overlay" id="detailOverlay" hidden aria-hidden="true">
+    <div class="detail-backdrop-img" id="detailBackdrop" aria-hidden="true"></div>
+    <div class="detail-overlay-bg" data-close></div>
+    <div class="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" tabindex="-1">
+      <button type="button" class="detail-close" id="detailClose" aria-label="Close details" data-close>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="detail-layout">
+        <div class="detail-poster-wrap">
+          <img class="detail-poster" id="detailPoster" alt="" loading="lazy" decoding="async">
+        </div>
+        <div class="detail-info">
+          <nav class="detail-breadcrumbs" aria-label="Breadcrumb">
+            <a href="#" data-close>Home</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <a href="#latest-movies" data-close id="detailCrumbType">Movies</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <span class="current" id="detailCrumbTitle">&hellip;</span>
+          </nav>
+          <h1 class="detail-title" id="detailTitle">&hellip;</h1>
+          <div class="detail-badges" id="detailBadges"></div>
+          <p class="detail-desc" id="detailDesc"></p>
+          <div class="detail-meta-grid" id="detailMeta"></div>
+          <div class="detail-actions">
+            <a href="#" class="detail-action-play" id="detailPlay" aria-label="Play">
+              <span class="play-circle-outer"><span class="play-circle-inner">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span></span>
+              <span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+            </a>
+            <a href="#" class="detail-action-trailer" id="detailTrailer" target="_blank" rel="noopener" aria-label="Watch trailer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              <span>Watch Trailer</span>
+            </a>
+            <button type="button" class="detail-action-icon" id="detailFav" aria-label="Add to favorites">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+            <button type="button" class="detail-action-icon" id="detailShare" aria-label="Share">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+            <div class="detail-stars" id="detailStars" aria-label="Rating"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
+
+

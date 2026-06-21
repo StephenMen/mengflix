@@ -1,0 +1,27 @@
+Drag-to-scroll (supports both pointer and mouse events for max compatibility)
+    let isDown = false, startX = 0, startScroll = 0, dragged = false;
+    function onDown(e){
+      if (e.button !== undefined && e.button !== 0) return;
+      isDown = true; dragged = false;
+      startX = e.clientX; startScroll = track.scrollLeft;
+      try { if (e.pointerId !== undefined && track.setPointerCapture) track.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    function onMove(e){
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) dragged = true;
+      track.scrollLeft = startScroll - dx;
+    }
+    function onUp(){ if (!isDown) return; isDown = false; }
+    track.addEventListener('pointerdown', onDown);
+    track.addEventListener('mousedown', onDown);
+    track.addEventListener('pointermove', onMove);
+    track.addEventListener('mousemove', onMove);
+    track.addEventListener('pointerup', onUp);
+    track.addEventListener('mouseup', onUp);
+    track.addEventListener('pointercancel', onUp);
+    track.addEventListener('pointerleave', onUp);
+    track.addEventListener('mouseleave', onUp);
+    track.addEventListener('click', (e) => { if (dragged){ e.preventDefault(); e.stopPropagation(); dragged = false; } }, true);
+
+    
