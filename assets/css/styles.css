@@ -2056,3 +2056,39 @@ html{ scrollbar-gutter: stable; }
 .search-overlay[hidden]{
   display: none !important;
 }
+
+/* ---- Close animations: triggered by .is-closing before the panel is hidden ---- */
+@keyframes panel-out{
+  from{ opacity: 1; transform: translateY(0) scale(1);}
+  to  { opacity: 0; transform: translateY(20px) scale(.98);}
+}
+@keyframes mf-pop-out{
+  from{ opacity: 1; transform: scale(1);}
+  to  { opacity: 0; transform: scale(.96);}
+}
+@keyframes fade-out{ from{opacity:1} to{opacity:0} }
+
+.detail-overlay.is-closing .detail-panel{
+  animation: panel-out .26s var(--ease) forwards;
+}
+.detail-overlay.is-closing .detail-overlay-bg{
+  animation: fade-out .26s var(--ease) forwards;
+}
+.player-overlay.is-closing .player-panel{
+  animation: mf-pop-out .24s var(--ease) forwards;
+}
+.player-overlay.is-closing{
+  animation: fade-out .24s var(--ease) forwards;
+}
+
+/* Respect users who prefer reduced motion: skip open + close animations */
+@media (prefers-reduced-motion: reduce){
+  .detail-panel,
+  .player-panel,
+  .detail-overlay-bg,
+  .player-overlay{ animation: none !important; }
+  .detail-overlay.is-closing .detail-panel,
+  .player-overlay.is-closing .player-panel,
+  .detail-overlay.is-closing .detail-overlay-bg,
+  .player-overlay.is-closing{ animation: none !important; }
+}

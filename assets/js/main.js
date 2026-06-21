@@ -874,10 +874,12 @@
   }
 
   function closeDetails(){
-    if (!detailOverlay) return;
-    detailOverlay.hidden = true;
+    if (!detailOverlay || detailOverlay.dataset.closing === '1') return;
     detailOverlay.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    __mfAnimateClose(detailOverlay, detailPanel, function(){
+      detailOverlay.hidden = true;
+      document.body.style.overflow = '';
+    });
   }
 
   function detailIsOpen(){
@@ -1003,12 +1005,14 @@
   }
 
   function closePlayer(){
-    if (!playerOverlay) return;
-    playerOverlay.hidden = true;
+    if (!playerOverlay || playerOverlay.dataset.closing === '1') return;
     playerOverlay.setAttribute('aria-hidden', 'true');
-    try { playerFrame.removeAttribute('src'); } catch (e) { try { playerFrame.src = 'about:blank'; } catch(_){} }
-    currentPlayer = null;
-    document.body.style.overflow = '';
+    __mfAnimateClose(playerOverlay, playerPanel, function(){
+      playerOverlay.hidden = true;
+      try { playerFrame.removeAttribute('src'); } catch (e) { try { playerFrame.src = 'about:blank'; } catch(_){} }
+      currentPlayer = null;
+      document.body.style.overflow = '';
+    });
   }
 
   function playerIsOpen(){
@@ -1207,3 +1211,38 @@
 })();
 
 
+
+// ---- Animated close: play reverse animation, then hide ----
+function __mfAnimateClose(overlay, panelEl, onDone){
+  if (!overlay) { if (typeof onDone === 'function') onDone(); return; }
+  if (overlay.dataset.closing === '1') return; // already closing
+  overlay.dataset.closing = '1';
+  overlay.classList.add('is-closing');
+
+  var finished = false;
+  function done(){
+    if (finished) return;
+    finished = true;
+    overlay.classList.remove('is-closing');
+    overlay.removeAttribute('data-closing');
+    if (typeof onDone === 'function') onDone();
+  }
+
+  // Listen on the panel itself (the element actually animating)
+  var target = panelEl || overlay;
+  var onEnd = function(e){
+    if (e && e.target !== target) return; // ignore bubbled ends from descendants
+    target.removeEventListener('animationend', onEnd);
+    done();
+  };
+  target.addEventListener('animationend', onEnd);
+
+  // Safety net: never leave it stuck (in case animationend never fires)
+  setTimeout(done, 400);
+
+  // Reduced-motion: skip the wait entirely
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    setTimeout(done, 0);
+  }
+}
+window.__mfAnimateClose = __mfAnimateClose;
