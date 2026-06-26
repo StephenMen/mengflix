@@ -1,1248 +1,144 @@
-﻿/* MengFlix main.js */
-(() => {
-  'use strict';
-  document.documentElement.classList.add('js');
-  // ---------- Pop-up guard ----------
-  // The player iframe is sandboxed (see index.html), but we also block any
-  // window.open that fires from outside the sandbox just in case.
-  (function(){
-    if (window.__mfPopupGuard) return;
-    window.__mfPopupGuard = true;
-    var realOpen = window.open;
-    window.open = function(url, name, features){
-      try {
-        console.warn('[mengflix] blocked pop-up to', url);
-        if (window.__mfOnPopupBlocked) window.__mfOnPopupBlocked(url);
-      } catch (e) {}
-      return null;
-    };
-  })();
-
-  // Listen for any focus tricks (tab-under) the embed might try. If the page
-  // suddenly blurs right after an interaction inside the player, we snap focus
-  // back and notify the user.
-  // Show a small inline notice when a pop-up is blocked.
-  window.__mfOnPopupBlocked = function(target){
-    if (!playerOverlay) return;
-    var hint = document.getElementById('playerHint');
-    if (!hint) return;
-    var original = hint.dataset.original || hint.innerHTML;
-    if (!hint.dataset.original) hint.dataset.original = original;
-    var msg = 'Pop-up blocked' + (target && typeof target === 'string' ? ' (' + target.slice(0, 60) + ')' : '');
-    hint.innerHTML = '<strong style="color:#ff6b6b">' + msg + '</strong>. ' + original;
-    clearTimeout(hint.__mfTimer);
-    hint.__mfTimer = setTimeout(function(){
-      hint.innerHTML = hint.dataset.original || original;
-    }, 3500);
-  };
-
-  var lastBlurAt = 0;
-  window.addEventListener('blur', function(){
-    lastBlurAt = Date.now();
-    setTimeout(function(){
-      try {
-        if (playerOverlay && !playerOverlay.hidden && Date.now() - lastBlurAt < 100){
-          window.focus();
-          if (window.__mfOnPopupBlocked) window.__mfOnPopupBlocked('focus-steal attempt');
-        }
-      } catch (e) {}
-    }, 60);
-  });
- // progressive enhancement: enables reveal-on-scroll styles
-
-  // ---------- Hero carousel ----------
-  const slides = Array.from(document.querySelectorAll('.yf-hero-slide'));
-  const dots   = Array.from(document.querySelectorAll('.yf-hero-dot'));
-  const prev   = document.getElementById('heroPrev');
-  const next   = document.getElementById('heroNext');
-  let idx = 0;
-  let timer = null;
-
-  function go(n){
-    if (!slides.length) return;
-    idx = (n + slides.length) % slides.length;
-    slides.forEach((s, i) => s.classList.toggle('active', i === idx));
-    dots  .forEach((d, i) => d.classList.toggle('active', i === idx));
-  }
-  function startAuto(){
-    stopAuto();
-    timer = setInterval(() => go(idx + 1), 6500);
-  }
-  function stopAuto(){ if (timer) { clearInterval(timer); timer = null; } }
-
-  if (slides.length){
-    prev && prev.addEventListener('click', () => { go(idx - 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();} });
-    next && next.addEventListener('click', () => { go(idx + 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();} });
-    dots.forEach(d => d.addEventListener('click', () => {
-      const n = parseInt(d.dataset.go, 10);
-      go(n); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}
-    }));
-    const hero = document.querySelector('.yf-hero');
-    hero && hero.addEventListener('mouseenter', stopAuto);
-    hero && hero.addEventListener('mouseleave', startAuto);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft')  { go(idx - 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();} }
-      if (e.key === 'ArrowRight') { go(idx + 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();} }
-    });
-    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}
-  }
-
-  // ---------- Sliders: wheel + drag + edge state + progress bar + section reveal ----------
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  // Section reveal on scroll
-  const sections = document.querySelectorAll('.section');
-  if ('IntersectionObserver' in window && sections.length){
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting){
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
-    sections.forEach((s) => io.observe(s));
-    sections.forEach((s) => { const r = s.getBoundingClientRect(); if (r.top < window.innerHeight) s.classList.add('is-visible'); });
-  } else {
-    sections.forEach((s) => s.classList.add('is-visible'));
-  }
-
-  // Inject progress bar under each track
-  document.querySelectorAll('.slider-wrap').forEach((wrap) => {
-    const track = wrap.querySelector('.slider-track');
-    if (!track) return;
-    if (!wrap.querySelector('.slider-progress')){
-      const prog = document.createElement('div'); prog.className = 'slider-progress';
-      const bar = document.createElement('div'); bar.className = 'slider-progress-bar';
-      prog.appendChild(bar); wrap.appendChild(prog);
-    }
-  });
-
-  function setupSlider(wrap){
-    const track = wrap.querySelector('.slider-track');
-    if (!track) return;
-    const p = wrap.querySelector('.slider-btn-prev');
-    const n = wrap.querySelector('.slider-btn-next');
-    const bar = wrap.querySelector('.slider-progress-bar');
-    const step = () => Math.max(track.clientWidth * 0.85, 320);
-    if (p){ p.addEventListener('click', () => { track.scrollBy({ left: -step(), behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' }); }); }
-    if (n){ n.addEventListener('click', () => { track.scrollBy({ left: step(), behavior: prefersReducedMotion.matches ? 'auto' : 'smooth' }); }); }
-    function update(){
-      const max = track.scrollWidth - track.clientWidth;
-      const x = track.scrollLeft;
-      wrap.classList.toggle('is-scrollable-left', x > 4);
-      wrap.classList.toggle('is-scrollable-right', x < max - 4);
-      if (p) p.disabled = x <= 1;
-      if (n) n.disabled = x >= max - 1;
-      if (bar && track.scrollWidth > track.clientWidth){
-        const ratio = track.clientWidth / track.scrollWidth;
-        const offset = (x / max) * (1 - ratio);
-        bar.style.transform = 'translateX(' + (offset * 100) + '%) scaleX(' + ratio + ')';
-      } else if (bar){
-        bar.style.transform = 'translateX(0) scaleX(1)';
-      }
-    }
-    track.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-
-    // Drag-to-scroll (pointer + mouse fallback for headless).
-    // Only end the drag on pointerup/mouseup/cancel, never on leave � leaving the track
-    // mid-drag is normal and the old behavior was breaking long swipes.
-    let isDown = false, startX = 0, startScroll = 0, dragged = false, activePointerId = null;
-    function onDown(e){
-      if (e.button !== undefined && e.button !== 0) return;
-      isDown = true; dragged = false;
-      startX = e.clientX; startScroll = track.scrollLeft;
-      activePointerId = (e.pointerId !== undefined ? e.pointerId : null);
-      // Pointer capture is intentionally not used: it can swallow move events in some headless setups
-      // and is not needed because we listen on both pointer* and mouse* events.
-      try { console.log('[dbg] down btn=', e.button, 'id=', e.pointerId, 'isDown=', isDown); } catch (err) {}
-    }
-    function onMove(e){
-      try { console.log('[dbg] move id=', e.pointerId, 'isDown=', isDown, 'active=', activePointerId); } catch (err) {}
-      if (!isDown) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 4) dragged = true;
-      const target = startScroll - dx; track.scrollLeft = target; try { console.log('[dbg] set scrollLeft', target, '->', track.scrollLeft, 'snap', getComputedStyle(track).scrollSnapType); } catch (err) {}
-    }
-    function onUp(e){
-      try { console.log('[dbg] up id=', e && e.pointerId, 'isDown was', isDown); } catch (err) {}
-      if (!isDown) return;
-      if (activePointerId !== null && e && e.pointerId !== undefined && e.pointerId !== activePointerId) return;
-      isDown = false; activePointerId = null;
-    }
-    track.addEventListener('pointerdown', onDown);
-    track.addEventListener('mousedown', onDown);
-    track.addEventListener('pointermove', onMove);
-    track.addEventListener('mousemove', onMove);
-    track.addEventListener('pointerup', onUp);
-    track.addEventListener('mouseup', onUp);
-    track.addEventListener('pointercancel', onUp);
-    // Suppress click after a real drag so cards do not open mid-swipe.
-    track.addEventListener('click', (e) => { if (dragged){ e.preventDefault(); e.stopPropagation(); dragged = false; } }, true);
-
-    // Block the browser's middle-click auto-scroll on the track and on any card link inside it.
-    // Wheel-to-horizontal and left-click drag-to-scroll still work.
-    track.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
-    track.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
-    track.addEventListener('pointerdown', (e) => { if (e.button === 1) e.preventDefault(); });
-  }
-  document.querySelectorAll('.slider-wrap').forEach(setupSlider);
-  // Global guard: stop the browser's middle-click auto-scroll on any link inside a slider track
-  // (the autoscroll cursor uses an up/down arrow icon, which is confusing on a horizontal slider).
-  document.querySelectorAll('.slider-track a').forEach((a) => {
-    a.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
-    a.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
-  });
-  // Also stop middle-click from opening links in a new tab from inside a slider.
-  document.addEventListener('auxclick', (e) => {
-    if (e.button !== 1) return;
-    const t = e.target;
-    if (t.closest && t.closest('.slider-track')) e.preventDefault();
-  });
-
-  // ---------- Browse dropdown ----------
-  const dd = document.querySelector('.browse-dropdown');
-  const btn = dd && dd.querySelector('.btn-browse');
-  if (dd && btn){
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const open = dd.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('click', (e) => {
-      if (!dd.contains(e.target)){
-        dd.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  // ---------- Search overlay ----------
-  const search = document.getElementById('searchOverlay');
-  const openBtn = document.getElementById('searchOpenBtn');
-  const closeBtn = document.getElementById('searchCloseBtn');
-  function openSearch(){
-    if (!search) return;
-    search.hidden = false;
-    const input = search.querySelector('.search-overlay-input');
-    setTimeout(() => input && input.focus(), 50);
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSearch(){
-    if (!search) return;
-    search.hidden = true;
-    document.body.style.overflow = '';
-  }
-  // ---------- Search: live results + click-to-watch ----------
-  const searchInput    = search ? search.querySelector('.search-overlay-input') : null;
-  const searchResults  = document.getElementById('searchResults');
-  const searchEmpty    = document.getElementById('searchResultsEmpty');
-  const searchAllCards = () => Array.from(document.querySelectorAll('.content-card'));
-  let searchSelectedIdx = 0;
-  let searchLastQuery  = "";
-
-  function escapeReg(s){ return String(s).replace(/[.*+?^\${}()|[\]\\]/g, '\\$&'); }
-  function escapeAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function cardSearchHay(card){
-    return {
-      title:  (card.dataset.title  || (card.querySelector && card.querySelector('.card-title') ? card.querySelector('.card-title').textContent : '') || '').trim(),
-      type:   (card.dataset.type   || 'Movie').trim(),
-      year:   (card.dataset.year   || '').trim(),
-      runtime:(card.dataset.runtime|| '').trim(),
-      genre:  (card.dataset.genre  || '').trim(),
-      poster: (card.dataset.poster || (card.querySelector && card.querySelector('img') ? card.querySelector('img').getAttribute('src') : '') || '').trim()
-    };
-  }
-
-  function scoreCard(hay, q){
-    const t = hay.title.toLowerCase();
-    const g = hay.genre.toLowerCase();
-    const y = hay.year.toLowerCase();
-    if (!t) return -1;
-    if (t === q) return 1000;
-    if (t.startsWith(q)) return 800;
-    const words = t.split(/\s+/);
-    if (words.some(w => w.startsWith(q))) return 600;
-    if (t.indexOf(q) !== -1) return 400;
-    if (y && y === q) return 300;
-    if (g && g.indexOf(q) !== -1) return 200;
-    return -1;
-  }
-
-  function highlight(text, q){
-    if (!q) return escapeAttr(text);
-    const safe = escapeAttr(text);
-    const re = new RegExp('(' + escapeReg(q) + ')', 'ig');
-    return safe.replace(re, '<mark class="search-result-highlight">$1</mark>');
-  }
-
-  function renderSearchResults(query){
-    if (!searchResults) return;
-    const q = (query || '').trim().toLowerCase();
-    searchLastQuery = q;
-    searchSelectedIdx = 0;
-    if (!q){
-      searchResults.innerHTML = '';
-      if (searchEmpty) searchEmpty.hidden = true;
-      return;
-    }
-    const cards = searchAllCards();
-    const matched = [];
-    for (let i = 0; i < cards.length; i++){
-      const hay = cardSearchHay(cards[i]);
-      const s = scoreCard(hay, q);
-      if (s >= 0) matched.push({ card: cards[i], hay: hay, score: s, index: i });
-    }
-    matched.sort((a, b) => b.score - a.score || a.index - b.index);
-    const top = matched.slice(0, 18);
-    if (top.length === 0){
-      searchResults.innerHTML = '';
-      if (searchEmpty) searchEmpty.hidden = false;
-      return;
-    }
-    if (searchEmpty) searchEmpty.hidden = true;
-    const qDisplay = query;
-    searchResults.innerHTML = top.map((m, idx) => {
-      const h = m.hay;
-      const typeLabel = h.type === 'TVSeries' ? 'TV Show' : 'Movie';
-      const meta = [h.year, h.runtime ? h.runtime + ' min' : '', h.genre].filter(Boolean).join(' \u00b7 ');
-      return '' +
-        '<button type="button" class="search-result-card" role="option" ' +
-                'data-index="' + idx + '" data-card-index="' + m.index + '" ' +
-                'aria-selected="' + (idx === 0 ? 'true' : 'false') + '"' +
-                'title="' + escapeAttr(h.title) + '">' +
-          '<span class="search-result-poster">' +
-            (h.poster ? '<img src="' + escapeAttr(h.poster) + '" alt="" loading="lazy" decoding="async">' : '') +
-            '<span class="search-result-type ' + (h.type === 'TVSeries' ? 'tv' : 'movie') + '">' + typeLabel + '</span>' +
-            '<span class="search-result-play" aria-hidden="true">' +
-              '<span class="search-result-play-icon"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>' +
-            '</span>' +
-          '</span>' +
-          '<span class="search-result-info">' +
-            '<span class="search-result-title">' + highlight(h.title, qDisplay) + '</span>' +
-            (meta ? '<span class="search-result-meta">' + escapeAttr(meta) + '</span>' : '') +
-          '</span>' +
-        '</button>';
-    }).join("");
-  }
-
-  function moveSelection(delta){
-    if (!searchResults) return;
-    const items = searchResults.querySelectorAll('.search-result-card');
-    if (!items.length) return;
-    searchSelectedIdx = (searchSelectedIdx + delta + items.length) % items.length;
-    items.forEach((el, i) => el.setAttribute('aria-selected', i === searchSelectedIdx ? 'true' : 'false'));
-    const sel = items[searchSelectedIdx];
-    if (sel) sel.scrollIntoView({ block: 'nearest' });
-  }
-
-  function activateSelection(){
-    if (!searchResults) return;
-    const items = searchResults.querySelectorAll('.search-result-card');
-    const sel = items[searchSelectedIdx] || items[0];
-    if (!sel) return;
-    sel.click();
-  }
-
-  if (searchInput){
-    let debounce;
-    searchInput.addEventListener('input', (e) => {
-      clearTimeout(debounce);
-      debounce = setTimeout(() => renderSearchResults(e.target.value), 80);
-    });
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown'){ e.preventDefault(); moveSelection(1); }
-      else if (e.key === 'ArrowUp'){ e.preventDefault(); moveSelection(-1); }
-      else if (e.key === 'Enter'){ e.preventDefault(); activateSelection(); }
-    });
-    const _openSearch = openSearch;
-    openSearch = function(){
-      _openSearch();
-      if (searchInput) searchInput.value = '';
-      renderSearchResults('');
-    };
-  }
-
-  if (searchResults){
-    searchResults.addEventListener('click', (e) => {
-      const card = e.target.closest('.search-result-card');
-      if (!card) return;
-      const idx = parseInt(card.dataset.cardIndex, 10);
-      const src = searchAllCards()[idx];
-      if (!src) return;
-      closeSearch();
-      setTimeout(() => {
-        if (typeof openPlayer === 'function'){
-          openPlayer(src);
-        } else if (typeof openDetails === 'function'){
-          openDetails(src);
-        }
-      }, 30);
-    });
-  }
-
-  openBtn && openBtn.addEventListener('click', openSearch);
-  closeBtn && closeBtn.addEventListener('click', closeSearch);
-  search && search.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeSearch));
-  // Global Escape handler: close player first, then details, then search
-  document.addEventListener('keydown', function(e){
-    if (e.key !== 'Escape') return;
-    if (playerIsOpen()){ closePlayer(); e.stopPropagation(); return; }
-    if (typeof detailIsOpen === 'function' && detailIsOpen()){
-      closeDetails();
-      e.stopPropagation();
-      return;
-    }
-  }, true);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeSearch();
-    if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !search.hidden === false) {
-      // open with "/" or Cmd/Ctrl+K when not in input
-      const tag = (document.activeElement && document.activeElement.tagName) || '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      e.preventDefault();
-      openSearch();
-    }
-  });
-
-  // ---------- Mobile menu (inline accordion inside the hero) ----------
-  const mBtn  = document.getElementById('mobileMenuBtn');
-  const mMenu = document.getElementById('mobileMenu');
-
-  function setMobileMenuOpen(open){
-    if (!mMenu) return;
-    mMenu.classList.toggle('open', open);
-    mMenu.hidden = !open;
-    if (mBtn){
-      mBtn.classList.toggle('open', open);
-      mBtn.setAttribute('aria-expanded', String(open));
-    }
-  }
-  function closeMobileMenu(){ setMobileMenuOpen(false); }
-
-  if (mBtn && mMenu){
-    mBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      setMobileMenuOpen(!mMenu.classList.contains('open'));
-    });
-    mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileMenu));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mMenu.classList.contains('open')) closeMobileMenu();
-    });
-  }
-
-  // ---------- Header shadow on scroll ----------
-  const header = document.getElementById('siteHeader');
-  if (header){
-    const onScroll = () => {
-      header.classList.toggle('scrolled', window.scrollY > 8);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  // ============================================================
-  // Details Panel
-  // ============================================================
-  const detailOverlay = document.getElementById('detailOverlay');
-  const detailPanel   = detailOverlay ? detailOverlay.querySelector('.detail-panel') : null;
-  const detailClose   = document.getElementById('detailClose');
-  const detailTitle   = document.getElementById('detailTitle');
-  const detailBadges  = document.getElementById('detailBadges');
-  const detailDesc    = document.getElementById('detailDesc');
-  const detailMeta    = document.getElementById('detailMeta');
-  const detailPoster  = document.getElementById('detailPoster');
-  const detailBg      = document.getElementById('detailBackdrop');
-  const detailTrailer = document.getElementById('detailTrailer');
-  const detailStars   = document.getElementById('detailStars');
-  const detailPlay    = document.getElementById('detailPlay');
-  // Player overlay
-  const playerOverlay  = document.getElementById('playerOverlay');
-  const playerPanel    = playerOverlay && playerOverlay.querySelector('.player-panel');
-  const playerTitle    = document.getElementById('playerTitle');
-  const playerCrumbTitle = document.getElementById('playerCrumbTitle');
-  const playerCrumbType  = document.getElementById('playerCrumbType');
-  const playerServers  = document.getElementById('playerServers');
-  const playerFrame    = document.getElementById('playerFrame');
-  const playerPlaceholder = document.getElementById('playerPlaceholder');
-  const playerWatchLink = document.getElementById('playerWatchLink');
-  const detailFav     = document.getElementById('detailFav');
-  const detailShare   = document.getElementById('detailShare');
-  const detailCrumbTitle = document.getElementById('detailCrumbTitle');
-  const detailCrumbType  = document.getElementById('detailCrumbType');
-
-  // Curated details for cards that don't have a yFlix detail page
-  const curated = {
-  'Dune: Part Two': { 'imdb': 'IMDb 8.5', 'runtime': '2h 46m', 'country': 'United States of America', 'released': '2024-03-01', 'director': 'Denis Villeneuve', 'genres': 'Sci-Fi, Adventure, Drama', 'casts': 'TimothÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e Chalamet, Zendaya, Austin Butler, Florence Pugh', 'desc': 'Paul Atreides unites with the Fremen and seeks revenge against the conspirators who destroyed his family.', 'stars': '5' ,      'poster': 'assets/posters/dune-part-two.svg',
-      'watch_url': 'https://yflix.ws/movie/watch-2hrxg0-dune-part-two-2024-hd',
-},
-  'Oppenheimer': { 'imdb': 'IMDb 8.3', 'runtime': '3h 00m', 'country': 'United States of America', 'released': '2023-07-21', 'director': 'Christopher Nolan', 'genres': 'Biography, Drama, History', 'casts': 'Cillian Murphy, Emily Blunt, Robert Downey Jr., Matt Damon', 'desc': 'The story of J. Robert Oppenheimer and his role in the development of the atomic bomb.', 'stars': '5' ,      'poster': 'assets/posters/oppenheimer.svg',
-      'watch_url': 'https://yflix.ws/movie/watch-u4o253-oppenheimer-2023-hd',
-},
-  'Poor Things': { 'imdb': 'IMDb 7.8', 'runtime': '2h 21m', 'country': 'Ireland, UK, USA', 'released': '2023-12-08', 'director': 'Yorgos Lanthimos', 'genres': 'Comedy, Drama, Romance', 'casts': 'Emma Stone, Mark Ruffalo, Willem Dafoe', 'desc': 'A young woman, brought back to life by a brilliant scientist, embarks on a wild odyssey across continents.', 'stars': '4' ,      'poster': 'assets/posters/poor-things.svg',
-      'watch_url': 'https://yflix.ws/movie/watch-uxo4nf-poor-things-2023-hd',
-},
-  'The Substance': { 'imdb': 'IMDb 7.4', 'runtime': '2h 21m', 'country': 'UK, USA, France', 'released': '2024-09-20', 'director': 'Coralie Fargeat', 'genres': 'Horror, Sci-Fi, Drama', 'casts': 'Demi Moore, Margaret Qualley, Dennis Quaid', 'desc': 'A fading celebrity uses a black-market drug that creates a younger, better version of herself.', 'stars': '4' ,      'poster': 'assets/posters/the-substance.svg',
-      'watch_url': 'https://yflix.ws/movie/watch-435ecg-the-substance-2024-hd',
-},
-  'Anora': { 'imdb': 'IMDb 7.6', 'runtime': '2h 19m', 'country': 'United States of America', 'released': '2024-10-18', 'director': 'Sean Baker', 'genres': 'Drama, Comedy, Romance', 'casts': 'Mikey Madison, Mark Eydelshteyn, Yura Borisov', 'desc': 'A young sex worker from Brooklyn gets her chance at a Cinderella story when she impulsively marries the son of an oligarch.', 'stars': '4' ,      'poster': 'assets/posters/anora.svg',
-      'watch_url': 'https://yflix.ws/search?q=Anora',
-},
-  'Wicked': { 'imdb': 'IMDb 7.6', 'runtime': '2h 40m', 'country': 'United States of America', 'released': '2024-11-22', 'director': 'Jon M. Chu', 'genres': 'Fantasy, Musical, Drama', 'casts': 'Cynthia Erivo, Ariana Grande, Jeff Goldblum', 'desc': 'Two unlikely friends at Shiz University discover their true powers and the destiny that awaits them.', 'stars': '4' ,      'poster': 'assets/posters/wicked.svg',
-      'watch_url': 'https://yflix.ws/search?q=Wicked',
-},
-  'Conclave': { 'imdb': 'IMDb 7.4', 'runtime': '2h 00m', 'country': 'USA, UK', 'released': '2024-10-25', 'director': 'Edward Berger', 'genres': 'Thriller, Mystery, Drama', 'casts': 'Ralph Fiennes, Stanley Tucci, John Lithgow', 'desc': 'A cardinal investigates dark secrets as the Catholic Church prepares for a papal conclave.', 'stars': '4' ,      'poster': 'assets/posters/conclave.svg',
-      'watch_url': 'https://yflix.ws/search?q=Conclave',
-},
-  'Nosferatu': { 'imdb': 'IMDb 7.2', 'runtime': '2h 12m', 'country': 'United States of America', 'released': '2024-12-25', 'director': 'Robert Eggers', 'genres': 'Horror, Gothic, Period', 'casts': 'Bill SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd, Nicholas Hoult, Lily-Rose Depp', 'desc': 'A gothic tale of obsession between a haunted young woman and a vampire.', 'stars': '4' ,      'poster': 'assets/posters/nosferatu.svg',
-      'watch_url': 'https://yflix.ws/search?q=Nosferatu',
-},
-  'A Real Pain': { 'imdb': 'IMDb 7.1', 'runtime': '1h 30m', 'country': 'USA, Poland', 'released': '2024-11-01', 'director': 'Jesse Eisenberg', 'genres': 'Drama, Comedy', 'casts': 'Jesse Eisenberg, Kieran Culkin', 'desc': 'Mismatched cousins reunite for a tour through Poland to honor their late grandmother.', 'stars': '4' ,      'poster': 'assets/posters/a-real-pain.svg',
-      'watch_url': 'https://yflix.ws/search?q=A%20Real%20Pain',
-},
-  'Gladiator II': { 'imdb': 'IMDb 6.6', 'runtime': '2h 28m', 'country': 'USA, UK', 'released': '2024-11-15', 'director': 'Ridley Scott', 'genres': 'Action, Adventure, Drama', 'casts': 'Paul Mescal, Pedro Pascal, Denzel Washington', 'desc': 'A new hero rises in the Roman arena to challenge the empire.', 'stars': '3' ,      'poster': 'assets/posters/gladiator-ii.svg',
-      'watch_url': 'https://yflix.ws/search?q=Gladiator%20II',
-},
-  'Heretic': { 'imdb': 'IMDb 7.0', 'runtime': '1h 51m', 'country': 'USA, Canada', 'released': '2024-11-08', 'director': 'Scott Beck & Bryan Woods', 'genres': 'Thriller, Horror', 'casts': 'Hugh Grant, Sophie Thatcher, Chloe East', 'desc': 'Two missionaries face a deadly game of cat-and-mouse in a stranger\'s house.', 'stars': '4' ,      'poster': 'assets/posters/heretic.svg',
-      'watch_url': 'https://yflix.ws/search?q=Heretic',
-},
-  'The Wild Robot': { 'imdb': 'IMDb 8.2', 'runtime': '1h 42m', 'country': 'USA', 'released': '2024-09-20', 'director': 'Chris Sanders', 'genres': 'Animation, Adventure, Family', 'casts': 'Lupita Nyong\'o, Pedro Pascal, Kit Connor', 'desc': 'A shipwrecked robot bonds with the animals of a forested island and adopts an orphaned gosling.', 'stars': '4' ,      'poster': 'assets/posters/the-wild-robot.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Wild%20Robot',
-},
-  'Civil War': { 'imdb': 'IMDb 7.0', 'runtime': '1h 49m', 'country': 'UK, USA, Finland', 'released': '2024-04-12', 'director': 'Alex Garland', 'genres': 'Action, Drama, Thriller', 'casts': 'Kirsten Dunst, Wagner Moura, Cailee Spaeny', 'desc': 'Journalists travel across the U.S. during a rapidly escalating civil war.', 'stars': '4' ,      'poster': 'assets/posters/civil-war.svg',
-      'watch_url': 'https://yflix.ws/search?q=Civil%20War',
-},
-  'Hit Man': { 'imdb': 'IMDb 7.3', 'runtime': '1h 55m', 'country': 'USA', 'released': '2024-05-24', 'director': 'Richard Linklater', 'genres': 'Comedy, Crime, Romance', 'casts': 'Glen Powell, Adria Arjona', 'desc': 'A college professor moonlights as a fake hit man and falls for a potential client.', 'stars': '4' ,      'poster': 'assets/posters/hit-man.svg',
-      'watch_url': 'https://yflix.ws/search?q=Hit%20Man',
-},
-  'Love Lies Bleeding': { 'imdb': 'IMDb 7.0', 'runtime': '1h 44m', 'country': 'UK, USA', 'released': '2024-03-08', 'director': 'Rose Glass', 'genres': 'Thriller, Crime, Romance', 'casts': 'Kristen Stewart, Katy O\'Brian, Ed Harris', 'desc': 'A reclusive gym manager falls for an ambitious bodybuilder, with violent consequences.', 'stars': '4' ,      'poster': 'assets/posters/love-lies-bleeding.svg',
-      'watch_url': 'https://yflix.ws/search?q=Love%20Lies%20Bleeding',
-},
-  'Furiosa': { 'imdb': 'IMDb 7.5', 'runtime': '2h 28m', 'country': 'Australia, USA', 'released': '2024-05-24', 'director': 'George Miller', 'genres': 'Action, Adventure, Sci-Fi', 'casts': 'Anya Taylor-Joy, Chris Hemsworth, Tom Burke', 'desc': 'The origin story of renegade warrior Furiosa before she meets Mad Max.', 'stars': '4' ,      'poster': 'assets/posters/furiosa.svg',
-      'watch_url': 'https://yflix.ws/search?q=Furiosa',
-},
-  'Alien: Romulus': { 'imdb': 'IMDb 7.2', 'runtime': '1h 59m', 'country': 'USA, UK, Hungary', 'released': '2024-08-16', 'director': 'Fede Alvarez', 'genres': 'Sci-Fi, Horror, Thriller', 'casts': 'Cailee Spaeny, David Jonsson, Archie Renaux', 'desc': 'A group of young space colonists encounter the most terrifying life form in the universe.', 'stars': '4' ,      'poster': 'https://yflix.ws/images/posters/movies/alien-romulus-2024.webp',
-      'watch_url': 'https://yflix.ws/search?q=Alien%3A%20Romulus',
-},
-  'It Ends With Us': { 'imdb': 'IMDb 6.5', 'runtime': '2h 10m', 'country': 'USA', 'released': '2024-08-09', 'director': 'Justin Baldoni', 'genres': 'Drama, Romance', 'casts': 'Blake Lively, Justin Baldoni, Brandon Sklenar', 'desc': 'A young woman\'s seemingly perfect life takes a dark turn when she meets a charming neurosurgeon.', 'stars': '3' ,      'poster': 'assets/posters/it-ends-with-us.svg',
-      'watch_url': 'https://yflix.ws/search?q=It%20Ends%20With%20Us',
-},
-  'Beetlejuice B.': { 'imdb': 'IMDb 7.0', 'runtime': '1h 44m', 'country': 'USA', 'released': '2024-09-06', 'director': 'Tim Burton', 'genres': 'Comedy, Fantasy, Horror', 'casts': 'Michael Keaton, Winona Ryder, Catherine O\'Hara', 'desc': 'After a family tragedy, three generations of the Deetz family return home to Winter River ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â still haunted by Beetlejuice.', 'stars': '4' ,      'poster': 'assets/posters/beetlejuice-b.svg',
-      'watch_url': 'https://yflix.ws/search?q=Beetlejuice%20B.',
-},
-  'Joker: Folie 2': { 'imdb': 'IMDb 5.3', 'runtime': '2h 18m', 'country': 'USA', 'released': '2024-10-04', 'director': 'Todd Phillips', 'genres': 'Drama, Crime, Musical', 'casts': 'Joaquin Phoenix, Lady Gaga, Brendan Gleeson', 'desc': 'A failed comedian descends into madness and forms a twisted romance.', 'stars': '2' ,      'poster': 'assets/posters/joker-folie-2.svg',
-      'watch_url': 'https://yflix.ws/search?q=Joker%3A%20Folie%202',
-},
-  'Smile 2': { 'imdb': 'IMDb 6.3', 'runtime': '2h 02m', 'country': 'USA', 'released': '2024-10-18', 'director': 'Parker Finn', 'genres': 'Horror, Mystery, Thriller', 'casts': 'Naomi Scott, Rosemarie DeWitt, Lukas Gage', 'desc': 'A global pop star must confront a terrifying curse as her world unravels.', 'stars': '3' ,      'poster': 'assets/posters/smile-2.svg',
-      'watch_url': 'https://yflix.ws/search?q=Smile%202',
-},
-  'Terrifier 3': { 'imdb': 'IMDb 6.1', 'runtime': '2h 05m', 'country': 'USA', 'released': '2024-10-11', 'director': 'Damien Leone', 'genres': 'Horror, Slasher', 'casts': 'Lauren LaVera, David Howard Thornton, Elliott Fullam', 'desc': 'Art the Clown unleashes chaos on a sleepy town on Christmas Eve.', 'stars': '3' ,      'poster': 'assets/posters/terrifier-3.svg',
-      'watch_url': 'https://yflix.ws/search?q=Terrifier%203',
-},
-  'Society of Snow': { 'imdb': 'IMDb 7.8', 'runtime': '2h 24m', 'country': 'Spain, Uruguay, Chile', 'released': '2023-12-15', 'director': 'J.A. Bayona', 'genres': 'Drama, Survival, History', 'casts': 'MatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­as Recalt, AgustÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­n Pardella, Valentino Alonso', 'desc': 'Survivors of a 1972 plane crash struggle to survive in the Andes.', 'stars': '4' ,      'poster': 'assets/posters/society-of-snow.svg',
-      'watch_url': 'https://yflix.ws/search?q=Society%20of%20Snow',
-},
-  'The Holdovers': { 'imdb': 'IMDb 7.9', 'runtime': '2h 13m', 'country': 'USA', 'released': '2023-10-27', 'director': 'Alexander Payne', 'genres': 'Drama, Comedy', 'casts': 'Paul Giamatti, Da\'Vine Joy Randolph, Dominic Sessa', 'desc': 'A grumpy professor is forced to remain at a New England prep school over Christmas break.', 'stars': '4' ,      'poster': 'assets/posters/the-holdovers.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Holdovers',
-},
-  'Anatomy of a Fall': { 'imdb': 'IMDb 7.7', 'runtime': '2h 32m', 'country': 'France', 'released': '2023-08-23', 'director': 'Justine Triet', 'genres': 'Drama, Mystery, Thriller', 'casts': 'Sandra HÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ller, Milo Machado-Graner', 'desc': 'A woman is suspected of her husband\'s murder, and her blind son faces a moral dilemma.', 'stars': '4' ,      'poster': 'assets/posters/anatomy-of-a-fall.svg',
-      'watch_url': 'https://yflix.ws/search?q=Anatomy%20of%20a%20Fall',
-},
-  'Maestro': { 'imdb': 'IMDb 6.5', 'runtime': '2h 09m', 'country': 'USA', 'released': '2023-11-22', 'director': 'Bradley Cooper', 'genres': 'Biography, Drama, Music', 'casts': 'Carey Mulligan, Bradley Cooper, Matt Bomer', 'desc': 'A towering love story chronicling the lifelong relationship of Leonard Bernstein and Felicia Montealegre.', 'stars': '3' ,      'poster': 'assets/posters/maestro.svg',
-      'watch_url': 'https://yflix.ws/search?q=Maestro',
-},
-  'May December': { 'imdb': 'IMDb 6.8', 'runtime': '1h 57m', 'country': 'USA', 'released': '2023-05-20', 'director': 'Todd Haynes', 'genres': 'Drama', 'casts': 'Natalie Portman, Julianne Moore, Charles Melton', 'desc': 'An actress arrives to study a couple whose tabloid romance gripped the nation decades ago.', 'stars': '3' ,      'poster': 'assets/posters/may-december.svg',
-      'watch_url': 'https://yflix.ws/search?q=May%20December',
-},
-  'Killers of F.M.': { 'imdb': 'IMDb 7.6', 'runtime': '3h 26m', 'country': 'USA', 'released': '2023-10-20', 'director': 'Martin Scorsese', 'genres': 'Crime, Drama, History', 'casts': 'Leonardo DiCaprio, Robert De Niro, Lily Gladstone', 'desc': 'Members of the Osage tribe are murdered under mysterious circumstances in the 1920s.', 'stars': '4', 'poster': 'assets/posters/killers-of-f-m.svg', 'watch_url': 'https://yflix.ws/search?q=Killers%20of%20the%20Flower%20Moon' },
-  'Boy and Heron': { 'imdb': 'IMDb 7.4', 'runtime': '2h 04m', 'country': 'Japan', 'released': '2023-12-08', 'director': 'Hayao Miyazaki', 'genres': 'Animation, Fantasy, Adventure', 'casts': 'Soma Santoki, Masaki Suda, Takuya Kimura', 'desc': 'A young boy discovers an abandoned tower in his new town, leading to another world.', 'stars': '4' ,      'poster': 'assets/posters/boy-and-heron.svg',
-      'watch_url': 'https://yflix.ws/search?q=Boy%20and%20Heron',
-},
-  'Past Lives': { 'imdb': 'IMDb 7.9', 'runtime': '1h 45m', 'country': 'USA, South Korea', 'released': '2023-06-09', 'director': 'Celine Song', 'genres': 'Romance, Drama', 'casts': 'Greta Lee, Teo Yoo, John Magaro', 'desc': 'Two childhood friends are reunited 20 years later in New York for one fateful week.', 'stars': '4' ,      'poster': 'assets/posters/past-lives.svg',
-      'watch_url': 'https://yflix.ws/search?q=Past%20Lives',
-},
-  'Barbie': { 'imdb': 'IMDb 6.9', 'runtime': '1h 54m', 'country': 'USA, UK', 'released': '2023-07-21', 'director': 'Greta Gerwig', 'genres': 'Comedy, Adventure, Fantasy', 'casts': 'Margot Robbie, Ryan Gosling, America Ferrera', 'desc': 'Barbie suffers a crisis that leads her to question her world and her existence.', 'stars': '3' ,      'poster': 'assets/posters/barbie.svg',
-      'watch_url': 'https://yflix.ws/search?q=Barbie',
-},
-  'MI: Dead Reckoning': { 'imdb': 'IMDb 7.7', 'runtime': '2h 43m', 'country': 'USA', 'released': '2023-07-12', 'director': 'Christopher McQuarrie', 'genres': 'Action, Adventure, Thriller', 'casts': 'Tom Cruise, Hayley Atwell, Simon Pegg', 'desc': 'Ethan Hunt and his IMF team must track down a terrifying new weapon.', 'stars': '4' ,      'poster': 'assets/posters/mi-dead-reckoning.svg',
-      'watch_url': 'https://yflix.ws/search?q=MI%3A%20Dead%20Reckoning',
-},
-  'Spider-Verse 2': { 'imdb': 'IMDb 8.6', 'runtime': '2h 20m', 'country': 'USA', 'released': '2023-06-02', 'director': 'Joaquim Dos Santos', 'genres': 'Animation, Action, Adventure', 'casts': 'Shameik Moore, Hailee Steinfeld, Oscar Isaac', 'desc': 'Miles Morales catapults across the Multiverse and encounters a team of Spider-People.', 'stars': '5' ,      'poster': 'assets/posters/spider-verse-2.svg',
-      'watch_url': 'https://yflix.ws/search?q=Spider-Verse%202',
-},
-  'GotG Vol. 3': { 'imdb': 'IMDb 7.9', 'runtime': '2h 30m', 'country': 'USA', 'released': '2023-05-05', 'director': 'James Gunn', 'genres': 'Action, Adventure, Sci-Fi', 'casts': 'Chris Pratt, Zoe SaldaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a, Dave Bautista', 'desc': 'The Guardians must protect Rocket while facing a powerful new enemy.', 'stars': '4' ,      'poster': 'assets/posters/gotg-vol-3.svg',
-      'watch_url': 'https://yflix.ws/search?q=GotG%20Vol.%203',
-},
-  'John Wick 4': { 'imdb': 'IMDb 7.7', 'runtime': '2h 49m', 'country': 'USA', 'released': '2023-03-24', 'director': 'Chad Stahelski', 'genres': 'Action, Crime, Thriller', 'casts': 'Keanu Reeves, Donnie Yen, Bill SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd', 'desc': 'John Wick uncovers a path to defeating The High Table.', 'stars': '4' ,      'poster': 'assets/posters/john-wick-4.svg',
-      'watch_url': 'https://yflix.ws/search?q=John%20Wick%204',
-},
-  'Sisu': { 'imdb': 'IMDb 7.5', 'runtime': '1h 31m', 'country': 'Finland', 'released': '2023-04-28', 'director': 'Jalmari Helander', 'genres': 'Action, War', 'casts': 'Jorma Tommila, Aksel Hennie, Jack Doolan', 'desc': 'A grizzled Finnish farmer transforms into an unlikely folk hero when he faces off against Soviet soldiers.', 'stars': '4' ,      'poster': 'assets/posters/sisu.svg',
-      'watch_url': 'https://yflix.ws/search?q=Sisu',
-},
-  'Shogun': { 'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'USA, Japan', 'released': '2024-02-27', 'director': 'Jonathan van Tulleken', 'genres': 'Drama, History, War', 'casts': 'Hiroyuki Sanada, Cosmo Jarvis, Anna Sawai', 'desc': 'Lord Toranaga battles rivals in feudal Japan. A fateful encounter with an English navigator changes everything.', 'stars': '5' ,      'poster': 'assets/posters/shogun.svg',
-      'watch_url': 'https://yflix.ws/search?q=Shogun',
-},
-  'The Penguin': { 'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'USA', 'released': '2024-09-19', 'director': 'Craig Zobel', 'genres': 'Crime, Drama', 'casts': 'Colin Farrell, Cristin Milioti, Rhenzy Feliz', 'desc': 'Following the events of \"The Batman,\" Oz Cobb fights to rise through Gotham\'s criminal underworld.', 'stars': '5' ,      'poster': 'assets/posters/the-penguin.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Penguin',
-},
-  'Severance': { 'imdb': 'IMDb 8.7', 'runtime': '50m/ep', 'country': 'USA', 'released': '2022-02-18', 'director': 'Ben Stiller', 'genres': 'Sci-Fi, Drama, Mystery', 'casts': 'Adam Scott, Britt Lower, Patricia Arquette', 'desc': 'A team of office workers undergo a procedure to separate their work and personal memories.', 'stars': '5' ,      'poster': 'assets/posters/severance.svg',
-      'watch_url': 'https://yflix.ws/search?q=Severance',
-},
-  'The Bear': { 'imdb': 'IMDb 8.6', 'runtime': '30m/ep', 'country': 'USA', 'released': '2022-06-23', 'director': 'Christopher Storer', 'genres': 'Drama, Comedy', 'casts': 'Jeremy Allen White, Ebon Moss-Bachrach, Ayo Edebiri', 'desc': 'A young chef from the fine-dining world returns to Chicago to run his family\'s sandwich shop.', 'stars': '5' ,      'poster': 'assets/posters/the-bear.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Bear',
-},
-  'House of the Dragon': { 'imdb': 'IMDb 8.4', 'runtime': '60m/ep', 'country': 'USA, UK', 'released': '2022-08-21', 'director': 'Miguel Sapochnik', 'genres': 'Fantasy, Drama, Action', 'casts': 'Paddy Considine, Matt Smith, Emma D\'Arcy', 'desc': 'A Targaryen civil war erupts 200 years before the events of Game of Thrones.', 'stars': '4' ,      'poster': 'assets/posters/house-of-the-dragon.svg',
-      'watch_url': 'https://yflix.ws/search?q=House%20of%20the%20Dragon',
-},
-  'Andor': { 'imdb': 'IMDb 8.4', 'runtime': '45m/ep', 'country': 'USA', 'released': '2022-09-21', 'director': 'Toby Haynes', 'genres': 'Sci-Fi, Drama, Action', 'casts': 'Diego Luna, Stellan SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd, Denise Gough', 'desc': 'A prequel to Rogue One explores the early days of the Rebel Alliance.', 'stars': '4' ,      'poster': 'assets/posters/andor.svg',
-      'watch_url': 'https://yflix.ws/search?q=Andor',
-},
-  'The Last of Us': { 'imdb': 'IMDb 8.7', 'runtime': '60m/ep', 'country': 'USA', 'released': '2023-01-15', 'director': 'Craig Mazin', 'genres': 'Drama, Sci-Fi, Adventure', 'casts': 'Pedro Pascal, Bella Ramsey, Anna Torv', 'desc': 'Twenty years after modern civilization is destroyed, Joel is hired to smuggle Ellie out of an oppressive quarantine zone.', 'stars': '5' ,      'poster': 'assets/posters/the-last-of-us.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Last%20of%20Us',
-},
-  'Succession': { 'imdb': 'IMDb 8.9', 'runtime': '60m/ep', 'country': 'USA', 'released': '2018-06-03', 'director': 'Adam McKay', 'genres': 'Drama', 'casts': 'Brian Cox, Jeremy Strong, Sarah Snook', 'desc': 'The Roy family controls the biggest media and entertainment company in the world. As their patriarch ages, his children begin to consider the future.', 'stars': '5' ,      'poster': 'assets/posters/succession.svg',
-      'watch_url': 'https://yflix.ws/search?q=Succession',
-},
-  'The White Lotus': { 'imdb': 'IMDb 7.9', 'runtime': '60m/ep', 'country': 'USA', 'released': '2021-07-11', 'director': 'Mike White', 'genres': 'Drama, Comedy', 'casts': 'Murray Bartlett, Connie Britton, Jennifer Coolidge', 'desc': 'Social commentary set at a luxury resort, focusing on the lives of its guests and employees over a week.', 'stars': '4' ,      'poster': 'assets/posters/the-white-lotus.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20White%20Lotus',
-},
-  'Reacher': { 'imdb': 'IMDb 8.1', 'runtime': '60m/ep', 'country': 'USA', 'released': '2022-02-04', 'director': 'Nick Santora', 'genres': 'Action, Crime, Drama', 'casts': 'Alan Ritchson, Malcolm Goodwin, Willa Fitzgerald', 'desc': 'Jack Reacher, a veteran military police investigator, is framed for a murder he did not commit.', 'stars': '4' ,      'poster': 'assets/posters/reacher.svg',
-      'watch_url': 'https://yflix.ws/search?q=Reacher',
-},
-  'Slow Horses': { 'imdb': 'IMDb 8.3', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2022-04-01', 'director': 'James Hawes', 'genres': 'Thriller, Drama, Spy', 'casts': 'Gary Oldman, Jack Lowden, Kristin Scott Thomas', 'desc': 'A team of British intelligence agents serve in a dumping ground department of MI5.', 'stars': '4' ,      'poster': 'assets/posters/slow-horses.svg',
-      'watch_url': 'https://yflix.ws/search?q=Slow%20Horses',
-},
-  'Morning Show': { 'imdb': 'IMDb 8.3', 'runtime': '60m/ep', 'country': 'USA', 'released': '2019-11-01', 'director': 'Mimi Leder', 'genres': 'Drama', 'casts': 'Jennifer Aniston, Reese Witherspoon, Billy Crudup', 'desc': 'The high-pressure world of morning news is explored through the people who help America wake up.', 'stars': '4' ,      'poster': 'assets/posters/morning-show.svg',
-      'watch_url': 'https://yflix.ws/search?q=Morning%20Show',
-},
-  'Beef': { 'imdb': 'IMDb 8.0', 'runtime': '35m/ep', 'country': 'USA', 'released': '2023-04-06', 'director': 'Hiro Murai', 'genres': 'Drama, Comedy', 'casts': 'Steven Yeun, Ali Wong, Joseph Lee', 'desc': 'A road rage incident between two strangers sparks a feud that spirals out of control.', 'stars': '4' ,      'poster': 'assets/posters/beef.svg',
-      'watch_url': 'https://yflix.ws/search?q=Beef',
-},
-  'Wednesday': { 'imdb': 'IMDb 8.1', 'runtime': '55m/ep', 'country': 'USA', 'released': '2022-11-23', 'director': 'Tim Burton', 'genres': 'Comedy, Mystery, Fantasy', 'casts': 'Jenna Ortega, Gwendoline Christie, Riki Lindhome', 'desc': 'Smart and sarcastic, Wednesday Addams investigates a murder spree.', 'stars': '4' ,      'poster': 'assets/posters/wednesday.svg',
-      'watch_url': 'https://yflix.ws/search?q=Wednesday',
-},
-  'Stranger Things': { 'imdb': 'IMDb 8.7', 'runtime': '55m/ep', 'country': 'USA', 'released': '2016-07-15', 'director': 'The Duffer Brothers', 'genres': 'Sci-Fi, Horror, Drama', 'casts': 'Millie Bobby Brown, Finn Wolfhard, Winona Ryder', 'desc': 'When a young boy vanishes, a small town uncovers a mystery involving supernatural forces.', 'stars': '5' ,      'poster': 'assets/posters/stranger-things.svg',
-      'watch_url': 'https://yflix.ws/search?q=Stranger%20Things',
-},
-  'The Crown': { 'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2016-11-04', 'director': 'Stephen Daldry', 'genres': 'Biography, Drama, History', 'casts': 'Claire Foy, Olivia Colman, Imelda Staunton', 'desc': 'The story of Queen Elizabeth II of the United Kingdom, told over six decades.', 'stars': '4' ,      'poster': 'assets/posters/the-crown.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Crown',
-},
-  'Peaky Blinders': { 'imdb': 'IMDb 8.8', 'runtime': '60m/ep', 'country': 'UK', 'released': '2013-05-12', 'director': 'Otto Bathurst', 'genres': 'Crime, Drama', 'casts': 'Cillian Murphy, Helen McCrory, Paul Anderson', 'desc': 'A gangster family epic set in 1900s England, centering on a gang who sew razor blades in the peaks of their caps.', 'stars': '5' ,      'poster': 'assets/posters/peaky-blinders.svg',
-      'watch_url': 'https://yflix.ws/search?q=Peaky%20Blinders',
-},
-  'Better Call Saul': { 'imdb': 'IMDb 8.9', 'runtime': '55m/ep', 'country': 'USA', 'released': '2015-02-08', 'director': 'Vince Gilligan', 'genres': 'Crime, Drama', 'casts': 'Bob Odenkirk, Rhea Seehorn, Jonathan Banks', 'desc': 'The trials and tribulations of attorney Jimmy McGill before he established his strip-mall law office in Albuquerque.', 'stars': '5' ,      'poster': 'assets/posters/better-call-saul.svg',
-      'watch_url': 'https://yflix.ws/search?q=Better%20Call%20Saul',
-},
-  'Breaking Bad': { 'imdb': 'IMDb 9.5', 'runtime': '50m/ep', 'country': 'USA', 'released': '2008-01-20', 'director': 'Vince Gilligan', 'genres': 'Crime, Drama, Thriller', 'casts': 'Bryan Cranston, Aaron Paul, Anna Gunn', 'desc': 'A high school chemistry teacher diagnosed with terminal cancer turns to manufacturing methamphetamine.', 'stars': '5' ,      'poster': 'assets/posters/breaking-bad.svg',
-      'watch_url': 'https://yflix.ws/search?q=Breaking%20Bad',
-},
-  'The Boys': { 'imdb': 'IMDb 8.7', 'runtime': '60m/ep', 'country': 'USA', 'released': '2019-07-26', 'director': 'Eric Kripke', 'genres': 'Action, Comedy, Crime', 'casts': 'Karl Urban, Jack Quaid, Antony Starr', 'desc': 'A group of vigilantes set out to take down corrupt superheroes who abuse their powers.', 'stars': '5' ,      'poster': 'assets/posters/the-boys.svg',
-      'watch_url': 'https://yflix.ws/search?q=The%20Boys',
-},
-  'Invincible': { 'imdb': 'IMDb 8.7', 'runtime': '45m/ep', 'country': 'USA', 'released': '2021-03-25', 'director': 'Robert Kirkman', 'genres': 'Animation, Action, Adventure', 'casts': 'Steven Yeun, Sandra Oh, J.K. Simmons', 'desc': 'A teenager whose father is the most powerful superhero on the planet.', 'stars': '5' ,      'poster': 'assets/posters/invincible.svg',
-      'watch_url': 'https://yflix.ws/search?q=Invincible',
-},
-  'Arcane': { 'imdb': 'IMDb 9.0', 'runtime': '40m/ep', 'country': 'USA, France', 'released': '2021-11-06', 'director': 'Pascal Charrue', 'genres': 'Animation, Action, Adventure', 'casts': 'Hailee Steinfeld, Ella Purnell, Katie Leung', 'desc': 'The origins of two iconic League champions in utopian Piltover and the oppressed underground of Zaun.', 'stars': '5' ,      'poster': 'assets/posters/arcane.svg',
-      'watch_url': 'https://yflix.ws/search?q=Arcane',
-},
-  'One Piece': { 'imdb': 'IMDb 8.2', 'runtime': '55m/ep', 'country': 'USA, South Africa, Japan', 'released': '2023-08-31', 'director': 'Marc Jobst', 'genres': 'Action, Adventure, Comedy', 'casts': 'IÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±aki Godoy, Emily Rudd, Mackenyu', 'desc': 'A young pirate captain and his ragtag crew quest to find the legendary One Piece treasure.', 'stars': '4' ,      'poster': 'assets/posters/one-piece.svg',
-      'watch_url': 'https://yflix.ws/search?q=One%20Piece',
-},
-  'Fallout': { 'imdb': 'IMDb 8.4', 'runtime': '60m/ep', 'country': 'USA', 'released': '2024-04-10', 'director': 'Jonathan Nolan', 'genres': 'Sci-Fi, Drama, Adventure', 'casts': 'Ella Purnell, Walton Goggins, Aaron Moten', 'desc': 'A vault dweller ventures out into the irradiated wastelands of post-nuclear America.', 'stars': '4' ,      'poster': 'assets/posters/fallout.svg',
-      'watch_url': 'https://yflix.ws/search?q=Fallout',
-},
-  'True Detective': { 'imdb': 'IMDb 8.9', 'runtime': '55m/ep', 'country': 'USA', 'released': '2014-01-12', 'director': 'Cary Joji Fukunaga', 'genres': 'Crime, Drama, Mystery', 'casts': 'Matthew McConaughey, Woody Harrelson, Michelle Monaghan', 'desc': 'Two detectives hunt a serial killer across seventeen years.', 'stars': '5' ,      'poster': 'assets/posters/true-detective.svg',
-      'watch_url': 'https://yflix.ws/search?q=True%20Detective',
-},
-  'Fargo': { 'imdb': 'IMDb 8.8', 'runtime': '55m/ep', 'country': 'USA', 'released': '2014-04-15', 'director': 'Noah Hawley', 'genres': 'Crime, Drama, Thriller', 'casts': 'Billy Bob Thornton, Martin Freeman, Allison Tolman', 'desc': 'Various chronicles of deception, intrigue, and murder in and around frozen Minnesota.', 'stars': '5' ,      'poster': 'assets/posters/fargo.svg',
-      'watch_url': 'https://yflix.ws/search?q=Fargo',
-},
-  'Fleabag': { 'imdb': 'IMDb 8.7', 'runtime': '30m/ep', 'country': 'UK', 'released': '2016-07-21', 'director': 'Phoebe Waller-Bridge', 'genres': 'Comedy, Drama', 'casts': 'Phoebe Waller-Bridge, Sian Clifford, Olivia Colman', 'desc': 'A young woman\'s personal and professional life is upended after a tragedy.', 'stars': '5' ,      'poster': 'assets/posters/fleabag.svg',
-      'watch_url': 'https://yflix.ws/search?q=Fleabag',
-},
-  'Chernobyl': { 'imdb': 'IMDb 9.3', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2019-05-06', 'director': 'Johan Renck', 'genres': 'Drama, History, Thriller', 'casts': 'Jessie Buckley, Jared Harris, Stellan SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd', 'desc': 'A chronicle of the 1986 disaster and the sacrifices made to mitigate it.', 'stars': '5' ,      'poster': 'assets/posters/chernobyl.svg',
-      'watch_url': 'https://yflix.ws/search?q=Chernobyl',
-}
-};
-
-  let detailsCache = null;
-
-  // ---------- Image fallback (extended) ----------
-  // Build a slug -> local SVG map from curated entries so any broken yflix image
-  // can fall back to the locally hosted poster. We also try the card title.
-  const localPosterBySlug = (function(){
-    const m = {};
-    if (typeof curated === 'object' && curated){
-      Object.keys(curated).forEach(function(title){
-        const e = curated[title];
-        if (!e || !e.poster) return;
-        const match = /assets\/posters\/([a-z0-9-]+)\.svg$/i.exec(e.poster);
-        if (match) m[match[1]] = e.poster;
-      });
-    }
-    return m;
-  })();
-
-  function slugifyTitle(title){
-    return String(title || '').toLowerCase()
-      .replace(/&apos;/g, "'")
-      .replace(/[:!]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
-  }
-
-  function titleFromImg(img){
-    const card = img.closest && img.closest('.content-card');
-    if (card && card.dataset && card.dataset.title) return card.dataset.title;
-    const rc = img.closest && img.closest('.search-result-card');
-    if (rc){
-      const t = rc.querySelector && rc.querySelector('.search-result-title');
-      if (t) return t.textContent || '';
-    }
-    return img.alt || '';
-  }
-
-  function fallbackImage(img){
-    if (!img || img.__mfFallback) return;
-    img.__mfFallback = true;
-    const title = titleFromImg(img);
-    const slug = slugifyTitle(title);
-    if (localPosterBySlug[slug]){ img.src = localPosterBySlug[slug]; return; }
-    const short = slug.split('-').slice(0, 3).join('-');
-    if (localPosterBySlug[short]){ img.src = localPosterBySlug[short]; return; }
-    img.style.background = 'linear-gradient(135deg, #2a3a6b, #5a2a6b)';
-    img.style.minHeight = '180px';
-  }
-
-  // yflix returns a tiny 'No Image' SVG (354 bytes) instead of HTTP 404.
-  // If an image loads and is suspiciously small, treat it as missing and swap to local SVG.
-  function maybeFallbackTiny(img){
-    if (!img || img.__mfFallback) return;
-    const src = img.currentSrc || img.src || '';
-    if (!src) return;
-    if (src.indexOf('assets/posters/') === 0) return; // already a local SVG
-    // naturalWidth can be 0 if the file is not a real raster (e.g. an SVG with no width attr)
-    const nw = img.naturalWidth || 0;
-    const nh = img.naturalHeight || 0;
-    const isRasterish = nw > 50 && nh > 50;
-    if (isRasterish) return;
-    fallbackImage(img);
-  }
-
-  document.addEventListener('error', function(e){
-    const t = e.target;
-    if (t && t.tagName === 'IMG') fallbackImage(t);
-  }, true);
-  document.addEventListener('load', function(e){
-    const t = e.target;
-    if (t && t.tagName === 'IMG') maybeFallbackTiny(t);
-  }, true);
-
-  async function loadDetails(){
-    if (detailsCache) return detailsCache;
-    try {
-      const r = await fetch('assets/details.json', { cache: 'force-cache' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      detailsCache = await r.json();
-    } catch (e) {
-      console.warn('details.json not loaded:', e);
-      detailsCache = {};
-    }
-    return detailsCache;
-  }
-
-  function keyOf(t){
-    return (t || '').replace(/&apos;/g, "'").replace(/&amp;/g, '&').trim();
-  }
-
-  function escapeHtml(s){
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
-  function decodeEntities(s){
-    if (s == null) return '';
-    return String(s)
-      .replace(/&apos;/g, '\u2019')
-      .replace(/&#39;/g, '\u2019')
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '\u201D')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/\\u0026apos;/g, '\u2019')
-      .replace(/\\u0026amp;/g, '&')
-      .replace(/\\u2019/g, '\u2019');
-  }
-
-  function renderStars(n){
-    n = Math.max(0, Math.min(5, Math.round(n)));
-    let html = '';
-    for (let i = 0; i < 5; i++) {
-      const path = '<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>';
-      const fill = i < n ? '#f5c518' : 'rgba(20,30,55,0.15)';
-      html += '<svg viewBox="0 0 24 24" width="16" height="16" style="fill:' + fill + '">' + path + '</svg>';
-    }
-    return html;
-  }
-
-  function renderDetails(d){
-    detailTitle.textContent = decodeEntities(d.title);
-    detailCrumbTitle.textContent = decodeEntities(d.title);
-    detailCrumbType.textContent = d.type === 'TVSeries' ? 'TV Shows' : 'Movies';
-    detailPoster.src = d.poster;
-    detailPoster.alt = d.title;
-    detailBg.style.backgroundImage = d.backdrop ? 'url(' + JSON.stringify(d.backdrop) + ')' : 'url(' + JSON.stringify(d.poster) + ')';
-
-    let badges = '';
-    if (d.imdb)    badges += '<span class="badge badge-imdb">' + escapeHtml(decodeEntities(d.imdb)) + '</span>';
-    if (d.runtime) badges += '<span class="badge badge-genre">' + escapeHtml(decodeEntities(d.runtime)) + '</span>';
-    if (d.released)badges += '<span class="badge badge-genre">' + escapeHtml(decodeEntities(d.released.slice(0,4))) + '</span>';
-    const genresStr = decodeEntities(d.genres) || '';
-    if (genresStr) genresStr.split(',').slice(0,3).forEach(function(g){
-      badges += '<a class="badge badge-genre" href="#">' + escapeHtml(g.trim()) + '</a>';
-    });
-    detailBadges.innerHTML = badges;
-
-    detailDesc.textContent = decodeEntities(d.desc) || 'No description available.';
-
-    const meta = [
-      { label: 'Country',  value: d.country || '\u2014' },
-      { label: 'Released', value: d.released || '\u2014' },
-      { label: 'Genres',   value: d.genres || '\u2014' },
-      { label: 'Director', value: d.director || '\u2014' },
-      { label: 'Casts',    value: d.casts || '\u2014' },
-      { label: 'Type',     value: d.type === 'TVSeries' ? 'TV Series' : 'Movie' }
-    ];
-    detailMeta.innerHTML = meta.map(function(m){
-      return '<div class="detail-meta-row"><span class="detail-meta-label">' + escapeHtml(m.label) +
-             '</span><span class="detail-meta-value">' + escapeHtml(decodeEntities(m.value)) + '</span></div>';
-    }).join('');
-
-    const stars = d.stars != null ? d.stars : 4;
-    detailStars.innerHTML = renderStars(stars);
-
-    if (d.trailer) {
-      detailTrailer.href = d.trailer;
-      detailTrailer.style.display = '';
-    } else {
-      detailTrailer.style.display = 'none';
-    }
-  }
-
-  async function openDetails(card){
-    if (!detailOverlay) return;
-    const title    = card.dataset.title || (card.querySelector && card.querySelector('.card-title') && card.querySelector('.card-title').textContent) || '';
-    const type     = card.dataset.type  || 'Movie';
-    const poster   = card.dataset.poster;
-    const year     = card.dataset.year;
-    const runtime  = card.dataset.runtime;
-    const genre    = card.dataset.genre;
-
-    const key = keyOf(title);
-    const all = await loadDetails();
-    const fromYflix = (all && (all[key] || all[title])) || null;
-    const fromCurated = (curated && (curated[key] || curated[title])) || null;
-
-    const d = {
-      title: key,
-      type: type,
-      poster: poster,
-      backdrop: fromYflix ? (fromYflix.backdrop && fromYflix.backdrop.indexOf('http') === 0 ? fromYflix.backdrop : (fromYflix.backdrop ? 'https://yflix.ws' + fromYflix.backdrop : poster)) : poster,
-      imdb:    (fromYflix && fromYflix.imdb)    || (fromCurated && fromCurated.imdb)    || '',
-      runtime: (fromYflix && fromYflix.runtime) || (fromCurated && fromCurated.runtime) || (runtime ? runtime + ' min' : ''),
-      year:    year || ((fromYflix && fromYflix.released) || '').slice(0,4),
-      released:(fromYflix && fromYflix.released) || (fromCurated && fromCurated.released) || '',
-      genres:  (fromYflix && fromYflix.genres)  || (fromCurated && fromCurated.genres)  || genre || '',
-      desc:    (fromYflix && fromYflix.desc)    || (fromCurated && fromCurated.desc)    || 'A featured title on MengFlix.',
-      country: (fromYflix && fromYflix.country) || (fromCurated && fromCurated.country) || '',
-      director:(fromYflix && fromYflix.director)|| (fromCurated && fromCurated.director)|| '',
-      casts:   (fromYflix && fromYflix.casts)   || (fromCurated && fromCurated.casts)   || '',
-      trailer: (fromYflix && fromYflix.trailer) || '',
-      stars:   (fromYflix && fromYflix.stars != null) ? fromYflix.stars
-             : (fromCurated && fromCurated.stars != null) ? fromCurated.stars : 4
-    };
-
-    renderDetails(d);
-    detailOverlay.hidden = false;
-    detailOverlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    if (detailPanel) detailPanel.focus();
-  }
-
-  function closeDetails(){
-    if (!detailOverlay || detailOverlay.dataset.closing === '1') return;
-    detailOverlay.setAttribute('aria-hidden', 'true');
-    __mfAnimateClose(detailOverlay, detailPanel, function(){
-      detailOverlay.hidden = true;
-      document.body.style.overflow = '';
-    });
-  }
-
-  function detailIsOpen(){
-    return detailOverlay && !detailOverlay.hidden;
-  }
-
-  // Make closeDetails reachable from existing keydown handler via custom event
-  document.addEventListener('mf:close', closeDetails);
-  // Also expose for the inline keyboard handler below
-  window.__mfCloseDetails = closeDetails;
-  window.__mfOpenPlayer  = openPlayer;
-  window.__mfClosePlayer = closePlayer;
-
-  // Wire card clicks
-  document.addEventListener('click', function(e){
-    const trigger = e.target.closest && e.target.closest('[data-open]');
-    if (!trigger) return;
-    const card = trigger.closest('.content-card') || trigger;
-    e.preventDefault();
-    openDetails(card);
-  });
-
-  if (detailOverlay) {
-    detailOverlay.querySelectorAll('[data-close]').forEach(function(el){
-      el.addEventListener('click', closeDetails);
-    });
-    detailClose && detailClose.addEventListener('click', closeDetails);
-  }
-
-
-  // === Player overlay open/close ====================================
-  let currentPlayer = null; // {title, type, sources, watchUrl}
-
-  function hostOf(url){
-    try { return new URL(url).host.replace(/^www\./, ''); } catch (e) { return ''; }
-  }
-
-  let currentServerIdx = -1;
-
-  function selectServer(idx){
-    if (!currentPlayer || !currentPlayer.sources || !currentPlayer.sources[idx]) return;
-    const src = currentPlayer.sources[idx];
-    let url = src.url;
-    if (!/[?&]autoPlay=/.test(url) && !/autoplay=/i.test(url)){
-      url += (url.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
-    }
-    currentServerIdx = idx;
-    playerFrame.src = url;
-    playerPlaceholder && playerPlaceholder.classList.add('is-hidden');
-    Array.from(playerServers.children).forEach(function(b, i){
-      b.setAttribute('aria-selected', i === idx ? 'true' : 'false');
-    });
-  }
-
-  function reloadCurrentServer(){
-    if (currentServerIdx < 0) return;
-    const idx = currentServerIdx;
-    const src = currentPlayer && currentPlayer.sources && currentPlayer.sources[idx];
-    if (!src) return;
-    // Force a full reload of the iframe by clearing then re-setting the src
-    playerFrame.removeAttribute('src');
-    if (playerReload){
-      playerReload.classList.remove('is-spinning');
-      // force reflow so the animation restarts even on rapid clicks
-      void playerReload.offsetWidth;
-      playerReload.classList.add('is-spinning');
-      setTimeout(function(){ playerReload.classList.remove('is-spinning'); }, 600);
-    }
-    setTimeout(function(){ selectServer(idx); }, 80);
-  }
-
-  async function openPlayer(card){
-    if (!playerOverlay) return;
-    const title = (card && (card.dataset.title || (card.querySelector && card.querySelector('.card-title') && card.querySelector('.card-title').textContent))) || '';
-    const type  = (card && card.dataset.type) || 'Movie';
-    const key = keyOf(title);
-    const all = await loadDetails();
-    const fromYflix = (all && (all[key] || all[title])) || null;
-    const fromCurated = (curated && (curated[key] || curated[title])) || null;
-    let sources = (fromYflix && fromYflix.sources) || (fromCurated && fromCurated.sources) || [];
-    const watchUrl = (fromYflix && fromYflix.watch_url) || (fromCurated && fromCurated.watch_url) || '';
-    currentPlayer = { title: key, type: type, sources: sources, watchUrl: watchUrl };
-    playerTitle.textContent = decodeEntities(key);
-    playerCrumbTitle.textContent = decodeEntities(key);
-    playerCrumbType.textContent  = type === 'TVSeries' ? 'TV Shows' : 'Movies';
-    playerWatchLink.href = watchUrl || '#';
-    playerWatchLink.style.display = watchUrl ? '' : 'none';
-    playerServers.innerHTML = '';
-    if (sources.length === 0 && watchUrl && (/yflix\.ws/.test(watchUrl) || /ramoflix\.net/.test(watchUrl))){
-      // No real embed sources yet - offer the source watch page as a single fallback server.
-      const fallbackName = /ramoflix\.net/.test(watchUrl) ? 'RamoFlix' : 'yFlix';
-      sources = [{ name: fallbackName, url: watchUrl, provider: fallbackName, rank: 0 }];
-      playerServers.innerHTML = '';
-    }
-    if (sources.length === 0){
-      playerServers.innerHTML = '<p class="player-servers-empty">No playable servers available for this title yet.</p>';
-    } else {
-      sources.forEach(function(s, i){
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'player-server-btn';
-        b.setAttribute('role', 'tab');
-        b.setAttribute('aria-selected', 'false');
-        b.dataset.index = String(i);
-        const providerLabel = s.provider || hostOf(s.url);
-        b.innerHTML = '<span class="server-dot" aria-hidden="true"></span>' +
-                      '<span class="server-meta">' +
-                        '<span class="server-name">' + escapeHtml(s.name) + '</span>' +
-                        '<span class="player-server-host">' + escapeHtml(providerLabel) + '</span>' +
-                      '</span>';
-        b.addEventListener('click', function(){ selectServer(i); });
-        playerServers.appendChild(b);
-      });
-    }
-    playerFrame.removeAttribute('src');
-    if (playerPlaceholder) playerPlaceholder.classList.remove('is-hidden');
-    if (detailIsOpen()) closeDetails();
-    playerOverlay.hidden = false;
-    playerOverlay.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    if (playerPanel) playerPanel.focus();
-    if (sources.length) selectServer(0);
-  }
-
-  function closePlayer(){
-    if (!playerOverlay || playerOverlay.dataset.closing === '1') return;
-    playerOverlay.setAttribute('aria-hidden', 'true');
-    __mfAnimateClose(playerOverlay, playerPanel, function(){
-      playerOverlay.hidden = true;
-      try { playerFrame.removeAttribute('src'); } catch (e) { try { playerFrame.src = 'about:blank'; } catch(_){} }
-      currentPlayer = null;
-      document.body.style.overflow = '';
-    });
-  }
-
-  function playerIsOpen(){
-    return playerOverlay && !playerOverlay.hidden;
-  }
-
-  const playerReload = document.getElementById('playerReload');
-  if (playerReload) playerReload.addEventListener('click', function(e){ e.preventDefault(); reloadCurrentServer(); });
-
-  if (playerOverlay){
-    playerOverlay.querySelectorAll('[data-close]').forEach(function(el){
-      el.addEventListener('click', function(e){ if (el.tagName === 'A') e.preventDefault(); closePlayer(); });
-    });
-  }
-
-  if (detailPlay){
-    detailPlay.addEventListener('click', function(e){
-      e.preventDefault();
-      const key = keyOf(detailTitle.textContent || '');
-      openPlayer({ dataset: { title: key, type: 'Movie' } });
-    });
-  }
-
-  function interceptHeroPlayButtons(){
-    document.querySelectorAll('.yf-hero-slide .btn-play-circle, .yf-hero-slide [data-open]').forEach(function(a){
-      if (a.__mfPlayerWired) return;
-      a.__mfPlayerWired = true;
-      a.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        openPlayer(a);
-      }, true);
-    });
-  }
-  interceptHeroPlayButtons();
-
-  function interceptCardPlayButtons(){
-    // Make the entire card play on click (one click = play). Capture phase wins over the bubble data-open handler.
-    // We keep a small 'More info' affordance that opens the detail panel instead.
-    document.querySelectorAll('.content-card').forEach(function(card){
-      if (card.__mfPlayerWired) return;
-      card.__mfPlayerWired = true;
-
-      // Inject a tiny 'i' info button that opens the detail panel
-      const infoBtn = document.createElement('button');
-      infoBtn.type = 'button';
-      infoBtn.className = 'card-info-btn';
-      infoBtn.setAttribute('aria-label', 'More info about ' + (card.dataset.title || 'this title'));
-      infoBtn.title = 'More info';
-      infoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="11" x2="12" y2="16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.2" fill="currentColor"/></svg>';
-      infoBtn.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        openDetails(card);
-      });
-      const posterWrap = card.querySelector('.card-poster-wrap');
-      if (posterWrap) posterWrap.appendChild(infoBtn);
-
-      // Card click (anywhere except info button) -> play
-      card.addEventListener('click', function(e){
-        if (e.target.closest && e.target.closest('.card-info-btn')) return;
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        openPlayer(card);
-      }, true);
-    });
-  }
-  interceptCardPlayButtons();
-
-  if (detailFav) detailFav.addEventListener('click', function(){ detailFav.classList.toggle('is-active'); });
-  if (detailShare) detailShare.addEventListener('click', async function(){
-    const t = detailTitle.textContent;
-    const data = { title: t, text: t + ' on MengFlix', url: location.href };
-    try {
-      if (navigator.share) await navigator.share(data);
-      else await navigator.clipboard.writeText(data.text + ' ' + data.url);
-    } catch (e) {}
-  });
-
-
-  // ============================================================
-  // Theme switcher
-  // ============================================================
-  window.__mfApplyTheme = null; // assigned below; lets URL-param helper reach the function
-  const THEME_KEY = 'mengflix-theme';
-  const VALID_THEMES = ['white','black','orange','green','purple','blue'];
-  const themeSwitcher = document.getElementById('themeSwitcher');
-  const themeBtn = document.getElementById('themeBtn');
-  const themeOptions = document.querySelectorAll('.theme-option');
-
-  function applyTheme(name){
-    if (VALID_THEMES.indexOf(name) === -1) name = 'white';
-    document.documentElement.setAttribute('data-theme', name);
-    try { localStorage.setItem(THEME_KEY, name); } catch (e) {}
-    themeOptions.forEach(function(opt){
-      const on = opt.dataset.theme === name;
-      opt.setAttribute('aria-checked', String(on));
-    });
-  }
-  window.__mfApplyTheme = applyTheme;
-
-  function getInitialTheme(){
-    try {
-      const saved = localStorage.getItem(THEME_KEY);
-      if (saved && VALID_THEMES.indexOf(saved) !== -1) return saved;
-    } catch (e) {}
-    try {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'black';
-    } catch (e) {}
-    return 'white';
-  }
-  // Test helper: ?theme=... overrides localStorage / system preference.
-  function getRequestedTheme(){
-    try {
-      const t = new URLSearchParams(location.search).get("theme");
-      if (t && VALID_THEMES.indexOf(t) !== -1) return t;
-    } catch (e) {}
-    return null;
-  }
-  applyTheme(getRequestedTheme() || getInitialTheme());
-
-  if (themeBtn && themeSwitcher) {
-    themeBtn.addEventListener('click', function(e){
-      e.stopPropagation();
-      const open = themeSwitcher.classList.toggle('open');
-      themeBtn.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('click', function(e){
-      if (themeSwitcher && !themeSwitcher.contains(e.target)){
-        themeSwitcher.classList.remove('open');
-        themeBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-    document.addEventListener('keydown', function(e){
-      if (e.key === 'Escape' && themeSwitcher.classList.contains('open')){
-        themeSwitcher.classList.remove('open');
-        themeBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  themeOptions.forEach(function(opt){
-    opt.addEventListener('click', function(e){
-      e.stopPropagation();
-      applyTheme(opt.dataset.theme);
-      if (themeSwitcher){
-        themeSwitcher.classList.remove('open');
-        themeBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  });
-})();
-
-
-// Test helper: open details panel for a title via ?open=Title
-(function(){
-  try {
-    const params = new URLSearchParams(location.search);
-    const open = params.get('open');
-    if (!open) return;
-    const find = setInterval(() => {
-      const card = Array.from(document.querySelectorAll('.content-card'))
-        .find(c => (c.dataset.title || '').toLowerCase() === open.toLowerCase());
-      if (card) {
-        clearInterval(find);
-        const trigger = card.querySelector('[data-open]');
-        if (trigger) trigger.click();
-      }
-    }, 100);
-    setTimeout(() => clearInterval(find), 5000);
-  } catch (e) {}
-})();
-
-
-// Test helper: switch theme via ?theme=black (no-op; URL param is read at boot by getRequestedTheme()).
-(function(){
-  // intentionally empty -- see getRequestedTheme() above.
-})();
-
-// Test helper: open the player directly via ?play=Title
-(function(){
-  try {
-    const t = new URLSearchParams(location.search).get("play");
-    if (!t) return;
-    const tryOpen = setInterval(function(){
-      if (typeof window.__mfOpenPlayer === "function"){
-        clearInterval(tryOpen);
-        window.__mfOpenPlayer({ dataset: { title: t, type: "Movie" } });
-      }
-    }, 80);
-    setTimeout(function(){ clearInterval(tryOpen); }, 4000);
-  } catch (e) {}
-})();
-
-
-
-// ---- Animated close: play reverse animation, then hide ----
-function __mfAnimateClose(overlay, panelEl, onDone){
-  if (!overlay) { if (typeof onDone === 'function') onDone(); return; }
-  if (overlay.dataset.closing === '1') return; // already closing
-  overlay.dataset.closing = '1';
-  overlay.classList.add('is-closing');
-
-  var finished = false;
-  function done(){
-    if (finished) return;
-    finished = true;
-    overlay.classList.remove('is-closing');
-    overlay.removeAttribute('data-closing');
-    if (typeof onDone === 'function') onDone();
-  }
-
-  // Listen on the panel itself (the element actually animating)
-  var target = panelEl || overlay;
-  var onEnd = function(e){
-    if (e && e.target !== target) return; // ignore bubbled ends from descendants
-    target.removeEventListener('animationend', onEnd);
-    done();
-  };
-  target.addEventListener('animationend', onEnd);
-
-  // Safety net: never leave it stuck (in case animationend never fires)
-  setTimeout(done, 400);
-
-  // Reduced-motion: skip the wait entirely
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    setTimeout(done, 0);
-  }
-}
+(() => {'use strict'; document.documentElement.classList.add('js'); (function(){if (window.__mfPopupGuard) return; window.__mfPopupGuard = true; var realOpen = window.open; window.open = function(url, name, features){try {console.warn('[mengflix] blocked pop-up to', url); if (window.__mfOnPopupBlocked) window.__mfOnPopupBlocked(url);} catch (e) {}
+return null;};})(); window.__mfOnPopupBlocked = function(target){if (!playerOverlay) return; var hint = document.getElementById('playerHint'); if (!hint) return; var original = hint.dataset.original || hint.innerHTML; if (!hint.dataset.original) hint.dataset.original = original; var msg = 'Pop-up blocked' + (target && typeof target === 'string' ? ' (' + target.slice(0, 60) + ')': ''); hint.innerHTML = '<strong style="color:#ff6b6b">' + msg + '</strong>. ' + original; clearTimeout(hint.__mfTimer); hint.__mfTimer = setTimeout(function(){hint.innerHTML = hint.dataset.original || original;}, 3500);}; var lastBlurAt = 0; window.addEventListener('blur', function(){lastBlurAt = Date.now(); setTimeout(function(){try {if (playerOverlay && !playerOverlay.hidden && Date.now() - lastBlurAt < 100){window.focus(); if (window.__mfOnPopupBlocked) window.__mfOnPopupBlocked('focus-steal attempt');}} catch (e) {}}, 60);}); var cardDataLoaded = false; var searchIndex = []; var cardReadyCallbacks = []; function onCardsReady(fn){if (cardDataLoaded) {fn();} else {cardReadyCallbacks.push(fn);}}
+function createCardElement(d, sectionId){var kindLabel = d.type === 'TVSeries' ? 'Series': d.type === 'Donghua' ? 'Donghua': 'Movie'; var art = document.createElement('article'); art.className = 'content-card'; art.setAttribute('itemscope', ''); art.setAttribute('itemtype', 'https://schema.org/' + (d.type === 'TVSeries' ? 'TVSeries': 'Movie')); art.setAttribute('data-title', d.title); art.setAttribute('data-type', d.type); art.setAttribute('data-poster', d.poster); art.setAttribute('data-year', String(d.year)); art.setAttribute('data-runtime', String(d.runtime)); art.setAttribute('data-genre', d.genre); art.innerHTML = '<a href="#" title="' + escAttr(d.title) + '" data-open>' +
+'<div class="card-poster-wrap">' +
+'<img src="' + escAttr(d.poster) + '" alt="' + escAttr(d.title) + '" loading="lazy" decoding="async" width="342" height="513">' +
+'<div class="card-play-overlay" aria-hidden="true"><div class="card-play-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>' +
+'<div class="card-info-overlay"><h3 class="card-title">' + escapeHtml(d.title) + '</h3>' +
+'<div class="card-meta"><span>' + kindLabel + '</span><span class="sep">&middot;</span><span>' + d.year + '</span></div></div></div></a>'; return art;}
+function createDonghuaElement(key, d){var poster = d.poster || ''; var status = d.donghua_status || 'Ongoing'; var ep = d.latest_episode || ''; var year = d.year || ''; var rating = d.rating || d.stars || 0; var metaStr = status + (year ? ' (' + year + ')': '') + (ep ? ' EP' + ep: ''); var art = document.createElement('article'); art.className = 'content-card'; art.setAttribute('itemscope', ''); art.setAttribute('itemtype', 'https://schema.org/TVSeries'); art.setAttribute('data-title', d.title || key); art.setAttribute('data-type', 'Donghua'); art.setAttribute('data-poster', poster); art.setAttribute('data-year', year); art.setAttribute('data-rating', String(rating)); art.setAttribute('data-genre', d.genres || ''); art.setAttribute('data-status', status); art.innerHTML = '<a href="#" class="card-link" data-open data-title="' + escAttr(d.title || key) + '" data-type="Donghua" data-poster="' + escAttr(poster) + '">' +
+'<div class="card-poster">' +
+(poster ? '<img src="' + escAttr(poster) + '" alt="' + escAttr(d.title || key) + ' poster" loading="lazy" decoding="async" crossorigin="anonymous">': '') +
+'<div class="card-overlay"><span class="card-play-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div></div>' +
+'<div class="card-body"><h3 class="card-title" title="' + escAttr(d.title || key) + '">' + escapeHtml(d.title || key) + '</h3>' +
+'<p class="card-meta">' + escapeHtml(metaStr) + '<span class="card-meta-sep">|</span>' + (rating ? '&#9733;': '') + '</p></div></a>'; return art;}
+function renderCardsFromData(data){Object.keys(data).forEach(function(sectionId){var track = document.querySelector('#' + sectionId + ' .slider-track'); if (!track) return; data[sectionId].forEach(function(cardData){track.appendChild(createCardElement(cardData, sectionId));});});}
+function renderDonghuaFromData(data){var track = document.querySelector('#donghua .slider-track'); if (!track) return; Object.keys(data).forEach(function(key){try {var d = data[key]; if (d && typeof d === 'object') track.appendChild(createDonghuaElement(key, d));} catch(e){}});}
+async function loadAndRenderCards(){try {var res = await fetch('assets/cards.json'); var data = await res.json(); renderCardsFromData(data);} catch(e){console.warn('[mf] cards.json load failed:', e);}
+try {var res2 = await fetch('assets/donghua.json'); var data2 = await res2.json(); renderDonghuaFromData(data2);} catch(e){console.warn('[mf] donghua.json load failed:', e);}
+try {var res3 = await fetch('assets/search_index.json'); searchIndex = await res3.json();} catch(e){console.warn('[mf] search_index.json load failed:', e);}
+cardDataLoaded = true; cardReadyCallbacks.forEach(function(fn){try{fn();}catch(e){}}); cardReadyCallbacks = [];}
+if (document.readyState === 'loading'){document.addEventListener('DOMContentLoaded', loadAndRenderCards);} else {loadAndRenderCards();}
+const slides = Array.from(document.querySelectorAll('.yf-hero-slide')); const dots = Array.from(document.querySelectorAll('.yf-hero-dot')); const prev = document.getElementById('heroPrev'); const next = document.getElementById('heroNext'); let idx = 0; let timer = null; function go(n){if (!slides.length) return; idx = (n + slides.length) % slides.length; slides.forEach((s, i) => s.classList.toggle('active', i === idx)); dots .forEach((d, i) => d.classList.toggle('active', i === idx));}
+function startAuto(){stopAuto(); timer = setInterval(() => go(idx + 1), 6500);}
+function stopAuto(){if (timer) {clearInterval(timer); timer = null;}}
+if (slides.length){prev && prev.addEventListener('click', () => {go(idx - 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}}); next && next.addEventListener('click', () => {go(idx + 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}}); dots.forEach(d => d.addEventListener('click', () => {const n = parseInt(d.dataset.go, 10); go(n); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}})); const hero = document.querySelector('.yf-hero'); hero && hero.addEventListener('mouseenter', stopAuto); hero && hero.addEventListener('mouseleave', startAuto); document.addEventListener('keydown', (e) => {if (e.key === 'ArrowLeft') {go(idx - 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}}
+if (e.key === 'ArrowRight') {go(idx + 1); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}}}); if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){startAuto();}}
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)'); const sections = document.querySelectorAll('.section'); if ('IntersectionObserver' in window && sections.length){const io = new IntersectionObserver((entries) => {entries.forEach((e) => {if (e.isIntersecting){e.target.classList.add('is-visible'); io.unobserve(e.target);}});}, {rootMargin: '0px 0px -10% 0px', threshold: 0.05}); sections.forEach((s) => io.observe(s)); sections.forEach((s) => {const r = s.getBoundingClientRect(); if (r.top < window.innerHeight) s.classList.add('is-visible');});} else {sections.forEach((s) => s.classList.add('is-visible'));}
+document.querySelectorAll('.slider-wrap').forEach((wrap) => {const track = wrap.querySelector('.slider-track'); if (!track) return; if (!wrap.querySelector('.slider-progress')){const prog = document.createElement('div'); prog.className = 'slider-progress'; const bar = document.createElement('div'); bar.className = 'slider-progress-bar'; prog.appendChild(bar); wrap.appendChild(prog);}}); function setupSlider(wrap){const track = wrap.querySelector('.slider-track'); if (!track) return; const p = wrap.querySelector('.slider-btn-prev'); const n = wrap.querySelector('.slider-btn-next'); const bar = wrap.querySelector('.slider-progress-bar'); const step = () => Math.max(track.clientWidth * 0.85, 320); if (p){p.addEventListener('click', () => {track.scrollBy({left: -step(), behavior: prefersReducedMotion.matches ? 'auto': 'smooth'});});}
+if (n){n.addEventListener('click', () => {track.scrollBy({left: step(), behavior: prefersReducedMotion.matches ? 'auto': 'smooth'});});}
+function update(){const max = track.scrollWidth - track.clientWidth; const x = track.scrollLeft; wrap.classList.toggle('is-scrollable-left', x > 4); wrap.classList.toggle('is-scrollable-right', x < max - 4); if (p) p.disabled = x <= 1; if (n) n.disabled = x >= max - 1; if (bar && track.scrollWidth > track.clientWidth){const ratio = track.clientWidth / track.scrollWidth; const offset = (x / max) * (1 - ratio); bar.style.transform = 'translateX(' + (offset * 100) + '%) scaleX(' + ratio + ')';} else if (bar){bar.style.transform = 'translateX(0) scaleX(1)';}}
+track.addEventListener('scroll', update, {passive: true}); window.addEventListener('resize', update); update(); let isDown = false, startX = 0, startScroll = 0, dragged = false, activePointerId = null; function onDown(e){if (e.button !== undefined && e.button !== 0) return; isDown = true; dragged = false; startX = e.clientX; startY = e.clientY; startScroll = track.scrollLeft; activePointerId = (e.pointerId !== undefined ? e.pointerId: null); try {console.log('[dbg] down btn=', e.button, 'id=', e.pointerId, 'isDown=', isDown);} catch (err) {}}
+function onMove(e){try {console.log('[dbg] move id=', e.pointerId, 'isDown=', isDown, 'active=', activePointerId);} catch (err) {}
+if (!isDown) return; const dx = e.clientX - startX; const dy = e.clientY - startY; if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {isDown = false; return;} if (Math.abs(dx) > 4) dragged = true; const target = startScroll - dx; track.scrollLeft = target; try {console.log('[dbg] set scrollLeft', target, '->', track.scrollLeft, 'snap', getComputedStyle(track).scrollSnapType);} catch (err) {}}
+function onUp(e){try {console.log('[dbg] up id=', e && e.pointerId, 'isDown was', isDown);} catch (err) {}
+if (!isDown) return; if (activePointerId !== null && e && e.pointerId !== undefined && e.pointerId !== activePointerId) return; isDown = false; activePointerId = null;}
+track.addEventListener('pointerdown', onDown); track.addEventListener('mousedown', onDown); track.addEventListener('pointermove', onMove); track.addEventListener('mousemove', onMove); track.addEventListener('pointerup', onUp); track.addEventListener('mouseup', onUp); track.addEventListener('pointercancel', onUp); track.addEventListener('click', (e) => {if (dragged){e.preventDefault(); e.stopPropagation(); dragged = false;}}, true); track.addEventListener('mousedown', (e) => {if (e.button === 1) e.preventDefault();}); track.addEventListener('auxclick', (e) => {if (e.button === 1) e.preventDefault();}); track.addEventListener('pointerdown', (e) => {if (e.button === 1) e.preventDefault();});}
+onCardsReady(function(){document.querySelectorAll('.slider-wrap').forEach(setupSlider);}); document.querySelectorAll('.slider-track a').forEach((a) => {a.addEventListener('auxclick', (e) => {if (e.button === 1) e.preventDefault();}); a.addEventListener('mousedown', (e) => {if (e.button === 1) e.preventDefault();});}); document.addEventListener('auxclick', (e) => {if (e.button !== 1) return; const t = e.target; if (t.closest && t.closest('.slider-track')) e.preventDefault();}); const dd = document.querySelector('.browse-dropdown'); const btn = dd && dd.querySelector('.btn-browse'); if (dd && btn){btn.addEventListener('click', (e) => {e.stopPropagation(); const open = dd.classList.toggle('open'); btn.setAttribute('aria-expanded', String(open));}); document.addEventListener('click', (e) => {if (!dd.contains(e.target)){dd.classList.remove('open'); btn.setAttribute('aria-expanded', 'false');}});}
+const search = document.getElementById('searchOverlay'); const openBtn = document.getElementById('searchOpenBtn'); const closeBtn = document.getElementById('searchCloseBtn'); function openSearch(){if (!search) return; search.hidden = false; const input = search.querySelector('.search-overlay-input'); setTimeout(() => input && input.focus(), 50); document.body.style.overflow = 'hidden';}
+function closeSearch(){if (!search) return; search.hidden = true; document.body.style.overflow = '';}
+const searchInput = search ? search.querySelector('.search-overlay-input'): null; const searchResults = document.getElementById('searchResults'); const searchEmpty = document.getElementById('searchResultsEmpty'); const searchAllCards = () => {return searchIndex.length ? searchIndex: Array.from(document.querySelectorAll('.content-card')).map(function(c){return cardSearchHay(c);});}; let searchSelectedIdx = 0; let searchLastQuery = ""; function escapeReg(s){return String(s).replace(/[.*+?^\${}()|[\]\\]/g, '\\$&');}
+function escAttr(s){return String(s == null ? '': s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function cardSearchHay(card){return {title: (card.dataset.title || (card.querySelector && card.querySelector('.card-title') ? card.querySelector('.card-title').textContent: '') || '').trim(), type: (card.dataset.type || 'Movie').trim(), year: (card.dataset.year || '').trim(), runtime:(card.dataset.runtime|| '').trim(), genre: (card.dataset.genre || '').trim(), poster: (card.dataset.poster || (card.querySelector && card.querySelector('img') ? card.querySelector('img').getAttribute('src'): '') || '').trim()};}
+function scoreCard(hay, q){if (typeof hay === 'object' && hay !== null && hay.title) hay = {title: hay.title || '', genre: hay.genre || '', year: hay.year || '', runtime: hay.runtime || ''}; const t = hay.title.toLowerCase(); const g = hay.genre.toLowerCase(); const y = hay.year.toLowerCase(); if (!t) return -1; if (t === q) return 1000; if (t.startsWith(q)) return 800; const words = t.split(/\s+/); if (words.some(w => w.startsWith(q))) return 600; if (t.indexOf(q) !== -1) return 400; if (y && y === q) return 300; if (g && g.indexOf(q) !== -1) return 200; return -1;}
+function highlight(text, q){if (!q) return escapeAttr(text); const safe = escapeAttr(text); const re = new RegExp('(' + escapeReg(q) + ')', 'ig'); return safe.replace(re, '<mark class="search-result-highlight">$1</mark>');}
+function renderSearchResults(query){if (!searchResults) return; const q = (query || '').trim().toLowerCase(); searchLastQuery = q; searchSelectedIdx = 0; if (!q){searchResults.innerHTML = ''; if (searchEmpty) searchEmpty.hidden = true; return;}
+const cards = searchAllCards(); const matched = []; for (let i = 0; i < cards.length; i++){const hay = cardSearchHay(cards[i]); const s = scoreCard(hay, q); if (s >= 0) matched.push({card: cards[i], hay: hay, score: s, index: i});}
+matched.sort((a, b) => b.score - a.score || a.index - b.index); const top = matched.slice(0, 18); if (top.length === 0){searchResults.innerHTML = ''; if (searchEmpty) searchEmpty.hidden = false; return;}
+if (searchEmpty) searchEmpty.hidden = true; const qDisplay = query; searchResults.innerHTML = top.map((m, idx) => {const h = m.hay; const typeLabel = h.type === 'TVSeries' ? 'TV Show': 'Movie'; const meta = [h.year, h.runtime ? h.runtime + ' min': '', h.genre].filter(Boolean).join(' \u00b7 '); return '' +
+'<button type="button" class="search-result-card" role="option" ' +
+'data-index="' + idx + '" data-card-index="' + m.index + '" ' +
+'aria-selected="' + (idx === 0 ? 'true': 'false') + '"' +
+'title="' + escapeAttr(h.title) + '">' +
+'<span class="search-result-poster">' +
+(h.poster ? '<img src="' + escapeAttr(h.poster) + '" alt="" loading="lazy" decoding="async">': '') +
+'<span class="search-result-type ' + (h.type === 'TVSeries' ? 'tv': 'movie') + '">' + typeLabel + '</span>' +
+'<span class="search-result-play" aria-hidden="true">' +
+'<span class="search-result-play-icon"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></span>' +
+'</span>' +
+'</span>' +
+'<span class="search-result-info">' +
+'<span class="search-result-title">' + highlight(h.title, qDisplay) + '</span>' +
+(meta ? '<span class="search-result-meta">' + escapeAttr(meta) + '</span>': '') +
+'</span>' +
+'</button>';}).join("");}
+function moveSelection(delta){if (!searchResults) return; const items = searchResults.querySelectorAll('.search-result-card'); if (!items.length) return; searchSelectedIdx = (searchSelectedIdx + delta + items.length) % items.length; items.forEach((el, i) => el.setAttribute('aria-selected', i === searchSelectedIdx ? 'true': 'false')); const sel = items[searchSelectedIdx]; if (sel) sel.scrollIntoView({block: 'nearest'});}
+function activateSelection(){if (!searchResults) return; const items = searchResults.querySelectorAll('.search-result-card'); const sel = items[searchSelectedIdx] || items[0]; if (!sel) return; sel.click();}
+if (searchInput){let debounce; searchInput.addEventListener('input', (e) => {clearTimeout(debounce); debounce = setTimeout(() => renderSearchResults(e.target.value), 80);}); searchInput.addEventListener('keydown', (e) => {if (e.key === 'ArrowDown'){e.preventDefault(); moveSelection(1);}
+else if (e.key === 'ArrowUp'){e.preventDefault(); moveSelection(-1);}
+else if (e.key === 'Enter'){e.preventDefault(); activateSelection();}}); const _openSearch = openSearch; openSearch = function(){_openSearch(); if (searchInput) searchInput.value = ''; renderSearchResults('');};}
+if (searchResults){searchResults.addEventListener('click', (e) => {const card = e.target.closest('.search-result-card'); if (!card) return; const idx = parseInt(card.dataset.cardIndex, 10); const src = searchAllCards()[idx]; if (!src) return; closeSearch(); setTimeout(() => {if (typeof openPlayer === 'function'){openPlayer(src);} else if (typeof openDetails === 'function'){openDetails(src);}}, 30);});}
+openBtn && openBtn.addEventListener('click', openSearch); closeBtn && closeBtn.addEventListener('click', closeSearch); search && search.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', closeSearch)); document.addEventListener('keydown', function(e){if (e.key !== 'Escape') return; if (playerIsOpen()){closePlayer(); e.stopPropagation(); return;}
+if (typeof detailIsOpen === 'function' && detailIsOpen()){closeDetails(); e.stopPropagation(); return;}}, true); document.addEventListener('keydown', (e) => {if (e.key === 'Escape') closeSearch(); if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !search.hidden === false) {const tag = (document.activeElement && document.activeElement.tagName) || ''; if (tag === 'INPUT' || tag === 'TEXTAREA') return; e.preventDefault(); openSearch();}}); const mBtn = document.getElementById('mobileMenuBtn'); const mMenu = document.getElementById('mobileMenu'); function setMobileMenuOpen(open){if (!mMenu) return; mMenu.classList.toggle('open', open); mMenu.hidden = !open; if (mBtn){mBtn.classList.toggle('open', open); mBtn.setAttribute('aria-expanded', String(open));}}
+function closeMobileMenu(){setMobileMenuOpen(false);}
+if (mBtn && mMenu){mBtn.addEventListener('click', (e) => {e.stopPropagation(); setMobileMenuOpen(!mMenu.classList.contains('open'));}); mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileMenu)); document.addEventListener('keydown', (e) => {if (e.key === 'Escape' && mMenu.classList.contains('open')) closeMobileMenu();});}
+const header = document.getElementById('siteHeader'); if (header){const onScroll = () => {header.classList.toggle('scrolled', window.scrollY > 8);}; window.addEventListener('scroll', onScroll, {passive: true}); onScroll();}
+const detailOverlay = document.getElementById('detailOverlay'); const detailPanel = detailOverlay ? detailOverlay.querySelector('.detail-panel'): null; const detailClose = document.getElementById('detailClose'); const detailTitle = document.getElementById('detailTitle'); const detailBadges = document.getElementById('detailBadges'); const detailDesc = document.getElementById('detailDesc'); const detailMeta = document.getElementById('detailMeta'); const detailPoster = document.getElementById('detailPoster'); const detailBg = document.getElementById('detailBackdrop'); const detailTrailer = document.getElementById('detailTrailer'); const detailStars = document.getElementById('detailStars'); const detailPlay = document.getElementById('detailPlay'); const playerOverlay = document.getElementById('playerOverlay'); const playerPanel = playerOverlay && playerOverlay.querySelector('.player-panel'); const playerTitle = document.getElementById('playerTitle'); const playerCrumbTitle = document.getElementById('playerCrumbTitle'); const playerCrumbType = document.getElementById('playerCrumbType'); const playerServers = document.getElementById('playerServers'); const playerFrame = document.getElementById('playerFrame'); const playerPlaceholder = document.getElementById('playerPlaceholder'); const playerWatchLink = document.getElementById('playerWatchLink'); const detailFav = document.getElementById('detailFav'); const detailShare = document.getElementById('detailShare'); const detailCrumbTitle = document.getElementById('detailCrumbTitle'); const detailCrumbType = document.getElementById('detailCrumbType'); const curated = {'Dune: Part Two': {'imdb': 'IMDb 8.5', 'runtime': '2h 46m', 'country': 'United States of America', 'released': '2024-03-01', 'director': 'Denis Villeneuve', 'genres': 'Sci-Fi, Adventure, Drama', 'casts': 'TimothÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e Chalamet, Zendaya, Austin Butler, Florence Pugh', 'desc': 'Paul Atreides unites with the Fremen and seeks revenge against the conspirators who destroyed his family.', 'stars': '5', 'poster': 'assets/posters/dune-part-two.svg', 'watch_url': 'https://yflix.ws/movie/watch-2hrxg0-dune-part-two-2024-hd',}, 'Oppenheimer': {'imdb': 'IMDb 8.3', 'runtime': '3h 00m', 'country': 'United States of America', 'released': '2023-07-21', 'director': 'Christopher Nolan', 'genres': 'Biography, Drama, History', 'casts': 'Cillian Murphy, Emily Blunt, Robert Downey Jr., Matt Damon', 'desc': 'The story of J. Robert Oppenheimer and his role in the development of the atomic bomb.', 'stars': '5', 'poster': 'assets/posters/oppenheimer.svg', 'watch_url': 'https://yflix.ws/movie/watch-u4o253-oppenheimer-2023-hd',}, 'Poor Things': {'imdb': 'IMDb 7.8', 'runtime': '2h 21m', 'country': 'Ireland, UK, USA', 'released': '2023-12-08', 'director': 'Yorgos Lanthimos', 'genres': 'Comedy, Drama, Romance', 'casts': 'Emma Stone, Mark Ruffalo, Willem Dafoe', 'desc': 'A young woman, brought back to life by a brilliant scientist, embarks on a wild odyssey across continents.', 'stars': '4', 'poster': 'assets/posters/poor-things.svg', 'watch_url': 'https://yflix.ws/movie/watch-uxo4nf-poor-things-2023-hd',}, 'The Substance': {'imdb': 'IMDb 7.4', 'runtime': '2h 21m', 'country': 'UK, USA, France', 'released': '2024-09-20', 'director': 'Coralie Fargeat', 'genres': 'Horror, Sci-Fi, Drama', 'casts': 'Demi Moore, Margaret Qualley, Dennis Quaid', 'desc': 'A fading celebrity uses a black-market drug that creates a younger, better version of herself.', 'stars': '4', 'poster': 'assets/posters/the-substance.svg', 'watch_url': 'https://yflix.ws/movie/watch-435ecg-the-substance-2024-hd',}, 'Anora': {'imdb': 'IMDb 7.6', 'runtime': '2h 19m', 'country': 'United States of America', 'released': '2024-10-18', 'director': 'Sean Baker', 'genres': 'Drama, Comedy, Romance', 'casts': 'Mikey Madison, Mark Eydelshteyn, Yura Borisov', 'desc': 'A young sex worker from Brooklyn gets her chance at a Cinderella story when she impulsively marries the son of an oligarch.', 'stars': '4', 'poster': 'assets/posters/anora.svg', 'watch_url': 'https://yflix.ws/search?q=Anora',}, 'Wicked': {'imdb': 'IMDb 7.6', 'runtime': '2h 40m', 'country': 'United States of America', 'released': '2024-11-22', 'director': 'Jon M. Chu', 'genres': 'Fantasy, Musical, Drama', 'casts': 'Cynthia Erivo, Ariana Grande, Jeff Goldblum', 'desc': 'Two unlikely friends at Shiz University discover their true powers and the destiny that awaits them.', 'stars': '4', 'poster': 'assets/posters/wicked.svg', 'watch_url': 'https://yflix.ws/search?q=Wicked',}, 'Conclave': {'imdb': 'IMDb 7.4', 'runtime': '2h 00m', 'country': 'USA, UK', 'released': '2024-10-25', 'director': 'Edward Berger', 'genres': 'Thriller, Mystery, Drama', 'casts': 'Ralph Fiennes, Stanley Tucci, John Lithgow', 'desc': 'A cardinal investigates dark secrets as the Catholic Church prepares for a papal conclave.', 'stars': '4', 'poster': 'assets/posters/conclave.svg', 'watch_url': 'https://yflix.ws/search?q=Conclave',}, 'Nosferatu': {'imdb': 'IMDb 7.2', 'runtime': '2h 12m', 'country': 'United States of America', 'released': '2024-12-25', 'director': 'Robert Eggers', 'genres': 'Horror, Gothic, Period', 'casts': 'Bill SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd, Nicholas Hoult, Lily-Rose Depp', 'desc': 'A gothic tale of obsession between a haunted young woman and a vampire.', 'stars': '4', 'poster': 'assets/posters/nosferatu.svg', 'watch_url': 'https://yflix.ws/search?q=Nosferatu',}, 'A Real Pain': {'imdb': 'IMDb 7.1', 'runtime': '1h 30m', 'country': 'USA, Poland', 'released': '2024-11-01', 'director': 'Jesse Eisenberg', 'genres': 'Drama, Comedy', 'casts': 'Jesse Eisenberg, Kieran Culkin', 'desc': 'Mismatched cousins reunite for a tour through Poland to honor their late grandmother.', 'stars': '4', 'poster': 'assets/posters/a-real-pain.svg', 'watch_url': 'https://yflix.ws/search?q=A%20Real%20Pain',}, 'Gladiator II': {'imdb': 'IMDb 6.6', 'runtime': '2h 28m', 'country': 'USA, UK', 'released': '2024-11-15', 'director': 'Ridley Scott', 'genres': 'Action, Adventure, Drama', 'casts': 'Paul Mescal, Pedro Pascal, Denzel Washington', 'desc': 'A new hero rises in the Roman arena to challenge the empire.', 'stars': '3', 'poster': 'assets/posters/gladiator-ii.svg', 'watch_url': 'https://yflix.ws/search?q=Gladiator%20II',}, 'Heretic': {'imdb': 'IMDb 7.0', 'runtime': '1h 51m', 'country': 'USA, Canada', 'released': '2024-11-08', 'director': 'Scott Beck & Bryan Woods', 'genres': 'Thriller, Horror', 'casts': 'Hugh Grant, Sophie Thatcher, Chloe East', 'desc': 'Two missionaries face a deadly game of cat-and-mouse in a stranger\'s house.', 'stars': '4', 'poster': 'assets/posters/heretic.svg', 'watch_url': 'https://yflix.ws/search?q=Heretic',}, 'The Wild Robot': {'imdb': 'IMDb 8.2', 'runtime': '1h 42m', 'country': 'USA', 'released': '2024-09-20', 'director': 'Chris Sanders', 'genres': 'Animation, Adventure, Family', 'casts': 'Lupita Nyong\'o, Pedro Pascal, Kit Connor', 'desc': 'A shipwrecked robot bonds with the animals of a forested island and adopts an orphaned gosling.', 'stars': '4', 'poster': 'assets/posters/the-wild-robot.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Wild%20Robot',}, 'Civil War': {'imdb': 'IMDb 7.0', 'runtime': '1h 49m', 'country': 'UK, USA, Finland', 'released': '2024-04-12', 'director': 'Alex Garland', 'genres': 'Action, Drama, Thriller', 'casts': 'Kirsten Dunst, Wagner Moura, Cailee Spaeny', 'desc': 'Journalists travel across the U.S. during a rapidly escalating civil war.', 'stars': '4', 'poster': 'assets/posters/civil-war.svg', 'watch_url': 'https://yflix.ws/search?q=Civil%20War',}, 'Hit Man': {'imdb': 'IMDb 7.3', 'runtime': '1h 55m', 'country': 'USA', 'released': '2024-05-24', 'director': 'Richard Linklater', 'genres': 'Comedy, Crime, Romance', 'casts': 'Glen Powell, Adria Arjona', 'desc': 'A college professor moonlights as a fake hit man and falls for a potential client.', 'stars': '4', 'poster': 'assets/posters/hit-man.svg', 'watch_url': 'https://yflix.ws/search?q=Hit%20Man',}, 'Love Lies Bleeding': {'imdb': 'IMDb 7.0', 'runtime': '1h 44m', 'country': 'UK, USA', 'released': '2024-03-08', 'director': 'Rose Glass', 'genres': 'Thriller, Crime, Romance', 'casts': 'Kristen Stewart, Katy O\'Brian, Ed Harris', 'desc': 'A reclusive gym manager falls for an ambitious bodybuilder, with violent consequences.', 'stars': '4', 'poster': 'assets/posters/love-lies-bleeding.svg', 'watch_url': 'https://yflix.ws/search?q=Love%20Lies%20Bleeding',}, 'Furiosa': {'imdb': 'IMDb 7.5', 'runtime': '2h 28m', 'country': 'Australia, USA', 'released': '2024-05-24', 'director': 'George Miller', 'genres': 'Action, Adventure, Sci-Fi', 'casts': 'Anya Taylor-Joy, Chris Hemsworth, Tom Burke', 'desc': 'The origin story of renegade warrior Furiosa before she meets Mad Max.', 'stars': '4', 'poster': 'assets/posters/furiosa.svg', 'watch_url': 'https://yflix.ws/search?q=Furiosa',}, 'Alien: Romulus': {'imdb': 'IMDb 7.2', 'runtime': '1h 59m', 'country': 'USA, UK, Hungary', 'released': '2024-08-16', 'director': 'Fede Alvarez', 'genres': 'Sci-Fi, Horror, Thriller', 'casts': 'Cailee Spaeny, David Jonsson, Archie Renaux', 'desc': 'A group of young space colonists encounter the most terrifying life form in the universe.', 'stars': '4', 'poster': 'https://yflix.ws/images/posters/movies/alien-romulus-2024.webp', 'watch_url': 'https://yflix.ws/search?q=Alien%3A%20Romulus',}, 'It Ends With Us': {'imdb': 'IMDb 6.5', 'runtime': '2h 10m', 'country': 'USA', 'released': '2024-08-09', 'director': 'Justin Baldoni', 'genres': 'Drama, Romance', 'casts': 'Blake Lively, Justin Baldoni, Brandon Sklenar', 'desc': 'A young woman\'s seemingly perfect life takes a dark turn when she meets a charming neurosurgeon.', 'stars': '3', 'poster': 'assets/posters/it-ends-with-us.svg', 'watch_url': 'https://yflix.ws/search?q=It%20Ends%20With%20Us',}, 'Beetlejuice B.': {'imdb': 'IMDb 7.0', 'runtime': '1h 44m', 'country': 'USA', 'released': '2024-09-06', 'director': 'Tim Burton', 'genres': 'Comedy, Fantasy, Horror', 'casts': 'Michael Keaton, Winona Ryder, Catherine O\'Hara', 'desc': 'After a family tragedy, three generations of the Deetz family return home to Winter River ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â still haunted by Beetlejuice.', 'stars': '4', 'poster': 'assets/posters/beetlejuice-b.svg', 'watch_url': 'https://yflix.ws/search?q=Beetlejuice%20B.',}, 'Joker: Folie 2': {'imdb': 'IMDb 5.3', 'runtime': '2h 18m', 'country': 'USA', 'released': '2024-10-04', 'director': 'Todd Phillips', 'genres': 'Drama, Crime, Musical', 'casts': 'Joaquin Phoenix, Lady Gaga, Brendan Gleeson', 'desc': 'A failed comedian descends into madness and forms a twisted romance.', 'stars': '2', 'poster': 'assets/posters/joker-folie-2.svg', 'watch_url': 'https://yflix.ws/search?q=Joker%3A%20Folie%202',}, 'Smile 2': {'imdb': 'IMDb 6.3', 'runtime': '2h 02m', 'country': 'USA', 'released': '2024-10-18', 'director': 'Parker Finn', 'genres': 'Horror, Mystery, Thriller', 'casts': 'Naomi Scott, Rosemarie DeWitt, Lukas Gage', 'desc': 'A global pop star must confront a terrifying curse as her world unravels.', 'stars': '3', 'poster': 'assets/posters/smile-2.svg', 'watch_url': 'https://yflix.ws/search?q=Smile%202',}, 'Terrifier 3': {'imdb': 'IMDb 6.1', 'runtime': '2h 05m', 'country': 'USA', 'released': '2024-10-11', 'director': 'Damien Leone', 'genres': 'Horror, Slasher', 'casts': 'Lauren LaVera, David Howard Thornton, Elliott Fullam', 'desc': 'Art the Clown unleashes chaos on a sleepy town on Christmas Eve.', 'stars': '3', 'poster': 'assets/posters/terrifier-3.svg', 'watch_url': 'https://yflix.ws/search?q=Terrifier%203',}, 'Society of Snow': {'imdb': 'IMDb 7.8', 'runtime': '2h 24m', 'country': 'Spain, Uruguay, Chile', 'released': '2023-12-15', 'director': 'J.A. Bayona', 'genres': 'Drama, Survival, History', 'casts': 'MatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­as Recalt, AgustÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­n Pardella, Valentino Alonso', 'desc': 'Survivors of a 1972 plane crash struggle to survive in the Andes.', 'stars': '4', 'poster': 'assets/posters/society-of-snow.svg', 'watch_url': 'https://yflix.ws/search?q=Society%20of%20Snow',}, 'The Holdovers': {'imdb': 'IMDb 7.9', 'runtime': '2h 13m', 'country': 'USA', 'released': '2023-10-27', 'director': 'Alexander Payne', 'genres': 'Drama, Comedy', 'casts': 'Paul Giamatti, Da\'Vine Joy Randolph, Dominic Sessa', 'desc': 'A grumpy professor is forced to remain at a New England prep school over Christmas break.', 'stars': '4', 'poster': 'assets/posters/the-holdovers.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Holdovers',}, 'Anatomy of a Fall': {'imdb': 'IMDb 7.7', 'runtime': '2h 32m', 'country': 'France', 'released': '2023-08-23', 'director': 'Justine Triet', 'genres': 'Drama, Mystery, Thriller', 'casts': 'Sandra HÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¼ller, Milo Machado-Graner', 'desc': 'A woman is suspected of her husband\'s murder, and her blind son faces a moral dilemma.', 'stars': '4', 'poster': 'assets/posters/anatomy-of-a-fall.svg', 'watch_url': 'https://yflix.ws/search?q=Anatomy%20of%20a%20Fall',}, 'Maestro': {'imdb': 'IMDb 6.5', 'runtime': '2h 09m', 'country': 'USA', 'released': '2023-11-22', 'director': 'Bradley Cooper', 'genres': 'Biography, Drama, Music', 'casts': 'Carey Mulligan, Bradley Cooper, Matt Bomer', 'desc': 'A towering love story chronicling the lifelong relationship of Leonard Bernstein and Felicia Montealegre.', 'stars': '3', 'poster': 'assets/posters/maestro.svg', 'watch_url': 'https://yflix.ws/search?q=Maestro',}, 'May December': {'imdb': 'IMDb 6.8', 'runtime': '1h 57m', 'country': 'USA', 'released': '2023-05-20', 'director': 'Todd Haynes', 'genres': 'Drama', 'casts': 'Natalie Portman, Julianne Moore, Charles Melton', 'desc': 'An actress arrives to study a couple whose tabloid romance gripped the nation decades ago.', 'stars': '3', 'poster': 'assets/posters/may-december.svg', 'watch_url': 'https://yflix.ws/search?q=May%20December',}, 'Killers of F.M.': {'imdb': 'IMDb 7.6', 'runtime': '3h 26m', 'country': 'USA', 'released': '2023-10-20', 'director': 'Martin Scorsese', 'genres': 'Crime, Drama, History', 'casts': 'Leonardo DiCaprio, Robert De Niro, Lily Gladstone', 'desc': 'Members of the Osage tribe are murdered under mysterious circumstances in the 1920s.', 'stars': '4', 'poster': 'assets/posters/killers-of-f-m.svg', 'watch_url': 'https://yflix.ws/search?q=Killers%20of%20the%20Flower%20Moon'}, 'Boy and Heron': {'imdb': 'IMDb 7.4', 'runtime': '2h 04m', 'country': 'Japan', 'released': '2023-12-08', 'director': 'Hayao Miyazaki', 'genres': 'Animation, Fantasy, Adventure', 'casts': 'Soma Santoki, Masaki Suda, Takuya Kimura', 'desc': 'A young boy discovers an abandoned tower in his new town, leading to another world.', 'stars': '4', 'poster': 'assets/posters/boy-and-heron.svg', 'watch_url': 'https://yflix.ws/search?q=Boy%20and%20Heron',}, 'Past Lives': {'imdb': 'IMDb 7.9', 'runtime': '1h 45m', 'country': 'USA, South Korea', 'released': '2023-06-09', 'director': 'Celine Song', 'genres': 'Romance, Drama', 'casts': 'Greta Lee, Teo Yoo, John Magaro', 'desc': 'Two childhood friends are reunited 20 years later in New York for one fateful week.', 'stars': '4', 'poster': 'assets/posters/past-lives.svg', 'watch_url': 'https://yflix.ws/search?q=Past%20Lives',}, 'Barbie': {'imdb': 'IMDb 6.9', 'runtime': '1h 54m', 'country': 'USA, UK', 'released': '2023-07-21', 'director': 'Greta Gerwig', 'genres': 'Comedy, Adventure, Fantasy', 'casts': 'Margot Robbie, Ryan Gosling, America Ferrera', 'desc': 'Barbie suffers a crisis that leads her to question her world and her existence.', 'stars': '3', 'poster': 'assets/posters/barbie.svg', 'watch_url': 'https://yflix.ws/search?q=Barbie',}, 'MI: Dead Reckoning': {'imdb': 'IMDb 7.7', 'runtime': '2h 43m', 'country': 'USA', 'released': '2023-07-12', 'director': 'Christopher McQuarrie', 'genres': 'Action, Adventure, Thriller', 'casts': 'Tom Cruise, Hayley Atwell, Simon Pegg', 'desc': 'Ethan Hunt and his IMF team must track down a terrifying new weapon.', 'stars': '4', 'poster': 'assets/posters/mi-dead-reckoning.svg', 'watch_url': 'https://yflix.ws/search?q=MI%3A%20Dead%20Reckoning',}, 'Spider-Verse 2': {'imdb': 'IMDb 8.6', 'runtime': '2h 20m', 'country': 'USA', 'released': '2023-06-02', 'director': 'Joaquim Dos Santos', 'genres': 'Animation, Action, Adventure', 'casts': 'Shameik Moore, Hailee Steinfeld, Oscar Isaac', 'desc': 'Miles Morales catapults across the Multiverse and encounters a team of Spider-People.', 'stars': '5', 'poster': 'assets/posters/spider-verse-2.svg', 'watch_url': 'https://yflix.ws/search?q=Spider-Verse%202',}, 'GotG Vol. 3': {'imdb': 'IMDb 7.9', 'runtime': '2h 30m', 'country': 'USA', 'released': '2023-05-05', 'director': 'James Gunn', 'genres': 'Action, Adventure, Sci-Fi', 'casts': 'Chris Pratt, Zoe SaldaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±a, Dave Bautista', 'desc': 'The Guardians must protect Rocket while facing a powerful new enemy.', 'stars': '4', 'poster': 'assets/posters/gotg-vol-3.svg', 'watch_url': 'https://yflix.ws/search?q=GotG%20Vol.%203',}, 'John Wick 4': {'imdb': 'IMDb 7.7', 'runtime': '2h 49m', 'country': 'USA', 'released': '2023-03-24', 'director': 'Chad Stahelski', 'genres': 'Action, Crime, Thriller', 'casts': 'Keanu Reeves, Donnie Yen, Bill SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd', 'desc': 'John Wick uncovers a path to defeating The High Table.', 'stars': '4', 'poster': 'assets/posters/john-wick-4.svg', 'watch_url': 'https://yflix.ws/search?q=John%20Wick%204',}, 'Sisu': {'imdb': 'IMDb 7.5', 'runtime': '1h 31m', 'country': 'Finland', 'released': '2023-04-28', 'director': 'Jalmari Helander', 'genres': 'Action, War', 'casts': 'Jorma Tommila, Aksel Hennie, Jack Doolan', 'desc': 'A grizzled Finnish farmer transforms into an unlikely folk hero when he faces off against Soviet soldiers.', 'stars': '4', 'poster': 'assets/posters/sisu.svg', 'watch_url': 'https://yflix.ws/search?q=Sisu',}, 'Shogun': {'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'USA, Japan', 'released': '2024-02-27', 'director': 'Jonathan van Tulleken', 'genres': 'Drama, History, War', 'casts': 'Hiroyuki Sanada, Cosmo Jarvis, Anna Sawai', 'desc': 'Lord Toranaga battles rivals in feudal Japan. A fateful encounter with an English navigator changes everything.', 'stars': '5', 'poster': 'assets/posters/shogun.svg', 'watch_url': 'https://yflix.ws/search?q=Shogun',}, 'The Penguin': {'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'USA', 'released': '2024-09-19', 'director': 'Craig Zobel', 'genres': 'Crime, Drama', 'casts': 'Colin Farrell, Cristin Milioti, Rhenzy Feliz', 'desc': 'Following the events of \"The Batman,\" Oz Cobb fights to rise through Gotham\'s criminal underworld.', 'stars': '5', 'poster': 'assets/posters/the-penguin.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Penguin',}, 'Severance': {'imdb': 'IMDb 8.7', 'runtime': '50m/ep', 'country': 'USA', 'released': '2022-02-18', 'director': 'Ben Stiller', 'genres': 'Sci-Fi, Drama, Mystery', 'casts': 'Adam Scott, Britt Lower, Patricia Arquette', 'desc': 'A team of office workers undergo a procedure to separate their work and personal memories.', 'stars': '5', 'poster': 'assets/posters/severance.svg', 'watch_url': 'https://yflix.ws/search?q=Severance',}, 'The Bear': {'imdb': 'IMDb 8.6', 'runtime': '30m/ep', 'country': 'USA', 'released': '2022-06-23', 'director': 'Christopher Storer', 'genres': 'Drama, Comedy', 'casts': 'Jeremy Allen White, Ebon Moss-Bachrach, Ayo Edebiri', 'desc': 'A young chef from the fine-dining world returns to Chicago to run his family\'s sandwich shop.', 'stars': '5', 'poster': 'assets/posters/the-bear.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Bear',}, 'House of the Dragon': {'imdb': 'IMDb 8.4', 'runtime': '60m/ep', 'country': 'USA, UK', 'released': '2022-08-21', 'director': 'Miguel Sapochnik', 'genres': 'Fantasy, Drama, Action', 'casts': 'Paddy Considine, Matt Smith, Emma D\'Arcy', 'desc': 'A Targaryen civil war erupts 200 years before the events of Game of Thrones.', 'stars': '4', 'poster': 'assets/posters/house-of-the-dragon.svg', 'watch_url': 'https://yflix.ws/search?q=House%20of%20the%20Dragon',}, 'Andor': {'imdb': 'IMDb 8.4', 'runtime': '45m/ep', 'country': 'USA', 'released': '2022-09-21', 'director': 'Toby Haynes', 'genres': 'Sci-Fi, Drama, Action', 'casts': 'Diego Luna, Stellan SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd, Denise Gough', 'desc': 'A prequel to Rogue One explores the early days of the Rebel Alliance.', 'stars': '4', 'poster': 'assets/posters/andor.svg', 'watch_url': 'https://yflix.ws/search?q=Andor',}, 'The Last of Us': {'imdb': 'IMDb 8.7', 'runtime': '60m/ep', 'country': 'USA', 'released': '2023-01-15', 'director': 'Craig Mazin', 'genres': 'Drama, Sci-Fi, Adventure', 'casts': 'Pedro Pascal, Bella Ramsey, Anna Torv', 'desc': 'Twenty years after modern civilization is destroyed, Joel is hired to smuggle Ellie out of an oppressive quarantine zone.', 'stars': '5', 'poster': 'assets/posters/the-last-of-us.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Last%20of%20Us',}, 'Succession': {'imdb': 'IMDb 8.9', 'runtime': '60m/ep', 'country': 'USA', 'released': '2018-06-03', 'director': 'Adam McKay', 'genres': 'Drama', 'casts': 'Brian Cox, Jeremy Strong, Sarah Snook', 'desc': 'The Roy family controls the biggest media and entertainment company in the world. As their patriarch ages, his children begin to consider the future.', 'stars': '5', 'poster': 'assets/posters/succession.svg', 'watch_url': 'https://yflix.ws/search?q=Succession',}, 'The White Lotus': {'imdb': 'IMDb 7.9', 'runtime': '60m/ep', 'country': 'USA', 'released': '2021-07-11', 'director': 'Mike White', 'genres': 'Drama, Comedy', 'casts': 'Murray Bartlett, Connie Britton, Jennifer Coolidge', 'desc': 'Social commentary set at a luxury resort, focusing on the lives of its guests and employees over a week.', 'stars': '4', 'poster': 'assets/posters/the-white-lotus.svg', 'watch_url': 'https://yflix.ws/search?q=The%20White%20Lotus',}, 'Reacher': {'imdb': 'IMDb 8.1', 'runtime': '60m/ep', 'country': 'USA', 'released': '2022-02-04', 'director': 'Nick Santora', 'genres': 'Action, Crime, Drama', 'casts': 'Alan Ritchson, Malcolm Goodwin, Willa Fitzgerald', 'desc': 'Jack Reacher, a veteran military police investigator, is framed for a murder he did not commit.', 'stars': '4', 'poster': 'assets/posters/reacher.svg', 'watch_url': 'https://yflix.ws/search?q=Reacher',}, 'Slow Horses': {'imdb': 'IMDb 8.3', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2022-04-01', 'director': 'James Hawes', 'genres': 'Thriller, Drama, Spy', 'casts': 'Gary Oldman, Jack Lowden, Kristin Scott Thomas', 'desc': 'A team of British intelligence agents serve in a dumping ground department of MI5.', 'stars': '4', 'poster': 'assets/posters/slow-horses.svg', 'watch_url': 'https://yflix.ws/search?q=Slow%20Horses',}, 'Morning Show': {'imdb': 'IMDb 8.3', 'runtime': '60m/ep', 'country': 'USA', 'released': '2019-11-01', 'director': 'Mimi Leder', 'genres': 'Drama', 'casts': 'Jennifer Aniston, Reese Witherspoon, Billy Crudup', 'desc': 'The high-pressure world of morning news is explored through the people who help America wake up.', 'stars': '4', 'poster': 'assets/posters/morning-show.svg', 'watch_url': 'https://yflix.ws/search?q=Morning%20Show',}, 'Beef': {'imdb': 'IMDb 8.0', 'runtime': '35m/ep', 'country': 'USA', 'released': '2023-04-06', 'director': 'Hiro Murai', 'genres': 'Drama, Comedy', 'casts': 'Steven Yeun, Ali Wong, Joseph Lee', 'desc': 'A road rage incident between two strangers sparks a feud that spirals out of control.', 'stars': '4', 'poster': 'assets/posters/beef.svg', 'watch_url': 'https://yflix.ws/search?q=Beef',}, 'Wednesday': {'imdb': 'IMDb 8.1', 'runtime': '55m/ep', 'country': 'USA', 'released': '2022-11-23', 'director': 'Tim Burton', 'genres': 'Comedy, Mystery, Fantasy', 'casts': 'Jenna Ortega, Gwendoline Christie, Riki Lindhome', 'desc': 'Smart and sarcastic, Wednesday Addams investigates a murder spree.', 'stars': '4', 'poster': 'assets/posters/wednesday.svg', 'watch_url': 'https://yflix.ws/search?q=Wednesday',}, 'Stranger Things': {'imdb': 'IMDb 8.7', 'runtime': '55m/ep', 'country': 'USA', 'released': '2016-07-15', 'director': 'The Duffer Brothers', 'genres': 'Sci-Fi, Horror, Drama', 'casts': 'Millie Bobby Brown, Finn Wolfhard, Winona Ryder', 'desc': 'When a young boy vanishes, a small town uncovers a mystery involving supernatural forces.', 'stars': '5', 'poster': 'assets/posters/stranger-things.svg', 'watch_url': 'https://yflix.ws/search?q=Stranger%20Things',}, 'The Crown': {'imdb': 'IMDb 8.6', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2016-11-04', 'director': 'Stephen Daldry', 'genres': 'Biography, Drama, History', 'casts': 'Claire Foy, Olivia Colman, Imelda Staunton', 'desc': 'The story of Queen Elizabeth II of the United Kingdom, told over six decades.', 'stars': '4', 'poster': 'assets/posters/the-crown.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Crown',}, 'Peaky Blinders': {'imdb': 'IMDb 8.8', 'runtime': '60m/ep', 'country': 'UK', 'released': '2013-05-12', 'director': 'Otto Bathurst', 'genres': 'Crime, Drama', 'casts': 'Cillian Murphy, Helen McCrory, Paul Anderson', 'desc': 'A gangster family epic set in 1900s England, centering on a gang who sew razor blades in the peaks of their caps.', 'stars': '5', 'poster': 'assets/posters/peaky-blinders.svg', 'watch_url': 'https://yflix.ws/search?q=Peaky%20Blinders',}, 'Better Call Saul': {'imdb': 'IMDb 8.9', 'runtime': '55m/ep', 'country': 'USA', 'released': '2015-02-08', 'director': 'Vince Gilligan', 'genres': 'Crime, Drama', 'casts': 'Bob Odenkirk, Rhea Seehorn, Jonathan Banks', 'desc': 'The trials and tribulations of attorney Jimmy McGill before he established his strip-mall law office in Albuquerque.', 'stars': '5', 'poster': 'assets/posters/better-call-saul.svg', 'watch_url': 'https://yflix.ws/search?q=Better%20Call%20Saul',}, 'Breaking Bad': {'imdb': 'IMDb 9.5', 'runtime': '50m/ep', 'country': 'USA', 'released': '2008-01-20', 'director': 'Vince Gilligan', 'genres': 'Crime, Drama, Thriller', 'casts': 'Bryan Cranston, Aaron Paul, Anna Gunn', 'desc': 'A high school chemistry teacher diagnosed with terminal cancer turns to manufacturing methamphetamine.', 'stars': '5', 'poster': 'assets/posters/breaking-bad.svg', 'watch_url': 'https://yflix.ws/search?q=Breaking%20Bad',}, 'The Boys': {'imdb': 'IMDb 8.7', 'runtime': '60m/ep', 'country': 'USA', 'released': '2019-07-26', 'director': 'Eric Kripke', 'genres': 'Action, Comedy, Crime', 'casts': 'Karl Urban, Jack Quaid, Antony Starr', 'desc': 'A group of vigilantes set out to take down corrupt superheroes who abuse their powers.', 'stars': '5', 'poster': 'assets/posters/the-boys.svg', 'watch_url': 'https://yflix.ws/search?q=The%20Boys',}, 'Invincible': {'imdb': 'IMDb 8.7', 'runtime': '45m/ep', 'country': 'USA', 'released': '2021-03-25', 'director': 'Robert Kirkman', 'genres': 'Animation, Action, Adventure', 'casts': 'Steven Yeun, Sandra Oh, J.K. Simmons', 'desc': 'A teenager whose father is the most powerful superhero on the planet.', 'stars': '5', 'poster': 'assets/posters/invincible.svg', 'watch_url': 'https://yflix.ws/search?q=Invincible',}, 'Arcane': {'imdb': 'IMDb 9.0', 'runtime': '40m/ep', 'country': 'USA, France', 'released': '2021-11-06', 'director': 'Pascal Charrue', 'genres': 'Animation, Action, Adventure', 'casts': 'Hailee Steinfeld, Ella Purnell, Katie Leung', 'desc': 'The origins of two iconic League champions in utopian Piltover and the oppressed underground of Zaun.', 'stars': '5', 'poster': 'assets/posters/arcane.svg', 'watch_url': 'https://yflix.ws/search?q=Arcane',}, 'One Piece': {'imdb': 'IMDb 8.2', 'runtime': '55m/ep', 'country': 'USA, South Africa, Japan', 'released': '2023-08-31', 'director': 'Marc Jobst', 'genres': 'Action, Adventure, Comedy', 'casts': 'IÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±aki Godoy, Emily Rudd, Mackenyu', 'desc': 'A young pirate captain and his ragtag crew quest to find the legendary One Piece treasure.', 'stars': '4', 'poster': 'assets/posters/one-piece.svg', 'watch_url': 'https://yflix.ws/search?q=One%20Piece',}, 'Fallout': {'imdb': 'IMDb 8.4', 'runtime': '60m/ep', 'country': 'USA', 'released': '2024-04-10', 'director': 'Jonathan Nolan', 'genres': 'Sci-Fi, Drama, Adventure', 'casts': 'Ella Purnell, Walton Goggins, Aaron Moten', 'desc': 'A vault dweller ventures out into the irradiated wastelands of post-nuclear America.', 'stars': '4', 'poster': 'assets/posters/fallout.svg', 'watch_url': 'https://yflix.ws/search?q=Fallout',}, 'True Detective': {'imdb': 'IMDb 8.9', 'runtime': '55m/ep', 'country': 'USA', 'released': '2014-01-12', 'director': 'Cary Joji Fukunaga', 'genres': 'Crime, Drama, Mystery', 'casts': 'Matthew McConaughey, Woody Harrelson, Michelle Monaghan', 'desc': 'Two detectives hunt a serial killer across seventeen years.', 'stars': '5', 'poster': 'assets/posters/true-detective.svg', 'watch_url': 'https://yflix.ws/search?q=True%20Detective',}, 'Fargo': {'imdb': 'IMDb 8.8', 'runtime': '55m/ep', 'country': 'USA', 'released': '2014-04-15', 'director': 'Noah Hawley', 'genres': 'Crime, Drama, Thriller', 'casts': 'Billy Bob Thornton, Martin Freeman, Allison Tolman', 'desc': 'Various chronicles of deception, intrigue, and murder in and around frozen Minnesota.', 'stars': '5', 'poster': 'assets/posters/fargo.svg', 'watch_url': 'https://yflix.ws/search?q=Fargo',}, 'Fleabag': {'imdb': 'IMDb 8.7', 'runtime': '30m/ep', 'country': 'UK', 'released': '2016-07-21', 'director': 'Phoebe Waller-Bridge', 'genres': 'Comedy, Drama', 'casts': 'Phoebe Waller-Bridge, Sian Clifford, Olivia Colman', 'desc': 'A young woman\'s personal and professional life is upended after a tragedy.', 'stars': '5', 'poster': 'assets/posters/fleabag.svg', 'watch_url': 'https://yflix.ws/search?q=Fleabag',}, 'Chernobyl': {'imdb': 'IMDb 9.3', 'runtime': '60m/ep', 'country': 'UK, USA', 'released': '2019-05-06', 'director': 'Johan Renck', 'genres': 'Drama, History, Thriller', 'casts': 'Jessie Buckley, Jared Harris, Stellan SkarsgÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¥rd', 'desc': 'A chronicle of the 1986 disaster and the sacrifices made to mitigate it.', 'stars': '5', 'poster': 'assets/posters/chernobyl.svg', 'watch_url': 'https://yflix.ws/search?q=Chernobyl',}}; let detailsCache = null; const localPosterBySlug = (function(){const m = {}; if (typeof curated === 'object' && curated){Object.keys(curated).forEach(function(title){const e = curated[title]; if (!e || !e.poster) return; const match = /assets\/posters\/([a-z0-9-]+)\.svg$/i.exec(e.poster); if (match) m[match[1]] = e.poster;});}
+return m;})(); function slugifyTitle(title){return String(title || '').toLowerCase()
+.replace(/&apos;/g, "'")
+.replace(/[:!]/g, '')
+.replace(/[^a-z0-9]+/g, '-')
+.replace(/^-|-$/g, '');}
+function titleFromImg(img){const card = img.closest && img.closest('.content-card'); if (card && card.dataset && card.dataset.title) return card.dataset.title; const rc = img.closest && img.closest('.search-result-card'); if (rc){const t = rc.querySelector && rc.querySelector('.search-result-title'); if (t) return t.textContent || '';}
+return img.alt || '';}
+function fallbackImage(img){if (!img || img.__mfFallback) return; img.__mfFallback = true; const title = titleFromImg(img); const slug = slugifyTitle(title); if (localPosterBySlug[slug]){img.src = localPosterBySlug[slug]; return;}
+const short = slug.split('-').slice(0, 3).join('-'); if (localPosterBySlug[short]){img.src = localPosterBySlug[short]; return;}
+img.style.background = 'linear-gradient(135deg, #2a3a6b, #5a2a6b)'; img.style.minHeight = '180px';}
+function maybeFallbackTiny(img){if (!img || img.__mfFallback) return; const src = img.currentSrc || img.src || ''; if (!src) return; if (src.indexOf('assets/posters/') === 0) return; const nw = img.naturalWidth || 0; const nh = img.naturalHeight || 0; const isRasterish = nw > 50 && nh > 50; if (isRasterish) return; fallbackImage(img);}
+document.addEventListener('error', function(e){const t = e.target; if (t && t.tagName === 'IMG') fallbackImage(t);}, true); document.addEventListener('load', function(e){const t = e.target; if (t && t.tagName === 'IMG') maybeFallbackTiny(t);}, true); async function loadDetails(){if (detailsCache) return detailsCache; try {const r = await fetch('assets/details.json', {cache: 'force-cache'}); if (!r.ok) throw new Error('HTTP ' + r.status); detailsCache = await r.json();} catch (e) {console.warn('details.json not loaded:', e); detailsCache = {};}
+return detailsCache;}
+function keyOf(t){return (t || '').replace(/&apos;/g, "'").replace(/&amp;/g, '&').trim();}
+function escapeHtml(s){return String(s == null ? '': s)
+.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+.replace(/"/g, '&quot;').replace(/'/g, '&#39;');}
+function decodeEntities(s){if (s == null) return ''; return String(s)
+.replace(/&apos;/g, '\u2019')
+.replace(/&#39;/g, '\u2019')
+.replace(/&amp;/g, '&')
+.replace(/&quot;/g, '\u201D')
+.replace(/&lt;/g, '<')
+.replace(/&gt;/g, '>')
+.replace(/\\u0026apos;/g, '\u2019')
+.replace(/\\u0026amp;/g, '&')
+.replace(/\\u2019/g, '\u2019');}
+function renderStars(n){n = Math.max(0, Math.min(5, Math.round(n))); let html = ''; for (let i = 0; i < 5; i++) {const path = '<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>'; const fill = i < n ? '#f5c518': 'rgba(20,30,55,0.15)'; html += '<svg viewBox="0 0 24 24" width="16" height="16" style="fill:' + fill + '">' + path + '</svg>';}
+return html;}
+function renderDetails(d){detailTitle.textContent = decodeEntities(d.title); detailCrumbTitle.textContent = decodeEntities(d.title); detailCrumbType.textContent = d.type === 'TVSeries' ? 'TV Shows': 'Movies'; detailPoster.src = d.poster; detailPoster.alt = d.title; detailBg.style.backgroundImage = d.backdrop ? 'url(' + JSON.stringify(d.backdrop) + ')': 'url(' + JSON.stringify(d.poster) + ')'; let badges = ''; if (d.imdb) badges += '<span class="badge badge-imdb">' + escapeHtml(decodeEntities(d.imdb)) + '</span>'; if (d.runtime) badges += '<span class="badge badge-genre">' + escapeHtml(decodeEntities(d.runtime)) + '</span>'; if (d.released)badges += '<span class="badge badge-genre">' + escapeHtml(decodeEntities(d.released.slice(0,4))) + '</span>'; const genresStr = decodeEntities(d.genres) || ''; if (genresStr) genresStr.split(',').slice(0,3).forEach(function(g){badges += '<a class="badge badge-genre" href="#">' + escapeHtml(g.trim()) + '</a>';}); detailBadges.innerHTML = badges; detailDesc.textContent = decodeEntities(d.desc) || 'No description available.'; const meta = [{label: 'Country', value: d.country || '\u2014'}, {label: 'Released', value: d.released || '\u2014'}, {label: 'Genres', value: d.genres || '\u2014'}, {label: 'Director', value: d.director || '\u2014'}, {label: 'Casts', value: d.casts || '\u2014'}, {label: 'Type', value: d.type === 'TVSeries' ? 'TV Series': 'Movie'}]; detailMeta.innerHTML = meta.map(function(m){return '<div class="detail-meta-row"><span class="detail-meta-label">' + escapeHtml(m.label) +
+'</span><span class="detail-meta-value">' + escapeHtml(decodeEntities(m.value)) + '</span></div>';}).join(''); const stars = d.stars != null ? d.stars: 4; detailStars.innerHTML = renderStars(stars); if (d.trailer) {detailTrailer.href = d.trailer; detailTrailer.style.display = '';} else {detailTrailer.style.display = 'none';}}
+async function openDetails(card){if (!detailOverlay) return; const title = card.dataset.title || (card.querySelector && card.querySelector('.card-title') && card.querySelector('.card-title').textContent) || ''; const type = card.dataset.type || 'Movie'; const poster = card.dataset.poster; const year = card.dataset.year; const runtime = card.dataset.runtime; const genre = card.dataset.genre; const key = keyOf(title); const all = await loadDetails(); const fromYflix = (all && (all[key] || all[title])) || null; const fromCurated = (curated && (curated[key] || curated[title])) || null; const d = {title: key, type: type, poster: poster, backdrop: fromYflix ? (fromYflix.backdrop && fromYflix.backdrop.indexOf('http') === 0 ? fromYflix.backdrop: (fromYflix.backdrop ? 'https://yflix.ws' + fromYflix.backdrop: poster)): poster, imdb: (fromYflix && fromYflix.imdb) || (fromCurated && fromCurated.imdb) || '', runtime: (fromYflix && fromYflix.runtime) || (fromCurated && fromCurated.runtime) || (runtime ? runtime + ' min': ''), year: year || ((fromYflix && fromYflix.released) || '').slice(0,4), released:(fromYflix && fromYflix.released) || (fromCurated && fromCurated.released) || '', genres: (fromYflix && fromYflix.genres) || (fromCurated && fromCurated.genres) || genre || '', desc: (fromYflix && fromYflix.desc) || (fromCurated && fromCurated.desc) || 'A featured title on MengFlix.', country: (fromYflix && fromYflix.country) || (fromCurated && fromCurated.country) || '', director:(fromYflix && fromYflix.director)|| (fromCurated && fromCurated.director)|| '', casts: (fromYflix && fromYflix.casts) || (fromCurated && fromCurated.casts) || '', trailer: (fromYflix && fromYflix.trailer) || '', stars: (fromYflix && fromYflix.stars != null) ? fromYflix.stars: (fromCurated && fromCurated.stars != null) ? fromCurated.stars: 4}; renderDetails(d); detailOverlay.hidden = false; detailOverlay.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; if (detailPanel) detailPanel.focus();}
+function closeDetails(){if (!detailOverlay || detailOverlay.dataset.closing === '1') return; detailOverlay.setAttribute('aria-hidden', 'true'); __mfAnimateClose(detailOverlay, detailPanel, function(){detailOverlay.hidden = true; document.body.style.overflow = '';});}
+function detailIsOpen(){return detailOverlay && !detailOverlay.hidden;}
+document.addEventListener('mf:close', closeDetails); window.__mfCloseDetails = closeDetails; window.__mfOpenPlayer = openPlayer; window.__mfClosePlayer = closePlayer; document.addEventListener('click', function(e){const trigger = e.target.closest && e.target.closest('[data-open]'); if (!trigger) return; const card = trigger.closest('.content-card') || trigger; e.preventDefault(); openDetails(card);}); if (detailOverlay) {detailOverlay.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click', closeDetails);}); detailClose && detailClose.addEventListener('click', closeDetails);}
+let currentPlayer = null; function hostOf(url){try {return new URL(url).host.replace(/^www\./, '');} catch (e) {return '';}}
+let currentServerIdx = -1; function selectServer(idx){if (!currentPlayer || !currentPlayer.sources || !currentPlayer.sources[idx]) return; const src = currentPlayer.sources[idx]; let url = src.url; if (!/[?&]autoPlay=/.test(url) && !/autoplay=/i.test(url)){url += (url.indexOf('?') >= 0 ? '&': '?') + 'autoplay=true';}
+currentServerIdx = idx; playerFrame.src = url; playerPlaceholder && playerPlaceholder.classList.add('is-hidden'); Array.from(playerServers.children).forEach(function(b, i){b.setAttribute('aria-selected', i === idx ? 'true': 'false');});}
+function reloadCurrentServer(){if (currentServerIdx < 0) return; const idx = currentServerIdx; const src = currentPlayer && currentPlayer.sources && currentPlayer.sources[idx]; if (!src) return; playerFrame.removeAttribute('src'); if (playerReload){playerReload.classList.remove('is-spinning'); void playerReload.offsetWidth; playerReload.classList.add('is-spinning'); setTimeout(function(){playerReload.classList.remove('is-spinning');}, 600);}
+setTimeout(function(){selectServer(idx);}, 80);}
+async function openPlayer(card){if (!playerOverlay) return; const title = (card && (card.dataset.title || (card.querySelector && card.querySelector('.card-title') && card.querySelector('.card-title').textContent))) || ''; const type = (card && card.dataset.type) || 'Movie'; const key = keyOf(title); const all = await loadDetails(); const fromYflix = (all && (all[key] || all[title])) || null; const fromCurated = (curated && (curated[key] || curated[title])) || null; let sources = (fromYflix && fromYflix.sources) || (fromCurated && fromCurated.sources) || []; const watchUrl = (fromYflix && fromYflix.watch_url) || (fromCurated && fromCurated.watch_url) || ''; currentPlayer = {title: key, type: type, sources: sources, watchUrl: watchUrl}; playerTitle.textContent = decodeEntities(key); playerCrumbTitle.textContent = decodeEntities(key); playerCrumbType.textContent = type === 'TVSeries' ? 'TV Shows': 'Movies'; playerWatchLink.href = watchUrl || '#'; playerWatchLink.style.display = watchUrl ? '': 'none'; playerServers.innerHTML = ''; if (sources.length === 0 && watchUrl && (/yflix\.ws/.test(watchUrl) || /ramoflix\.net/.test(watchUrl))){const fallbackName = /ramoflix\.net/.test(watchUrl) ? 'RamoFlix': 'yFlix'; sources = [{name: fallbackName, url: watchUrl, provider: fallbackName, rank: 0}]; playerServers.innerHTML = '';}
+if (sources.length === 0){playerServers.innerHTML = '<p class="player-servers-empty">No playable servers available for this title yet.</p>';} else {sources.forEach(function(s, i){const b = document.createElement('button'); b.type = 'button'; b.className = 'player-server-btn'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', 'false'); b.dataset.index = String(i); const providerLabel = s.provider || hostOf(s.url); b.innerHTML = '<span class="server-dot" aria-hidden="true"></span>' +
+'<span class="server-meta">' +
+'<span class="server-name">' + escapeHtml(s.name) + '</span>' +
+'<span class="player-server-host">' + escapeHtml(providerLabel) + '</span>' +
+'</span>'; b.addEventListener('click', function(){selectServer(i);}); playerServers.appendChild(b);});}
+playerFrame.removeAttribute('src'); if (playerPlaceholder) playerPlaceholder.classList.remove('is-hidden'); if (detailIsOpen()) closeDetails(); playerOverlay.hidden = false; playerOverlay.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; if (playerPanel) playerPanel.focus(); if (sources.length) selectServer(0);}
+function closePlayer(){if (!playerOverlay || playerOverlay.dataset.closing === '1') return; playerOverlay.setAttribute('aria-hidden', 'true'); __mfAnimateClose(playerOverlay, playerPanel, function(){playerOverlay.hidden = true; try {playerFrame.removeAttribute('src');} catch (e) {try {playerFrame.src = 'about:blank';} catch(_){}}
+currentPlayer = null; document.body.style.overflow = '';});}
+function playerIsOpen(){return playerOverlay && !playerOverlay.hidden;}
+const playerReload = document.getElementById('playerReload'); if (playerReload) playerReload.addEventListener('click', function(e){e.preventDefault(); reloadCurrentServer();}); if (playerOverlay){playerOverlay.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click', function(e){if (el.tagName === 'A') e.preventDefault(); closePlayer();});});}
+if (detailPlay){detailPlay.addEventListener('click', function(e){e.preventDefault(); const key = keyOf(detailTitle.textContent || ''); openPlayer({dataset: {title: key, type: 'Movie'}});});}
+function interceptHeroPlayButtons(){document.querySelectorAll('.yf-hero-slide .btn-play-circle, .yf-hero-slide [data-open]').forEach(function(a){if (a.__mfPlayerWired) return; a.__mfPlayerWired = true; a.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); openPlayer(a);}, true);});}
+onCardsReady(function(){interceptHeroPlayButtons();}); function interceptCardPlayButtons(){document.querySelectorAll('.content-card').forEach(function(card){if (card.__mfPlayerWired) return; card.__mfPlayerWired = true; const infoBtn = document.createElement('button'); infoBtn.type = 'button'; infoBtn.className = 'card-info-btn'; infoBtn.setAttribute('aria-label', 'More info about ' + (card.dataset.title || 'this title')); infoBtn.title = 'More info'; infoBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="11" x2="12" y2="16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.2" fill="currentColor"/></svg>'; infoBtn.addEventListener('click', function(e){e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); openDetails(card);}); const posterWrap = card.querySelector('.card-poster-wrap'); if (posterWrap) posterWrap.appendChild(infoBtn); card.addEventListener('click', function(e){if (e.target.closest && e.target.closest('.card-info-btn')) return; e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); openPlayer(card);}, true);});}
+onCardsReady(function(){interceptCardPlayButtons();}); if (detailFav) detailFav.addEventListener('click', function(){detailFav.classList.toggle('is-active');}); if (detailShare) detailShare.addEventListener('click', async function(){const t = detailTitle.textContent; const data = {title: t, text: t + ' on MengFlix', url: location.href}; try {if (navigator.share) await navigator.share(data); else await navigator.clipboard.writeText(data.text + ' ' + data.url);} catch (e) {}}); window.__mfApplyTheme = null; const THEME_KEY = 'mengflix-theme'; const VALID_THEMES = ['white','black','orange','green','purple','blue']; const themeSwitcher = document.getElementById('themeSwitcher'); const themeBtn = document.getElementById('themeBtn'); const themeOptions = document.querySelectorAll('.theme-option'); function applyTheme(name){var themeCSS = document.getElementById('theme-css'); if (!themeCSS){themeCSS = document.createElement('link'); themeCSS.id = 'theme-css'; themeCSS.rel = 'stylesheet'; document.head.appendChild(themeCSS);} if (name && name !== 'white'){themeCSS.href = 'assets/css/theme-' + name + '.css';} else {themeCSS.removeAttribute('href');}
+if (VALID_THEMES.indexOf(name) === -1) name = 'white'; document.documentElement.setAttribute('data-theme', name); try {localStorage.setItem(THEME_KEY, name);} catch (e) {}
+themeOptions.forEach(function(opt){const on = opt.dataset.theme === name; opt.setAttribute('aria-checked', String(on));});}
+window.__mfApplyTheme = applyTheme; function getInitialTheme(){try {const saved = localStorage.getItem(THEME_KEY); if (saved && VALID_THEMES.indexOf(saved) !== -1) return saved;} catch (e) {}
+try {if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'black';} catch (e) {}
+return 'white';}
+function getRequestedTheme(){try {const t = new URLSearchParams(location.search).get("theme"); if (t && VALID_THEMES.indexOf(t) !== -1) return t;} catch (e) {}
+return null;}
+applyTheme(getRequestedTheme() || getInitialTheme()); if (themeBtn && themeSwitcher) {themeBtn.addEventListener('click', function(e){e.stopPropagation(); const open = themeSwitcher.classList.toggle('open'); themeBtn.setAttribute('aria-expanded', String(open));}); document.addEventListener('click', function(e){if (themeSwitcher && !themeSwitcher.contains(e.target)){themeSwitcher.classList.remove('open'); themeBtn.setAttribute('aria-expanded', 'false');}}); document.addEventListener('keydown', function(e){if (e.key === 'Escape' && themeSwitcher.classList.contains('open')){themeSwitcher.classList.remove('open'); themeBtn.setAttribute('aria-expanded', 'false');}});}
+themeOptions.forEach(function(opt){opt.addEventListener('click', function(e){e.stopPropagation(); applyTheme(opt.dataset.theme); if (themeSwitcher){themeSwitcher.classList.remove('open'); themeBtn.setAttribute('aria-expanded', 'false');}});});})(); (function(){try {const params = new URLSearchParams(location.search); const open = params.get('open'); if (!open) return; const find = setInterval(() => {const card = Array.from(document.querySelectorAll('.content-card'))
+.find(c => (c.dataset.title || '').toLowerCase() === open.toLowerCase()); if (card) {clearInterval(find); const trigger = card.querySelector('[data-open]'); if (trigger) trigger.click();}}, 100); setTimeout(() => clearInterval(find), 5000);} catch (e) {}})(); (function(){})(); (function(){try {const t = new URLSearchParams(location.search).get("play"); if (!t) return; const tryOpen = setInterval(function(){if (typeof window.__mfOpenPlayer === "function"){clearInterval(tryOpen); window.__mfOpenPlayer({dataset: {title: t, type: "Movie"}});}}, 80); setTimeout(function(){clearInterval(tryOpen);}, 4000);} catch (e) {}})(); function __mfAnimateClose(overlay, panelEl, onDone){if (!overlay) {if (typeof onDone === 'function') onDone(); return;}
+if (overlay.dataset.closing === '1') return; overlay.dataset.closing = '1'; overlay.classList.add('is-closing'); var finished = false; function done(){if (finished) return; finished = true; overlay.classList.remove('is-closing'); overlay.removeAttribute('data-closing'); if (typeof onDone === 'function') onDone();}
+var target = panelEl || overlay; var onEnd = function(e){if (e && e.target !== target) return; target.removeEventListener('animationend', onEnd); done();}; target.addEventListener('animationend', onEnd); setTimeout(done, 400); if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){setTimeout(done, 0);}}
 window.__mfAnimateClose = __mfAnimateClose;

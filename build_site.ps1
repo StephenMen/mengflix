@@ -1,4 +1,4 @@
-﻿# Build MengFlix index.html from data + details.json + poster_map.json
+# Build MengFlix index.html from data + details.json + poster_map.json
 $ErrorActionPreference = "Stop"
 
 function Slug($s){ ($s.ToLower() -replace "[^a-z0-9]+","-" -replace "^-|-$","") }
@@ -16,6 +16,8 @@ if (Test-Path "assets/poster_map.json") {
 function Poster($t){
   $slug = Slug $t
   if ($posterMap.ContainsKey($slug)) { return $posterMap[$slug] }
+  $webp = "assets/posters/$slug.webp"
+  if (Test-Path $webp) { return $webp }
   return "assets/posters/$slug.svg"
 }
 
@@ -179,6 +181,33 @@ $cards
 "@
 }
 
+# Slider-Section-Shell - outputs skeleton section with empty slider-track for dynamic loading
+function Slider-Section-Shell($id, $title) {
+@"
+  <section class="section" id="$id" aria-labelledby="$id-title">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title" id="$id-title">$title</h2>
+        <a href="#" class="btn-view-all">View All
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        </a>
+      </div>
+      <div class="slider-wrap">
+        <button type="button" class="slider-btn slider-btn-prev" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+        <div class="slider-track">
+          <!-- skeleton cards loaded dynamically from cards.json -->
+        </div>
+        <button type="button" class="slider-btn slider-btn-next" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+"@
+}
+
 $heroSlides = ($slides | ForEach-Object { $i = $slides.IndexOf($_); $active = if ($i -eq 0) { ' active' } else { '' }
 $bg = Backdrop $_.title
 $poster = Poster $_.title
@@ -214,6 +243,68 @@ $poster = Poster $_.title
 $heroDots = ($slides | ForEach-Object { $i = $slides.IndexOf($_); $active = if ($i -eq 0) { ' active' } else { '' }
 "<button class=`"yf-hero-dot$active`" data-go=`"$i`" aria-label=`"Go to slide $($i+1)`"></button>" }) -join "`n"
 
+# ============================================================
+# Build JSON data for dynamic card loading (cards.json + search_index.json)
+# ============================================================
+$sectionData = @{}
+$sectionData["latest-movies"] = $movies | Select-Object -First 14 | ForEach-Object {
+  @{ title=$_.t; type='Movie'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+$sectionData["trending"] = $movies | Select-Object -Skip 6 -First 14 | ForEach-Object {
+  @{ title=$_.t; type='Movie'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+$sectionData["top-rated"] = $movies | Select-Object -Skip 10 -First 14 | ForEach-Object {
+  @{ title=$_.t; type='Movie'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+$sectionData["latest-series"] = $tvs | Select-Object -First 14 | ForEach-Object {
+  @{ title=$_.t; type='TVSeries'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+$sectionData["web-series"] = $tvs | Select-Object -Skip 6 -First 14 | ForEach-Object {
+  @{ title=$_.t; type='TVSeries'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+$sectionData["binge"] = $tvs | Select-Object -Skip 12 -First 14 | ForEach-Object {
+  @{ title=$_.t; type='TVSeries'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g }
+}
+
+# Export cards.json
+$cardsJsonPath = (Resolve-Path "assets").Path + '\cards.json'
+$cardsJson = $sectionData | ConvertTo-Json -Depth 3 -Compress
+[System.IO.File]::WriteAllText($cardsJsonPath, $cardsJson, [System.Text.UTF8Encoding]::new($false))
+Write-Output ("cards.json bytes: " + (Get-Item "assets/cards.json").Length)
+
+# Export search_index.json (flat array of all cards)
+$searchIndex = @()
+$sectionData.Keys | ForEach-Object {
+  $sid = $_
+  $sectionData[$sid] | ForEach-Object {
+    $searchIndex += $_
+  }
+}
+# Add donghua to search index
+$donghuaData = @{}
+if (Test-Path "assets/donghua.json") {
+  try { $donghuaData = Get-Content "assets/donghua.json" -Raw | ConvertFrom-Json } catch {}
+}
+$donghuaData.PSObject.Properties | ForEach-Object {
+  $key = $_.Name
+  $d = $_.Value
+  $searchIndex += @{
+    title = $key
+    type = 'Donghua'
+    poster = if ($d.poster) { $d.poster } else { "assets/posters/$(Slug $key).svg" }
+    year = if ($d.year) { [int]$d.year } else { 0 }
+    runtime = 0
+    genre = if ($d.genres) { $d.genres } else { '' }
+  }
+}
+$searchJsonPath = (Resolve-Path "assets").Path + '\search_index.json'
+$searchJson = $searchIndex | ConvertTo-Json -Depth 3 -Compress
+[System.IO.File]::WriteAllText($searchJsonPath, $searchJson, [System.Text.UTF8Encoding]::new($false))
+Write-Output ("search_index.json bytes: " + (Get-Item "assets/search_index.json").Length)
+
+# ============================================================
+# Build main HTML template
+# ============================================================
 $html = @"
 <!doctype html>
 <html lang="en">
@@ -314,32 +405,19 @@ $heroDots
     </div>
   </section>
 
-$( Slider-Section 'latest-movies' 'Latest Movies' (@(
-  @{t='The Devil Wears Prada 2'; y=2026; m=119; g='Drama'},
-  @{t='Swapped'; y=2026; m=102; g='Animation'},
-  @{t='Michael'; y=2026; m=146; g='Music'},
-  @{t='Apex'; y=2026; m=96; g='Thriller'},
-  @{t='Scream 7'; y=2026; m=114; g='Horror'},
-  @{t='Breaking Boundaries'; y=2024; m=76; g='Documentary'},
-  @{t='Bangalore Days'; y=2014; m=171; g='Drama'},
-  @{t='Baraka'; y=1992; m=96; g='Documentary'},
-  @{t='Chak De! India'; y=2007; m=153; g='Drama'},
-  @{t='Seaspiracy'; y=2021; m=89; g='Documentary'},
-  @{t='Dune: Part Two'; y=2024; m=166; g='Sci-Fi'},
-  @{t='Oppenheimer'; y=2023; m=180; g='Biography'},
-  @{t='Poor Things'; y=2023; m=141; g='Comedy'},
-  @{t='The Substance'; y=2024; m=141; g='Horror'}
-)) 'Movie' )
+$( Slider-Section-Shell 'latest-movies' 'Latest Movies' )
 
-$( Slider-Section 'trending' 'Trending Now' ($movies | Select-Object -Skip 6 -First 14) 'Movie' )
+$( Slider-Section-Shell 'trending' 'Trending Now' )
 
-$( Slider-Section 'top-rated' 'Top Rated' ($movies | Select-Object -Skip 10 -First 14) 'Movie' )
+$( Slider-Section-Shell 'top-rated' 'Top Rated' )
 
-$( Slider-Section 'latest-series' 'Latest TV Series' ($tvs | Select-Object -First 14) 'TVSeries' )
+$( Slider-Section-Shell 'latest-series' 'Latest TV Series' )
 
-$( Slider-Section 'web-series' 'Web Series' ($tvs | Select-Object -Skip 6 -First 14) 'TVSeries' )
+$( Slider-Section-Shell 'web-series' 'Web Series' )
 
-$( Slider-Section 'binge' 'Binge-Worthy Series' ($tvs | Select-Object -Skip 12 -First 14) 'TVSeries' )
+$( Slider-Section-Shell 'binge' 'Binge-Worthy Series' )
+
+$( Slider-Section-Shell 'donghua' 'Donghua' )
 
   </main>
 
@@ -434,7 +512,63 @@ $( Slider-Section 'binge' 'Binge-Worthy Series' ($tvs | Select-Object -Skip 12 -
     </div>
   </div>
 
+  <!-- Player Overlay -->
+  <div class="player-overlay" id="playerOverlay" hidden aria-hidden="true">
+    <div class="player-overlay-bg" data-close></div>
+    <div class="player-panel" id="playerPanel" role="dialog" aria-modal="true" aria-labelledby="playerTitle" tabindex="-1">
+      <button type="button" class="player-close" id="playerClose" aria-label="Close player" data-close>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="player-breadcrumbs" aria-label="Breadcrumb">
+        <a href="#" data-close>Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="#" data-close id="playerCrumbType">Movies</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" id="playerCrumbTitle">&hellip;</span>
+      </nav>
+      <h2 class="player-title" id="playerTitle">&hellip;</h2>
+      <div class="player-layout">
+        <div class="player-video-wrap">
+          <div class="player-placeholder" id="playerPlaceholder">
+            <div class="player-placeholder-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
+            </div>
+            <p class="player-placeholder-text">Select a server to start streaming</p>
+          </div>
+          <iframe class="player-frame" id="playerFrame" allowfullscreen allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy"></iframe>
+        </div>
+        <div class="player-sidebar">
+          <div class="player-servers" id="playerServers">
+            <h3 class="player-servers-title">Servers</h3>
+            <p class="player-servers-empty">Loading server options&hellip;</p>
+          </div>
+          <div class="player-episodes" id="playerEpisodes" hidden>
+            <h3 class="player-episodes-title">Episodes <span class="episode-count" id="episodeCount"></span></h3>
+            <div class="episode-grid" id="episodeGrid"></div>
+          </div>
+          <div class="player-hint" id="playerHint">
+            If the player doesn't load, try a different server or
+            <a href="#" id="playerWatchLink" target="_blank" rel="noopener" style="display:none">open in a new tab</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/episodes.js" defer></script>
+  <script>
+  /* Fallback: sign-in toast (main.js may not have it) */
+  document.getElementById('signInBtn') && document.getElementById('signInBtn').addEventListener('click', function(e){
+    e.preventDefault();
+    var t = document.createElement('div');
+    t.className = 'mf-toast'; t.setAttribute('role', 'status');
+    t.textContent = 'Sign in is coming soon. Stay tuned!';
+    document.body.appendChild(t);
+    requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); });
+    setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+  });
+  </script>
 </body>
 </html>
 "@
@@ -442,3 +576,6 @@ $( Slider-Section 'binge' 'Binge-Worthy Series' ($tvs | Select-Object -Skip 12 -
 [System.IO.File]::WriteAllText((Resolve-Path .).Path + '\index.html', $html, [System.Text.UTF8Encoding]::new($false))
 Write-Output ("index.html bytes: " + (Get-Item index.html).Length)
 
+# Minify
+Write-Output "`nMinifying..."
+& python minify.py

@@ -1,0 +1,48 @@
+/* MengFlix theme: blue */
+/* ---------- Theme: blue ---------- */
+[data-theme="blue"]{
+  --bg:           #e8f0fb;
+  --bg-2:         #ffffff;
+  --bg-3:         #c8d9f1;
+  --bg-soft:      #eef4fc;
+  --bg-grid:      rgba(30, 80, 180, 0.06);
+  --bg-blob-1:    radial-gradient(circle at 30% 30%, #4d7dff, transparent 60%);
+  --bg-blob-2:    radial-gradient(circle at 70% 30%, #1a3b8b, transparent 60%);
+  --bg-blob-3:    radial-gradient(circle at 50% 50%, #a3c0ff, transparent 60%);
+  --page-grad:    radial-gradient(1200px 800px at 80% -10%, #ffffff 0%, transparent 60%),
+                  radial-gradient(900px 700px at 0% 110%, #c8d9f1 0%, transparent 55%),
+                  linear-gradient(180deg, #eef4fc 0%, #d6e3f6 100%);
+
+  --ink:          #0a1a3a;
+  --ink-soft:     #1c2e5a;
+  --ink-mute:     #4a5a7a;
+  --line:         rgba(30, 80, 180, 0.16);
+  --line-2:       rgba(30, 80, 180, 0.26);
+
+  --accent:       #1a3b8b;
+  --accent-2:     #4d7dff;
+  --accent-3:     #a3c0ff;
+  --accent-grad:  linear-gradient(135deg, #1a3b8b 0%, #4d7dff 50%, #a3c0ff 100%);
+  --accent-tint:  rgba(30, 80, 180, 0.30);
+  --accent-soft:  #e0eaff;
+  --accent-ink:   #0c2160;
+
+  --shadow-color: rgba(20, 50, 120, 0.18);
+  --shadow-color-strong: rgba(20, 50, 120, 0.28);
+  --highlight-color: rgba(255, 255, 255, 0.90);
+
+  --surface:      #ffffff;
+  --surface-2:    #e8f0fb;
+  --surface-3:    #c8d9f1;
+  --surface-inset: #e8f0fb;
+  --border:       rgba(30, 80, 180, 0.16);
+  --imdb-tint:    #e5eeff;
+  --imdb-ink:     #0c2160;
+
+  --card-grad:    linear-gradient(180deg, #ffffff 0%, #eef4fc 100%);
+  --btn-signin-shadow: 0 8px 18px rgba(30, 80, 180, 0.35);
+  --btn-signin-shadow-hover: 0 12px 24px rgba(30, 80, 180, 0.45);
+
+  --hero-fade: linear-gradient(180deg, rgba(232,240,251,0) 0%, rgba(232,240,251,.40) 55%, rgba(232,240,251,.92) 100%), linear-gradient(90deg, rgba(232,240,251,.95) 0%, rgba(232,240,251,.60) 35%, rgba(232,240,251,0) 70%);}
+
+

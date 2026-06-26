@@ -1,0 +1,48 @@
+/* MengFlix theme: green */
+/* ---------- Theme: green ---------- */
+[data-theme="green"]{
+  --bg:           #e8f5ee;
+  --bg-2:         #ffffff;
+  --bg-3:         #cfe9d8;
+  --bg-soft:      #f0f9f3;
+  --bg-grid:      rgba(20, 130, 70, 0.06);
+  --bg-blob-1:    radial-gradient(circle at 30% 30%, #19a974, transparent 60%);
+  --bg-blob-2:    radial-gradient(circle at 70% 30%, #5ed28a, transparent 60%);
+  --bg-blob-3:    radial-gradient(circle at 50% 50%, #b3e8c1, transparent 60%);
+  --page-grad:    radial-gradient(1200px 800px at 80% -10%, #ffffff 0%, transparent 60%),
+                  radial-gradient(900px 700px at 0% 110%, #cfe9d8 0%, transparent 55%),
+                  linear-gradient(180deg, #f0f9f3 0%, #d8efe1 100%);
+
+  --ink:          #0c2618;
+  --ink-soft:     #1d4530;
+  --ink-mute:     #4a6a58;
+  --line:         rgba(20, 130, 70, 0.16);
+  --line-2:       rgba(20, 130, 70, 0.26);
+
+  --accent:       #19a974;
+  --accent-2:     #0d8a5a;
+  --accent-3:     #5ed28a;
+  --accent-grad:  linear-gradient(135deg, #19a974 0%, #0d8a5a 50%, #5ed28a 100%);
+  --accent-tint:  rgba(25, 169, 116, 0.30);
+  --accent-soft:  #e3f7ed;
+  --accent-ink:   #0a6b46;
+
+  --shadow-color: rgba(10, 90, 50, 0.18);
+  --shadow-color-strong: rgba(10, 90, 50, 0.28);
+  --highlight-color: rgba(255, 255, 255, 0.90);
+
+  --surface:      #ffffff;
+  --surface-2:    #e8f5ee;
+  --surface-3:    #cfe9d8;
+  --surface-inset: #e8f5ee;
+  --border:       rgba(20, 130, 70, 0.16);
+  --imdb-tint:    #ecfae5;
+  --imdb-ink:     #1c5a30;
+
+  --card-grad:    linear-gradient(180deg, #ffffff 0%, #f0f9f3 100%);
+  --btn-signin-shadow: 0 8px 18px rgba(25, 169, 116, 0.35);
+  --btn-signin-shadow-hover: 0 12px 24px rgba(25, 169, 116, 0.45);
+
+  --hero-fade: linear-gradient(180deg, rgba(232,245,238,0) 0%, rgba(232,245,238,.40) 55%, rgba(232,245,238,.92) 100%), linear-gradient(90deg, rgba(232,245,238,.95) 0%, rgba(232,245,238,.60) 35%, rgba(232,245,238,0) 70%);}
+
+

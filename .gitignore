@@ -48,3 +48,24 @@ scrape_*.py
 scrape_*.ps1
 build_*.ps1
 gladiator_ii.png
+
+# Block scraping data outputs from draining tokens
+*.html
+*.json
+*.csv
+*.tsv
+*.xlsx
+
+# Block local data directories
+data/
+outputs/
+downloads/
+cache/
+
+# Block system and developer clutter
+.venv/
+env/
+node_modules/
+*.log
+# generated
+donghua_section.html
