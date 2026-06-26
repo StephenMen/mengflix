@@ -1,0 +1,2 @@
+# MengFlix redirects
+/assets/posters/* /assets/posters/:splat 200

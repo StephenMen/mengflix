@@ -1,0 +1,21 @@
+/*
+  Permissions-Policy: popups=(),fullscreen=(),clipboard-write=(),window-management=()
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+
+/assets/*.json
+  Cache-Control: no-cache
+
+/assets/*.webp
+  Cache-Control: public, max-age=86400
+
+/assets/*.svg
+  Cache-Control: public, max-age=86400
+
+/assets/css/*
+  Cache-Control: public, max-age=86400
+
+/assets/js/*
+  Cache-Control: public, max-age=86400
