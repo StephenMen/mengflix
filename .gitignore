@@ -69,3 +69,9 @@ node_modules/
 *.log
 # generated
 donghua_section.html
+
+# Scraped data files
+_*.html
+_animecube_detail.html
+_firecrawl_debug.html
+_rsc_detail.txt
