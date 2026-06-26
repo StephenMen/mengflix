@@ -26,14 +26,14 @@ _shot_*.py
 _poster_urls.txt
 _ramoflix_scrape.json
 
-# Build/scrape scripts that aren't part of the deployed site
+# Build/scrape scripts — not deployed
 build_posters.ps1
 build_site.ps1
 scrape_details.ps1
 scrape_ramoflix.py
 scrape_sources.py
 
-# Local poster assets used during build (if any end up here)
+# Local poster assets
 gladiator_ii.png_local_backup/
 _patches/
 _server.*
@@ -49,29 +49,20 @@ scrape_*.ps1
 build_*.ps1
 gladiator_ii.png
 
-# Block scraping data outputs from draining tokens
-*.html
-*.json
-*.csv
-*.tsv
-*.xlsx
-
 # Block local data directories
 data/
 outputs/
 downloads/
 cache/
 
-# Block system and developer clutter
+# Block system clutter
 .venv/
 env/
 node_modules/
 *.log
-# generated
-donghua_section.html
 
-# Scraped data files
+# Generated HTML (scraped data)
 _*.html
 _animecube_detail.html
 _firecrawl_debug.html
-_rsc_detail.txt
+donghua_section.html
