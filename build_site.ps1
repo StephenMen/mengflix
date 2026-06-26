@@ -545,7 +545,7 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
             </div>
             <p class="player-placeholder-text">Select a server to start streaming</p>
           </div>
-          <iframe class="player-frame" id="playerFrame" allowfullscreen allow="autoplay; encrypted-media" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy"></iframe>
+          <iframe class="player-frame" id="playerFrame" allowfullscreen allow="autoplay; encrypted-media; clipboard-write" loading="lazy"></iframe>
         </div>
         <div class="player-sidebar">
           <div class="player-servers" id="playerServers">
@@ -579,6 +579,40 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
       document.body.appendChild(t);
       requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); });
       setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+    });
+  })();
+
+  /* Focus-steal guard: aggressive refocus loop during player mode */
+  (function(){
+    var _focusInterval = null;
+    var _focusCount = 0;
+    document.addEventListener('player-opened', function(){ });
+    var _origOpenPlayer = window.__mfOpenPlayer;
+    var _origClosePlayer = window.__mfClosePlayer;
+    document.addEventListener('click', function(e){
+      var po = document.getElementById('playerOverlay');
+      if (!po || po.hidden) {
+        if (_focusInterval) { clearInterval(_focusInterval); _focusInterval = null; }
+        return;
+      }
+      if (!_focusInterval) {
+        _focusInterval = setInterval(function(){
+          try {
+            if (!document.hasFocus() && po && !po.hidden) {
+              _focusCount++;
+              window.focus();
+              var hint = document.getElementById('playerHint');
+              if (hint && _focusCount < 3) {
+                var orig = hint.dataset.original || hint.innerHTML;
+                if (!hint.dataset.original) hint.dataset.original = orig;
+                hint.innerHTML = '<strong style="color:#ff6b6b">Pop-up blocked!</strong> ' + orig;
+                clearTimeout(hint.__mfTimer);
+                hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000);
+              }
+            }
+          } catch(e){}
+        }, 200);
+      }
     });
   })();
 

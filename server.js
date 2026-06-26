@@ -26,6 +26,7 @@ http.createServer((req, res) => {
       return;
     }
     res.writeHead(200, {
+      'Permissions-Policy': 'popups=(),fullscreen=(),clipboard-write=(),window-management=()',
       'Content-Type': mime[ext] || 'application/octet-stream',
       'Cache-Control': 'no-cache',
     });
