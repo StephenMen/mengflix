@@ -302,6 +302,16 @@ $searchJson = $searchIndex | ConvertTo-Json -Depth 3 -Compress
 [System.IO.File]::WriteAllText($searchJsonPath, $searchJson, [System.Text.UTF8Encoding]::new($false))
 Write-Output ("search_index.json bytes: " + (Get-Item "assets/search_index.json").Length)
 
+# Export full movies + tvs array for View All
+$fullData = @{
+  movies = $movies | ForEach-Object { @{ title=$_.t; type='Movie'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g } }
+  tvs = $tvs | ForEach-Object { @{ title=$_.t; type='TVSeries'; poster=(Poster $_.t); year=[int]$_.y; runtime=[int]$_.m; genre=$_.g } }
+}
+$fullJsonPath = (Resolve-Path "assets").Path + '\full_data.json'
+$fullJson = $fullData | ConvertTo-Json -Depth 3 -Compress
+[System.IO.File]::WriteAllText($fullJsonPath, $fullJson, [System.Text.UTF8Encoding]::new($false))
+Write-Output ("full_data.json bytes: " + (Get-Item "assets/full_data.json").Length)
+
 # ============================================================
 # Build main HTML template
 # ============================================================
@@ -558,15 +568,110 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/episodes.js" defer></script>
   <script>
-  /* Fallback: sign-in toast (main.js may not have it) */
-  document.getElementById('signInBtn') && document.getElementById('signInBtn').addEventListener('click', function(e){
+  /* Fallback: sign-in toast */
+  (function(){
+    var btn = document.getElementById('signInBtn');
+    if (btn) btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var t = document.createElement('div');
+      t.className = 'mf-toast'; t.setAttribute('role', 'status');
+      t.textContent = 'Sign in is coming soon. Stay tuned!';
+      document.body.appendChild(t);
+      requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); });
+      setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+    });
+  })();
+
+  /* View All: show full grid of all items in category */
+  var _viewMode = false;
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.btn-view-all');
+    if (!btn) return;
     e.preventDefault();
-    var t = document.createElement('div');
-    t.className = 'mf-toast'; t.setAttribute('role', 'status');
-    t.textContent = 'Sign in is coming soon. Stay tuned!';
-    document.body.appendChild(t);
-    requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); });
-    setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+    var section = btn.closest('.section');
+    if (!section) return;
+    var id = section.id;
+    _viewMode = true;
+    var sections = document.querySelectorAll('.section');
+    sections.forEach(function(s) { if (s.id !== id) s.style.display = 'none'; });
+    /* Expand this section to show all items in full grid */
+    var track = section.querySelector('.slider-track');
+    if (track) {
+      track.style.display = 'grid';
+      track.style.gridTemplateColumns = 'repeat(auto-fill, minmax(160px, 1fr))';
+      track.style.gridAutoFlow = 'row';
+      track.style.overflow = 'visible';
+      track.style.maxHeight = 'none';
+      track.style.scrollSnapType = 'none';
+      track.style.cursor = 'auto';
+    }
+    section.style.maxWidth = 'none';
+    section.style.padding = '28px 28px 60px';
+    /* Remove slider buttons */
+    var btns = section.querySelectorAll('.slider-btn');
+    btns.forEach(function(b) { b.style.display = 'none'; });
+    /* Add back button */
+    var existingBack = section.querySelector('.view-all-back');
+    if (!existingBack) {
+      var back = document.createElement('a');
+      back.href = '#';
+      back.className = 'view-all-back';
+      back.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:var(--surface);box-shadow:0 4px 12px rgba(0,0,0,0.08);font-size:13px;font-weight:700;margin-bottom:18px;margin-right:12px';
+      back.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg> Back';
+      var header = section.querySelector('.section-header');
+      if (header) header.prepend(back);
+      back.addEventListener('click', function(ev) {
+        ev.preventDefault();
+        _viewMode = false;
+        sections.forEach(function(s) { s.style.display = ''; });
+        if (track) {
+          track.style.display = '';
+          track.style.gridTemplateColumns = '';
+          track.style.gridAutoFlow = '';
+          track.style.overflow = '';
+          track.style.maxHeight = '';
+          track.style.scrollSnapType = '';
+          track.style.cursor = '';
+        }
+        section.style.maxWidth = '';
+        section.style.padding = '';
+        btns.forEach(function(b) { b.style.display = ''; });
+        back.remove();
+        /* Reload cards */
+        if (typeof loadAndRenderCards === 'function') loadAndRenderCards();
+      });
+    }
+    /* Load more items from full_data.json */
+    var header2 = section.querySelector('.section-header');
+    if (!header2 || header2.dataset.fullLoaded) return;
+    header2.dataset.fullLoaded = '1';
+    fetch('assets/full_data.json').then(function(r) { return r.json(); }).then(function(data) {
+      var allItems = [];
+      if (id === 'latest-movies' || id === 'trending' || id === 'top-rated') allItems = data.movies || [];
+      else if (id === 'latest-series' || id === 'web-series' || id === 'binge') allItems = data.tvs || [];
+      if (allItems.length === 0) return;
+      if (track) {
+        track.innerHTML = '';
+        allItems.forEach(function(item) {
+          var art = document.createElement('article');
+          art.className = 'content-card';
+          art.setAttribute('data-title', item.title);
+          art.setAttribute('data-type', item.type);
+          art.setAttribute('data-poster', item.poster);
+          art.setAttribute('data-year', String(item.year));
+          art.setAttribute('data-runtime', String(item.runtime));
+          art.setAttribute('data-genre', item.genre);
+          var label = item.type === 'TVSeries' ? 'Series' : 'Movie';
+          art.innerHTML = '<a href="#" title="' + item.title.replace(/"/g,'&quot;') + '" data-open>' +
+            '<div class="card-poster-wrap">' +
+            '<img src="' + item.poster.replace(/"/g,'&quot;') + '" alt="' + item.title.replace(/"/g,'&quot;') + '" loading="lazy" decoding="async" width="342" height="513">' +
+            '<div class="card-play-overlay"><div class="card-play-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>' +
+            '<div class="card-info-overlay"><h3 class="card-title">' + item.title.replace(/</g,'&lt;') + '</h3>' +
+            '<div class="card-meta"><span>' + label + '</span><span class="sep">&middot;</span><span>' + item.year + '</span></div></div></div></a>';
+          track.appendChild(art);
+        });
+      }
+    }).catch(function(){});
   });
   </script>
 </body>
