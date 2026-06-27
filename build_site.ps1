@@ -434,23 +434,23 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
   <footer class="site-footer">
     <div class="footer-top">
       <div class="footer-logo-row">
-        <div class="footer-line footer-line--left"></div>
+        <div class="footer-line"></div>
         <a href="#" class="footer-logo-btn" aria-label="MengFlix">
           <span class="footer-mark" aria-hidden="true">
             <span class="footer-mark-m">M</span><span class="footer-mark-flix">FLIX</span>
           </span>
         </a>
-        <div class="footer-line footer-line--right"></div>
+        <div class="footer-line"></div>
       </div>
       <p class="footer-desc">
-        <strong>MengFlix</strong> is your destination to watch free HD movies and stream premium TV series online. A curated library of trending titles, new releases, and binge-worthy shows &mdash; zero ads, zero sign-ups.
+        <strong>MengFlix</strong> &mdash; free HD movies and premium TV series. A curated library of trending titles, new releases, and binge-worthy shows, zero sign-ups.
       </p>
     </div>
     <div class="footer-bottom-bar">
       <span class="footer-copy">&copy; 2026 MengFlix</span>
-      <p class="footer-legal">MengFlix is a demo UI. All artwork is sourced from yFlix (yflix.ws) and TMDb; no media is hosted. Built as a portfolio piece.</p>
-      <nav class="footer-nav" aria-label="Footer links">
-        <a href="#">Request Content</a>
+      <p class="footer-legal">Demo UI. Artwork sourced from yFlix and TMDb. No media hosted. Built as a portfolio piece.</p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#">Request</a>
         <a href="#">DMCA</a>
         <a href="#">Contact</a>
       </nav>
