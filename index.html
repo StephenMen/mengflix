@@ -45,7 +45,7 @@
 <button type="button" class="nav-search-link" id="searchOpenBtn" aria-label="Search">
 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
-<a href="#" class="btn-signin">Sign In</a>
+<a href="#" class="btn-signin" id="signInBtn">Sign In</a>
 <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileMenu">
 <span></span><span></span><span></span>
 </button>
@@ -435,6 +435,7 @@
 </span>
 </form>
 <p class="search-overlay-hint">Try &ldquo;Dune&rdquo;, &ldquo;Shogun&rdquo;, or &ldquo;Comedy&rdquo;. Press <kbd>Esc</kbd> to close.</p>
+<div class="search-results" id="searchResults" role="listbox"></div><div class="search-results-empty" id="searchResultsEmpty" hidden><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><p>No results found</p></div>
 </div>
 </div>
 <div class="detail-overlay" id="detailOverlay" hidden aria-hidden="true">
@@ -480,6 +481,39 @@
 <div class="detail-stars" id="detailStars" aria-label="Rating"></div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="signin-overlay" id="signinOverlay" hidden aria-hidden="true">
+<div class="signin-overlay-bg" data-close-signin></div>
+<div class="signin-panel" role="dialog" aria-modal="true" aria-labelledby="signinTitle" tabindex="-1">
+<button type="button" class="signin-close" id="signinClose" aria-label="Close sign-in" data-close-signin>
+<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+<div class="signin-form-wrapper">
+<div class="signin-brand"><span class="logo-mark" aria-hidden="true"><span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span></span></div>
+<h2 class="signin-title" id="signinTitle">Welcome back</h2>
+<p class="signin-subtitle">Sign in to your MengFlix account</p>
+<form class="signin-form" id="signinForm" novalidate>
+<div class="signin-field"><label for="signinEmail">Email</label><input type="email" id="signinEmail" class="signin-input" placeholder="you@example.com" required autocomplete="email" autocapitalize="off" spellcheck="false"></div>
+<div class="signin-field"><label for="signinPassword">Password</label><input type="password" id="signinPassword" class="signin-input" placeholder="Enter your password" required autocomplete="current-password" minlength="6"></div>
+<div class="signin-error" id="signinError" hidden role="alert"></div>
+<button type="submit" class="signin-submit" id="signinSubmit">Sign In</button>
+</form>
+<p class="signin-toggle-text">Don&apos;t have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn">Create one</button></p>
+</div>
+<div class="signup-form-wrapper" hidden>
+<div class="signin-brand"><span class="logo-mark" aria-hidden="true"><span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span></span></div>
+<h2 class="signin-title" id="signupTitle">Create account</h2>
+<p class="signin-subtitle">Join MengFlix for free</p>
+<form class="signin-form" id="signupForm" novalidate>
+<div class="signin-field"><label for="signupName">Name</label><input type="text" id="signupName" class="signin-input" placeholder="Your name" required autocomplete="name" autocapitalize="words" spellcheck="false"></div>
+<div class="signin-field"><label for="signupEmail">Email</label><input type="email" id="signupEmail" class="signin-input" placeholder="you@example.com" required autocomplete="email" autocapitalize="off" spellcheck="false"></div>
+<div class="signin-field"><label for="signupPassword">Password</label><input type="password" id="signupPassword" class="signin-input" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6"></div>
+<div class="signin-error" id="signupError" hidden role="alert"></div>
+<button type="submit" class="signin-submit" id="signupSubmit">Create Account</button>
+</form>
+<p class="signin-toggle-text">Already have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn2">Sign in</button></p>
 </div>
 </div>
 </div>
