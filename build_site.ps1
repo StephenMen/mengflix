@@ -582,6 +582,38 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
     });
   })();
 
+  /* Fix yFlix/RamoFlix servers: redirect to new tab instead of broken iframe */
+  (function(){
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.player-server-btn');
+      if (!btn) return;
+      var text = btn.textContent || '';
+      if (text.indexOf('yFlix') < 0 && text.indexOf('RamoFlix') < 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var watchLink = document.getElementById('playerWatchLink');
+      var url = watchLink && watchLink.href && watchLink.href !== '#' ? watchLink.href : '';
+      if (!url) return;
+      var hint = document.getElementById('playerHint');
+      if (hint) {
+        var orig = hint.dataset.original || hint.innerHTML;
+        if (!hint.dataset.original) hint.dataset.original = orig;
+        hint.innerHTML = '<strong>Opening in new tab...</strong> ' + orig;
+        clearTimeout(hint.__mfTimer);
+        hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000);
+      }
+      var a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, true);
+  })();
+
   /* Focus-steal guard: aggressive refocus loop during player mode */
   (function(){
     var _focusInterval = null;
