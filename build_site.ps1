@@ -565,7 +565,7 @@ $( Slider-Section-Shell 'donghua' 'Donghua' )
     </div>
   </div>
 
-  <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/main.js?v=2" defer></script>
   <script src="assets/js/episodes.js" defer></script>
   <script>
   /* Fallback: sign-in toast */
