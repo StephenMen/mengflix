@@ -171,7 +171,16 @@ function selectServer(idx, sources) {
   if (!sources || !sources[idx]) return;
   var frame = document.getElementById('playerFrame');
   var placeholder = document.getElementById('playerPlaceholder');
-  if (frame) frame.src = sources[idx].url;
+  if (frame) {
+    var url = sources[idx].url;
+    if (!/\bautoPlay\b/.test(url) && !/autoplay=/i.test(url)){
+      url += (url.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+    }
+    if (url.indexOf('dailymotion.com') >= 0 && url.indexOf('ui_endscreen=') < 0){
+      url += (url.indexOf('?') >= 0 ? '&' : '?') + 'ui_endscreen=0';
+    }
+    frame.src = url;
+  }
   if (placeholder) placeholder.classList.add('is-hidden');
 
   var btns = document.querySelectorAll('#playerServers .player-server-btn');
