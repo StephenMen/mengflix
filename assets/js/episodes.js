@@ -176,7 +176,7 @@ function selectServer(idx, sources) {
     if (!/\bautoPlay\b/.test(url) && !/autoplay=/i.test(url)){
       url += (url.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
     }
-    var dm=document.getElementById('dmOverlay');if(url.indexOf('dailymotion.com')>=0){if(!/ui_endscreen=/.test(url))url+=(url.indexOf('?')>=0?'&':'?')+'ui_endscreen=0';if(dm)dm.classList.add('is-active')}else{if(dm)dm.classList.remove('is-active')}
+    var db=document.getElementById('dmBlocker');if(url.indexOf('dailymotion.com')>=0){if(!/ui_endscreen=/.test(url))url+=(url.indexOf('?')>=0?'&':'?')+'ui_endscreen=0';if(db)db.classList.add('is-active')}else{if(db)db.classList.remove('is-active')}
     frame.src = url;
   }
   if (placeholder) placeholder.classList.add('is-hidden');
