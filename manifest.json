@@ -1,0 +1,22 @@
+﻿{
+  "name": "MengFlix",
+  "short_name": "MengFlix",
+  "description": "Free HD movies, TV series, and donghua — stream instantly.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f5f7",
+  "theme_color": "#ff2e63",
+  "orientation": "any",
+  "categories": ["entertainment", "movies", "tv"],
+  "icons": [
+    {
+      "src": "assets/img/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

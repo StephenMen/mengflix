@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en" class="detail-page">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loading... &mdash; MengFlix</title>
+<meta name="description" content="Stream in HD on MengFlix">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/detail.css">
+</head>
+<body>
+<div class="bg-3d" aria-hidden="true">
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+<div class="bg-blob bg-blob-3"></div>
+<div class="bg-grid"></div>
+</div>
+
+<a href="#detail-body" class="skip-link">Skip to content</a>
+
+<header class="site-header" id="siteHeader">
+<div class="container header-inner">
+<a href="/" class="site-logo" aria-label="MengFlix Home">
+<span class="logo-mark" aria-hidden="true">
+<span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span>
+</span>
+<span class="logo-text">MengFlix</span>
+</a>
+<nav class="header-left main-nav-desktop" aria-label="Primary">
+<a href="/" class="nav-home-link">Home</a>
+<a href="/#latest-movies">Movies</a>
+<a href="/#latest-series">TV Shows</a>
+</nav>
+<div class="header-right">
+<button type="button" class="nav-search-link" id="searchOpenBtn" aria-label="Search" title="Search (Ctrl+K)">
+<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+<kbd class="nav-search-kbd" aria-hidden="true">&#8984;K</kbd>
+</button>
+<button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileMenu">
+<span></span><span></span><span></span>
+</button>
+</div>
+</div>
+<div class="mobile-menu" id="mobileMenu" hidden>
+<nav class="mobile-menu-nav" aria-label="Mobile">
+<a href="/" class="mobile-menu-link">Home</a>
+<a href="/#latest-movies" class="mobile-menu-link">Movies</a>
+<a href="/#latest-series" class="mobile-menu-link">TV Shows</a>
+</nav>
+</div>
+</header>
+
+<main id="main-content">
+<article class="detail-page" itemscope itemtype="https://schema.org/Movie">
+
+<section class="detail-hero is-loading" id="detailHero" aria-label="Title details">
+<div class="detail-hero-bg" id="detailBg"></div>
+<div class="detail-hero-content">
+<div class="detail-hero-poster" id="detailPosterWrap">
+<img src="" alt="" id="detailPoster" decoding="async" loading="lazy">
+</div>
+<div class="detail-hero-info" id="detailInfo">
+<nav class="detail-breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a>
+<span class="sep" aria-hidden="true">/</span>
+<a href="/#latest-movies" id="detailCrumbType">Movies</a>
+<span class="sep" aria-hidden="true">/</span>
+<span class="current" id="detailCrumbTitle">Loading...</span>
+</nav>
+<h1 class="detail-hero-title" id="detailTitle">Loading...</h1>
+<div class="detail-hero-meta" id="detailMeta">
+<span id="detailYear">2026</span>
+<span class="dot" aria-hidden="true"></span>
+<span id="detailRuntime">120 min</span>
+<span class="dot" aria-hidden="true"></span>
+<span class="quality" id="detailQuality">HD</span>
+<span class="dot" aria-hidden="true"></span>
+<span class="rating" id="detailRating">
+<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+<span id="detailRatingVal">-</span>
+</span>
+</div>
+<div class="detail-hero-badges" id="detailBadges"></div>
+<p class="detail-hero-desc" id="detailDesc">Loading description...</p>
+<div class="detail-hero-actions">
+<button type="button" class="btn-play-circle" id="detailPlayBtn" aria-label="Play">
+<span class="play-circle-outer"><span class="play-circle-inner">
+<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+</span></span>
+<span class="play-circle-label"><span>Play Now</span><small>Stream in HD</small></span>
+</button>
+<button type="button" class="btn-action-icon" id="detailFavBtn" aria-label="Add to favorites">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+</button>
+<button type="button" class="btn-action-icon" id="detailShareBtn" aria-label="Share">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+</button>
+</div>
+</div>
+</div>
+</section>
+
+<div class="detail-body" id="detail-body">
+<div class="detail-grid">
+
+<div class="detail-main">
+<section class="player-section" aria-label="Video player">
+<div class="player-frame-wrap" id="playerFrameWrap">
+<iframe class="player-frame" id="playerFrame" allowfullscreen allow="autoplay; encrypted-media; clipboard-write; fullscreen" loading="lazy"></iframe>
+<div class="player-placeholder" id="playerPlaceholder">
+<div class="player-placeholder-icon">
+<svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
+</div>
+<p class="player-placeholder-text">Select a server to start streaming</p>
+<p class="player-placeholder-hint">Choose from available servers below</p>
+</div>
+</div>
+<div class="player-toolbar">
+<button type="button" class="btn-fullscreen" id="fullscreenBtn" aria-label="Toggle fullscreen">
+<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+<span>Fullscreen</span>
+</button>
+</div>
+</section>
+
+<section class="synopsis-section" id="synopsisSection" aria-label="Synopsis">
+<h2>Synopsis</h2>
+<p class="synopsis-preview" id="synopsisPreview">Loading synopsis...</p>
+<div class="synopsis-full" id="synopsisFull"></div>
+<button type="button" class="synopsis-toggle" id="synopsisToggle" hidden>
+<span>Show more</span>
+<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+</button>
+</section>
+</div>
+
+<aside class="detail-sidebar">
+<div class="meta-card" id="metaCard" aria-label="Details">
+<h3>Details</h3>
+<dl class="meta-grid">
+<div class="meta-row"><dt>Type</dt><dd id="metaType">Movie</dd></div>
+<div class="meta-row"><dt>Year</dt><dd id="metaYear">2026</dd></div>
+<div class="meta-row"><dt>Runtime</dt><dd id="metaRuntime">120 min</dd></div>
+<div class="meta-row"><dt>Genre</dt><dd id="metaGenre">Action</dd></div>
+<div class="meta-row"><dt>Director</dt><dd id="metaDirector">-</dd></div>
+<div class="meta-row"><dt>Cast</dt><dd id="metaCast">-</dd></div>
+<div class="meta-row"><dt>Rating</dt><dd id="metaRating">-</dd></div>
+<div class="meta-row"><dt>Country</dt><dd id="metaCountry">-</dd></div>
+<div class="meta-row"><dt>Status</dt><dd id="metaStatus">Released</dd></div>
+</dl>
+</div>
+
+<section class="server-section" aria-label="Server selection">
+<h3>Servers</h3>
+<div class="server-list" id="serverList">
+<button type="button" class="server-btn" data-server="1">
+<svg class="server-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+<span class="server-name">Server #1</span>
+<span class="server-status">Online</span>
+</button>
+<button type="button" class="server-btn" data-server="2">
+<svg class="server-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+<span class="server-name">Server #2</span>
+<span class="server-status">Online</span>
+</button>
+<button type="button" class="server-btn" data-server="3">
+<svg class="server-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+<span class="server-name">Server #3</span>
+<span class="server-status">Online</span>
+</button>
+</div>
+</section>
+
+<section class="episodes-section" id="episodesSection" aria-label="Episodes" hidden>
+<h3>Episodes <span class="ep-count" id="episodeCount"></span></h3>
+<div class="season-selector" id="seasonSelector"></div>
+<div class="episodes-grid" id="episodeGrid">
+<p class="episodes-empty">No episodes available</p>
+</div>
+</section>
+</aside>
+
+</div>
+</div>
+
+<section class="recommendations-section" aria-label="More like this">
+<div class="container">
+<div class="recommendations-header">
+<h2>More Like This</h2>
+</div>
+<div class="recommendations-track" id="recommendationsTrack">
+<p style="color:var(--ink-mute);font-size:13px;grid-column:1/-1;text-align:center;padding:24px">Loading recommendations...</p>
+</div>
+</div>
+</section>
+
+</article>
+</main>
+
+<footer class="site-footer">
+<div class="footer-top">
+<div class="footer-logo-row">
+<span class="footer-line footer-line--left" aria-hidden="true"></span>
+<a href="/" class="footer-logo-btn" aria-label="MengFlix Home">
+<span class="footer-mark">
+<span class="footer-mark-m">M</span><span class="footer-mark-flix">FLIX</span>
+</span>
+</a>
+<span class="footer-line footer-line--right" aria-hidden="true"></span>
+</div>
+<p class="footer-desc">MengFlix is your platform for free HD movies and TV series. Discover trending titles, new releases, and binge-worthy shows with smooth streaming. Demo UI &mdash; no media hosted.</p>
+</div>
+<div class="footer-bottom-bar">
+<span class="footer-copy">&copy; 2026 MengFlix</span>
+<p class="footer-legal">Demo UI. Artwork sourced from yFlix and TMDb. No media hosted. Built as a portfolio piece.</p>
+<nav class="footer-nav" aria-label="Footer">
+<a href="#">Request</a>
+<a href="#">DMCA</a>
+<a href="#">Contact</a>
+</nav>
+</div>
+</footer>
+
+<div class="mf-toast" id="mfToast" role="status" hidden></div>
+
+<script>
+(function() {
+  'use strict';
+
+  var pageTitle = document.querySelector('title');
+  var heroEl = document.getElementById('detailHero');
+  var bgEl = document.getElementById('detailBg');
+  var posterEl = document.getElementById('detailPoster');
+  var posterWrap = document.getElementById('detailPosterWrap');
+  var titleEl = document.getElementById('detailTitle');
+  var crumbTitleEl = document.getElementById('detailCrumbTitle');
+  var crumbTypeEl = document.getElementById('detailCrumbType');
+  var yearEl = document.getElementById('detailYear');
+  var runtimeEl = document.getElementById('detailRuntime');
+  var qualityEl = document.getElementById('detailQuality');
+  var ratingValEl = document.getElementById('detailRatingVal');
+  var badgesEl = document.getElementById('detailBadges');
+  var descEl = document.getElementById('detailDesc');
+  var metaType = document.getElementById('metaType');
+  var metaYear = document.getElementById('metaYear');
+  var metaRuntime = document.getElementById('metaRuntime');
+ var metaGenre = document.getElementById('metaGenre');
+  var metaDirector = document.getElementById('metaDirector');
+  var metaCast = document.getElementById('metaCast');
+  var metaRating = document.getElementById('metaRating');
+  var metaStatus = document.getElementById('metaStatus');
+  var metaCountry = document.getElementById('metaCountry');
+  var synopsisPreview = document.getElementById('synopsisPreview');
+  var synopsisFull = document.getElementById('synopsisFull');
+  var synopsisToggle = document.getElementById('synopsisToggle');
+  var synopsisSection = document.getElementById('synopsisSection');
+  var episodeGrid = document.getElementById('episodeGrid');
+  var episodesSection = document.getElementById('episodesSection');
+  var episodeCount = document.getElementById('episodeCount');
+  var seasonSelector = document.getElementById('seasonSelector');
+  var serverList = document.getElementById('serverList');
+  var playerFrame = document.getElementById('playerFrame');
+  var playerPlaceholder = document.getElementById('playerPlaceholder');
+  var playerFrameWrap = document.getElementById('playerFrameWrap');
+  var fullscreenBtn = document.getElementById('fullscreenBtn');
+  var playBtn = document.getElementById('detailPlayBtn');
+  var favBtn = document.getElementById('detailFavBtn');
+  var shareBtn = document.getElementById('detailShareBtn');
+  var recTrack = document.getElementById('recommendationsTrack');
+  var toastEl = document.getElementById('mfToast');
+
+  var toastTimeout = null;
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.hidden = false;
+    requestAnimationFrame(function() {
+      toastEl.classList.add('mf-toast-visible');
+    });
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function() {
+      toastEl.classList.remove('mf-toast-visible');
+      setTimeout(function() { toastEl.hidden = true; }, 350);
+    }, 2200);
+  }
+
+  /* ── Extract title from URL ── */
+  function getTitleFromURL() {
+    var params = new URLSearchParams(window.location.search);
+    return params.get('title') || '';
+  }
+
+  /* ── Load item data ── */
+  function loadDetail(titleQuery) {
+    if (!titleQuery) {
+      showError('No title specified. Browse from the home page.');
+      return;
+    }
+
+    heroEl.classList.add('is-loading');
+    var decoded = decodeURIComponent(titleQuery).toLowerCase().trim();
+    pageTitle.textContent = decoded.charAt(0).toUpperCase() + decoded.slice(1) + ' \u2014 MengFlix';
+    crumbTitleEl.textContent = decoded.charAt(0).toUpperCase() + decoded.slice(1);
+
+    /* Search local JSON data */
+    var searchSources = [
+      'assets/cards.json',
+      'assets/full_data.json'
+    ];
+    var found = null;
+
+    function searchInData(data) {
+      if (data.movies) {
+        for (var i = 0; i < data.movies.length; i++) {
+          var m = data.movies[i];
+          if (m.title && m.title.toLowerCase() === decoded) {
+            found = m; found._type = 'Movie'; return true;
+          }
+        }
+      }
+      if (data.tvs) {
+        for (var i = 0; i < data.tvs.length; i++) {
+          var t = data.tvs[i];
+          if (t.title && t.title.toLowerCase() === decoded) {
+            found = t; found._type = 'TVSeries'; return true;
+          }
+        }
+      }
+      if (data.donghua) {
+        for (var i = 0; i < data.donghua.length; i++) {
+          var d = data.donghua[i];
+          if (d.title && d.title.toLowerCase() === decoded) {
+            found = d; found._type = 'Donghua'; return true;
+          }
+        }
+      }
+      if (Array.isArray(data)) {
+        for (var i = 0; i < data.length; i++) {
+          var item = data[i];
+          if (item.title && item.title.toLowerCase() === decoded) {
+            found = item; found._type = item.type || 'Movie'; return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    var loadIndex = 0;
+    function tryNextSource() {
+      if (loadIndex >= searchSources.length) {
+        /* Fallback: render from URL params */
+        renderFromParams(decoded);
+        return;
+      }
+      var src = searchSources[loadIndex++];
+      fetch(src).then(function(r) {
+        if (!r.ok) throw new Error('Not found');
+        return r.json();
+      }).then(function(data) {
+        searchInData(data);
+        if (found) {
+          /* Enrich with details.json metadata */
+          fetch('assets/details.json').then(function(rd) {
+            if (!rd.ok) throw new Error();
+            return rd.json();
+          }).then(function(details) {
+            var dt = details[found.title];
+            if (dt) {
+              if (dt.desc) found.description = found.description || dt.desc;
+              if (dt.imdb) found.rating = found.rating || dt.imdb;
+              if (dt.casts) found.casts = dt.casts;
+              if (dt.director) found.director = dt.director;
+              if (dt.genres) found.genre = found.genre || dt.genres;
+              if (dt.country) found.country = dt.country;
+              if (dt.stars) found.stars_rating = dt.stars;
+            }
+            renderDetail(found);
+          }).catch(function() {
+            renderDetail(found);
+          });
+        } else {
+          tryNextSource();
+        }
+      }).catch(function() {
+        tryNextSource();
+      });
+    }
+
+    tryNextSource();
+  }
+
+  function renderFromParams(title) {
+    /* Use URL query params as fallback */
+    var params = new URLSearchParams(window.location.search);
+    var item = {
+      title: params.get('title') || title,
+      type: params.get('type') || 'Movie',
+      year: params.get('year') || '2026',
+      runtime: params.get('runtime') || '120',
+      poster: params.get('poster') || 'assets/posters/placeholder.svg',
+      genre: params.get('genre') || 'Action',
+      rating: params.get('rating') || '0',
+      quality: params.get('quality') || 'HD',
+      description: params.get('desc') || 'No description available.',
+      backdrop: params.get('backdrop') || '',
+      status: 'Released',
+      _type: params.get('type') || 'Movie'
+    };
+    if (item.type === 'TVSeries') item._type = 'TVSeries';
+    renderDetail(item);
+  }
+
+  function renderDetail(item) {
+    heroEl.classList.remove('is-loading');
+
+    var titleStr = item.title || 'Untitled';
+    pageTitle.textContent = titleStr + ' \u2014 MengFlix';
+    titleEl.textContent = titleStr;
+    crumbTitleEl.textContent = titleStr;
+    crumbTypeEl.textContent = item._type === 'TVSeries' || item.type === 'TVSeries' ? 'TV Shows' : 'Movies';
+    crumbTypeEl.href = item._type === 'TVSeries' || item.type === 'TVSeries' ? '/#latest-series' : '/#latest-movies';
+
+    var year = item.year || '2026';
+    var runtime = item.runtime || item.duration || '120';
+    var runtimeStr = typeof runtime === 'number' ? runtime + ' min' : runtime;
+    if (runtimeStr && !isNaN(parseInt(runtimeStr)) && runtimeStr.indexOf('min') === -1) {
+      runtimeStr = runtimeStr + ' min';
+    }
+    yearEl.textContent = year;
+    runtimeEl.textContent = runtimeStr;
+
+    var quality = item.quality || 'HD';
+    qualityEl.textContent = quality;
+
+    var rating = item.rating || item.imdb || '';
+    var ratingNum = parseFloat(String(rating).replace(/[^0-9.]/g, ''));
+    ratingValEl.textContent = isNaN(ratingNum) ? '-' : ratingNum.toFixed(1);
+
+    /* Badges */
+    badgesEl.innerHTML = '';
+    var typeLabel = item._type === 'TVSeries' ? 'Series' : item._type === 'Donghua' ? 'Donghua' : 'Movie';
+    var badgeType = document.createElement('span');
+    badgeType.className = 'badge badge--genre';
+    badgeType.textContent = typeLabel;
+    badgesEl.appendChild(badgeType);
+
+    if (item.genre) {
+      var genres = typeof item.genre === 'string' ? item.genre.split(/[,/]/) : item.genre || [];
+      genres.slice(0, 3).forEach(function(g) {
+        var bg = document.createElement('span');
+        bg.className = 'badge';
+        bg.textContent = g.trim();
+        badgesEl.appendChild(bg);
+      });
+    }
+
+    /* Description */
+    var desc = item.description || item.desc || item.synopsis || 'No description available.';
+    descEl.textContent = desc;
+    synopsisPreview.textContent = desc.length > 200 ? desc.slice(0, 200) + '...' : desc;
+    if (desc.length > 200) {
+      synopsisFull.textContent = desc;
+      synopsisToggle.hidden = false;
+    } else {
+      synopsisToggle.hidden = true;
+    }
+
+    /* Meta card */
+    metaType.textContent = typeLabel;
+    metaYear.textContent = year;
+    metaRuntime.textContent = runtimeStr;
+    if (item.genre) {
+      var genreStr = typeof item.genre === 'string' ? item.genre : (item.genre.join ? item.genre.join(', ') : '');
+     metaGenre.textContent = genreStr;
+   }
+    metaDirector.textContent = item.director || '-';
+    metaCast.textContent = item.casts ? (item.casts.length > 80 ? item.casts.slice(0, 80) + '...' : item.casts) : '-';
+    metaCountry.textContent = item.country || '-';
+   metaRating.textContent = isNaN(ratingNum) ? '-' : ratingNum.toFixed(1) + '/10';
+    metaStatus.textContent = item.status || 'Released';
+
+    /* Poster */
+    if (item.poster) {
+      posterEl.src = item.poster;
+      posterEl.alt = titleStr + ' poster';
+    }
+
+    /* Backdrop */
+    if (item.backdrop || item.backdrop_path) {
+      var bgURL = item.backdrop || item.backdrop_path;
+      bgEl.style.backgroundImage = 'url(' + bgURL + ')';
+    }
+
+    /* Episodes for TV series */
+    if (item._type === 'TVSeries' || item.type === 'TVSeries' || item.type === 'Donghua' || item._type === 'Donghua') {
+      episodesSection.hidden = false;
+      var eps = item.episodes || item.seasons || [];
+      episodeCount.textContent = eps.length ? '(' + eps.length + ')' : '';
+      episodeGrid.innerHTML = '';
+      if (eps.length === 0) {
+        episodeGrid.innerHTML = '<p class="episodes-empty">Episodes loading...</p>';
+      } else {
+        eps.forEach(function(ep, idx) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'episode-btn' + (idx === 0 ? ' is-active' : '');
+          btn.setAttribute('data-episode', idx);
+          var epNum = ep.episode || ep.number || (idx + 1);
+          var epTitle = ep.title || 'Episode ' + epNum;
+          btn.innerHTML = '<span class="ep-num">' + epNum + '</span><span class="ep-label">' + epTitle.slice(0, 18) + '</span>';
+          btn.addEventListener('click', function() {
+            episodeGrid.querySelectorAll('.episode-btn').forEach(function(b) { b.classList.remove('is-active'); });
+            btn.classList.add('is-active');
+            if (ep.url || ep.embed_url) {
+              playerFrame.src = ep.url || ep.embed_url;
+              playerPlaceholder.style.display = 'none';
+              playerFrame.style.display = '';
+            }
+          });
+          episodeGrid.appendChild(btn);
+        });
+      }
+    }
+
+    /* Update player play button */
+    playBtn.addEventListener('click', function() {
+      var activeServer = serverList.querySelector('.server-btn.is-active');
+      if (activeServer) {
+        activeServer.click();
+      } else {
+        var first = serverList.querySelector('.server-btn');
+        if (first) first.click();
+      }
+    });
+
+    /* Load recommendations */
+    loadRecommendations(item);
+
+    /* Update URL for share */
+    var shareURL = window.location.href;
+    shareBtn.addEventListener('click', function() {
+      if (navigator.share) {
+        navigator.share({ title: titleStr, url: shareURL }).catch(function(){});
+      } else {
+        navigator.clipboard.writeText(shareURL).then(function() {
+          showToast('Link copied to clipboard');
+        }).catch(function() {
+          showToast('Share: ' + shareURL);
+        });
+      }
+    });
+
+    /* Favorites */
+    var favKey = 'mf_favs';
+    var favs = [];
+    try { favs = JSON.parse(localStorage.getItem(favKey)) || []; } catch(e) {}
+    var isFav = favs.indexOf(titleStr) !== -1;
+    if (isFav) favBtn.classList.add('is-active');
+    favBtn.addEventListener('click', function() {
+      try {
+        var current = JSON.parse(localStorage.getItem(favKey)) || [];
+        var idx = current.indexOf(titleStr);
+        if (idx !== -1) { current.splice(idx, 1); favBtn.classList.remove('is-active'); showToast('Removed from favorites'); }
+        else { current.push(titleStr); favBtn.classList.add('is-active'); showToast('Added to favorites'); }
+        localStorage.setItem(favKey, JSON.stringify(current));
+      } catch(e) {}
+    });
+  }
+
+  function showError(msg) {
+    heroEl.classList.remove('is-loading');
+    heroEl.innerHTML = '<div class="detail-error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><h2>Content Not Found</h2><p>' + msg + '</p><a href="/" class="btn-back"><svg viewBox="0 0 24 24" width="16" height="16"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg> Back to Home</a></div>';
+  }
+
+  /* ── Server selection ── */
+  var serverURLs = {
+    1: 'https://multiembed.mov/directstream.php?video_id=',
+    2: 'https://dbgo.fun/d/',
+    3: 'https://vidlink.pro/'
+  };
+
+  serverList.addEventListener('click', function(e) {
+    var btn = e.target.closest('.server-btn');
+    if (!btn) return;
+    serverList.querySelectorAll('.server-btn').forEach(function(b) { b.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+    var sid = btn.getAttribute('data-server');
+    var url = serverURLs[sid] || '';
+    if (url) {
+      var titleQuery = getTitleFromURL();
+      var year = document.getElementById('metaYear').textContent;
+      var embedUrl = url + encodeURIComponent(titleQuery) + (url.indexOf('?') === -1 ? '?' : '&') + 'year=' + encodeURIComponent(year) + '&autoplay=1';
+      playerFrame.src = embedUrl;
+      playerPlaceholder.style.display = 'none';
+      playerFrame.style.display = '';
+      showToast('Loading ' + btn.querySelector('.server-name').textContent + '...');
+    }
+  });
+
+  /* ── Fullscreen toggle ── */
+  fullscreenBtn.addEventListener('click', function() {
+    if (!document.fullscreenElement) {
+      if (playerFrameWrap.requestFullscreen) {
+        playerFrameWrap.requestFullscreen();
+      } else if (playerFrameWrap.webkitRequestFullscreen) {
+        playerFrameWrap.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+    }
+  });
+
+  /* ── Synopsis toggle ── */
+  synopsisToggle.addEventListener('click', function() {
+    var expanded = synopsisSection.classList.toggle('is-expanded');
+    synopsisToggle.querySelector('span').textContent = expanded ? 'Show less' : 'Show more';
+  });
+
+  /* ── Recommendations ── */
+  function loadRecommendations(currentItem) {
+    fetch('assets/full_data.json').then(function(r) { return r.json(); }).then(function(data) {
+      var allItems = [];
+      if (data.movies) { allItems = allItems.concat(data.movies); }
+      if (data.tvs) { allItems = allItems.concat(data.tvs); }
+
+      var genreFilter = currentItem.genre ? currentItem.genre.split(/[,/]/)[0].trim().toLowerCase() : '';
+      var recs = allItems.filter(function(item) {
+        if (item.title === currentItem.title) return false;
+        if (genreFilter && item.genre) {
+          var itemGenres = (typeof item.genre === 'string' ? item.genre : '').toLowerCase();
+          return itemGenres.indexOf(genreFilter) !== -1;
+        }
+        return false;
+      });
+
+      if (recs.length < 6) {
+        /* Fill with other items */
+        var extra = allItems.filter(function(item) {
+          return item.title !== currentItem.title && recs.indexOf(item) === -1;
+        });
+        recs = recs.concat(extra);
+      }
+
+      recs = recs.slice(0, 12);
+
+      recTrack.innerHTML = '';
+      if (recs.length === 0) {
+        recTrack.innerHTML = '<p style="color:var(--ink-mute);font-size:13px;grid-column:1/-1;text-align:center;padding:24px">No recommendations yet.</p>';
+        return;
+      }
+
+      recs.forEach(function(item) {
+        var card = document.createElement('div');
+        card.className = 'rec-card';
+        var poster = item.poster || 'assets/posters/placeholder.svg';
+        var titleSlug = encodeURIComponent(item.title);
+        var typeQuery = item._type || item.type || 'Movie';
+        card.innerHTML =
+          '<a href="detail.html?title=' + titleSlug + '&type=' + encodeURIComponent(typeQuery) + '&year=' + item.year + '">' +
+          '<div class="rec-card-poster" style="position:relative">' +
+          '<img src="' + poster + '" alt="' + item.title.replace(/"/g, '&quot;') + '" loading="lazy" decoding="async">' +
+          '<div class="rec-play-overlay"><span class="rec-play-icon"><svg viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>' +
+          '</div>' +
+          '<div class="rec-card-body">' +
+          '<h3>' + item.title + '</h3>' +
+          '<div class="rec-meta"><span>' + item.year + '</span><span class="rec-sep">|</span><span>' + (item.type === 'TVSeries' ? 'Series' : 'Movie') + '</span></div>' +
+          '</div>' +
+          '</a>';
+        recTrack.appendChild(card);
+      });
+    }).catch(function() {
+      recTrack.innerHTML = '<p style="color:var(--ink-mute);font-size:13px;grid-column:1/-1;text-align:center;padding:24px">Could not load recommendations.</p>';
+    });
+  }
+
+  /* ── Init ── */
+  var titleFromURL = getTitleFromURL();
+  loadDetail(titleFromURL);
+
+  /* ── Mobile menu ── */
+  var mobileBtn = document.getElementById('mobileMenuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if (mobileBtn && mobileMenu) {
+    mobileBtn.addEventListener('click', function() {
+      var open = mobileMenu.toggleAttribute('hidden');
+      mobileBtn.setAttribute('aria-expanded', !open);
+      mobileBtn.classList.toggle('open', !open);
+    });
+  }
+
+})();
+</script>
+
+</body>
+</html>

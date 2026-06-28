@@ -1,4 +1,4 @@
-﻿/* MengFlix Donghua Episode Player */
+/* MengFlix Donghua Episode Player */
 (function() {
 'use strict';
 
@@ -128,7 +128,7 @@ function playEpisode(title, episodeNum) {
   });
 
   // Get sources from episode or fallback to match-level sources
-  var sources = ep.sources || match.sources || [];
+  var sources = (ep.sources || match.sources || []).filter(function(s){var t=(s.name||'')+(s.provider||'')+(s.url||'');t=t.toLowerCase();return t.indexOf('ramoflix')<0&&t.indexOf('vidsrc')<0});if(sources.length===0&&watchUrl)sources.push({name:'AnimeCube',url:watchUrl,provider:'animecube'});
   var watchUrl = match.watch_url || 'https://animecube.live/anime/' + (match.slug || '') + '/' + episodeNum;
 
   // Populate servers

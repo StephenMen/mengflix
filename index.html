@@ -7,6 +7,16 @@
 <meta name="description" content="MengFlix is your platform for free HD movies and TV series. Discover trending titles, new releases, and binge-worthy shows with smooth streaming.">
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
 <link rel="stylesheet" href="assets/css/styles.css">
+
+<link rel="manifest" href="/manifest.json">
+<link rel="preload" href="https://yflix.ws/images/backdrops/movies/the-devil-wears-prada-2-2026.webp" as="image" type="image/webp" crossorigin>
+<meta property="og:title" content="MengFlix â€” Free Movies & TV Series Online HD">
+<meta property="og:description" content="MengFlix is your platform for free HD movies and TV series. Discover trending titles, new releases, and binge-worthy shows with smooth streaming.">
+<meta property="og:image" content="assets/img/favicon.svg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MengFlix â€” Free Movies & TV Series Online HD">
+<meta name="twitter:description" content="MengFlix is your platform for free HD movies and TV series.">
 </head>
 <body class="page-home">
 <div class="bg-3d" aria-hidden="true">
@@ -422,8 +432,13 @@
 </footer>
 <div class="search-overlay" id="searchOverlay" hidden>
 <div class="search-overlay-backdrop" data-close></div>
-<div class="search-overlay-body" role="dialog" aria-modal="true" aria-label="Search">
-<button type="button" class="search-overlay-close" id="searchCloseBtn" aria-label="Close search">
+ <div class="search-overlay-body" role="dialog" aria-modal="true" aria-label="Search">
+          <div class="search-brand">
+            <span class="logo-mark" aria-hidden="true">
+              <span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span>
+            </span>
+          </div>
+ <button type="button" class="search-overlay-close" id="searchCloseBtn" aria-label="Close search">
 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
 </button>
 <form class="search-overlay-form" onsubmit="event.preventDefault();">
@@ -499,8 +514,15 @@
 <div class="signin-field"><label for="signinPassword">Password</label><input type="password" id="signinPassword" class="signin-input" placeholder="Enter your password" required autocomplete="current-password" minlength="6"></div>
 <div class="signin-error" id="signinError" hidden role="alert"></div>
 <button type="submit" class="signin-submit" id="signinSubmit">Sign In</button>
-</form>
-<p class="signin-toggle-text">Don&apos;t have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn">Create one</button></p>
+ </form>
+ <div class="signin-divider"><span>or</span></div>
+         <div class="signin-google" id="googleSignInBtn">
+           <button type="button" class="google-btn" onclick="window.googlePick('in')" aria-label="Sign in with Google">
+             <svg class="google-icon" viewBox="0 0 48 48" width="20" height="20"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+             <span>Sign in with Google</span>
+           </button>
+         </div>
+ <p class="signin-toggle-text">Don&apos;t have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn">Create one</button></p>
 </div>
 <div class="signup-form-wrapper" hidden>
 <div class="signin-brand"><span class="logo-mark" aria-hidden="true"><span class="logo-mark-m">M</span><span class="logo-mark-flix">FLIX</span></span></div>
@@ -511,9 +533,16 @@
 <div class="signin-field"><label for="signupEmail">Email</label><input type="email" id="signupEmail" class="signin-input" placeholder="you@example.com" required autocomplete="email" autocapitalize="off" spellcheck="false"></div>
 <div class="signin-field"><label for="signupPassword">Password</label><input type="password" id="signupPassword" class="signin-input" placeholder="At least 6 characters" required autocomplete="new-password" minlength="6"></div>
 <div class="signin-error" id="signupError" hidden role="alert"></div>
-<button type="submit" class="signin-submit" id="signupSubmit">Create Account</button>
-</form>
-<p class="signin-toggle-text">Already have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn2">Sign in</button></p>
+ <button type="submit" class="signin-submit" id="signupSubmit">Create Account</button>
+ </form>
+ <div class="signin-divider"><span>or</span></div>
+         <div class="signin-google" id="googleSignUpBtn">
+           <button type="button" class="google-btn" onclick="window.googlePick('up')" aria-label="Sign up with Google">
+             <svg class="google-icon" viewBox="0 0 48 48" width="20" height="20"><path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/><path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/><path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/></svg>
+             <span>Sign up with Google</span>
+           </button>
+         </div>
+ <p class="signin-toggle-text">Already have an account? <button type="button" class="signin-toggle-btn" id="signinToggleBtn2">Sign in</button></p>
 </div>
 </div>
 </div>
@@ -533,6 +562,10 @@
 <h2 class="player-title" id="playerTitle">&hellip;</h2>
 <div class="player-layout">
 <div class="player-frame-wrap">
+<button type="button" class="player-zoom" id="playerZoom" aria-label="Toggle fullscreen" title="Fullscreen">
+<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><polyline points="15 3 21 3 21 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="9 21 3 21 3 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="3" x2="14" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+</button>
+
 <div class="player-placeholder" id="playerPlaceholder">
 <div class="player-placeholder-icon">
 <svg viewBox="0 0 24 24" width="48" height="48" aria-hidden="true"><polygon points="6 4 20 12 6 20 6 4" fill="currentColor"/></svg>
@@ -557,6 +590,92 @@
 </div>
 <script src="assets/js/main.js?v=2" defer></script>
 <script src="assets/js/episodes.js" defer></script>
-<script> /* Fallback: sign-in toast */ (function(){ var btn = document.getElementById('signInBtn'); if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); var t = document.createElement('div'); t.className = 'mf-toast'; t.setAttribute('role', 'status'); t.textContent = 'Sign in is coming soon. Stay tuned!'; document.body.appendChild(t); requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); }); setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500); }); })(); /* Fix yFlix/RamoFlix servers: redirect to new tab instead of broken iframe */ (function(){ document.addEventListener('click', function(e){ var btn = e.target.closest('.player-server-btn'); if (!btn) return; var text = btn.textContent || ''; if (text.indexOf('yFlix') < 0 && text.indexOf('RamoFlix') < 0) return; e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); var watchLink = document.getElementById('playerWatchLink'); var url = watchLink && watchLink.href && watchLink.href !== '#' ? watchLink.href : ''; if (!url) return; var hint = document.getElementById('playerHint'); if (hint) { var orig = hint.dataset.original || hint.innerHTML; if (!hint.dataset.original) hint.dataset.original = orig; hint.innerHTML = '<strong>Opening in new tab...</strong> ' + orig; clearTimeout(hint.__mfTimer); hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000); } var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.style.display = 'none'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }, true); })(); /* Focus-steal guard: aggressive refocus loop during player mode */ (function(){ var _focusInterval = null; var _focusCount = 0; document.addEventListener('player-opened', function(){ }); var _origOpenPlayer = window.__mfOpenPlayer; var _origClosePlayer = window.__mfClosePlayer; document.addEventListener('click', function(e){ var po = document.getElementById('playerOverlay'); if (!po || po.hidden) { if (_focusInterval) { clearInterval(_focusInterval); _focusInterval = null; } return; } if (!_focusInterval) { _focusInterval = setInterval(function(){ try { if (!document.hasFocus() && po && !po.hidden) { _focusCount++; window.focus(); var hint = document.getElementById('playerHint'); if (hint && _focusCount < 3) { var orig = hint.dataset.original || hint.innerHTML; if (!hint.dataset.original) hint.dataset.original = orig; hint.innerHTML = '<strong style="color:#ff6b6b">Pop-up blocked!</strong> ' + orig; clearTimeout(hint.__mfTimer); hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000); } } } catch(e){} }, 200); } }); })(); /* View All: show full grid of all items in category */ var _viewMode = false; document.addEventListener('click', function(e) { var btn = e.target.closest('.btn-view-all'); if (!btn) return; e.preventDefault(); var section = btn.closest('.section'); if (!section) return; var id = section.id; _viewMode = true; var sections = document.querySelectorAll('.section'); sections.forEach(function(s) { if (s.id !== id) s.style.display = 'none'; }); /* Expand this section to show all items in full grid */ var track = section.querySelector('.slider-track'); if (track) { track.style.display = 'grid'; track.style.gridTemplateColumns = 'repeat(auto-fill, minmax(160px, 1fr))'; track.style.gridAutoFlow = 'row'; track.style.overflow = 'visible'; track.style.maxHeight = 'none'; track.style.scrollSnapType = 'none'; track.style.cursor = 'auto'; } section.style.maxWidth = 'none'; section.style.padding = '28px 28px 60px'; /* Remove slider buttons */ var btns = section.querySelectorAll('.slider-btn'); btns.forEach(function(b) { b.style.display = 'none'; }); /* Add back button */ var existingBack = section.querySelector('.view-all-back'); if (!existingBack) { var back = document.createElement('a'); back.href = '#'; back.className = 'view-all-back'; back.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:var(--surface);box-shadow:0 4px 12px rgba(0,0,0,0.08);font-size:13px;font-weight:700;margin-bottom:18px;margin-right:12px'; back.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg> Back'; var header = section.querySelector('.section-header'); if (header) header.prepend(back); back.addEventListener('click', function(ev) { ev.preventDefault(); _viewMode = false; sections.forEach(function(s) { s.style.display = ''; }); if (track) { track.style.display = ''; track.style.gridTemplateColumns = ''; track.style.gridAutoFlow = ''; track.style.overflow = ''; track.style.maxHeight = ''; track.style.scrollSnapType = ''; track.style.cursor = ''; } section.style.maxWidth = ''; section.style.padding = ''; btns.forEach(function(b) { b.style.display = ''; }); back.remove(); /* Reload cards */ if (typeof loadAndRenderCards === 'function') loadAndRenderCards(); }); } /* Load more items from full_data.json */ var header2 = section.querySelector('.section-header'); if (!header2 || header2.dataset.fullLoaded) return; header2.dataset.fullLoaded = '1'; fetch('assets/full_data.json').then(function(r) { return r.json(); }).then(function(data) { var allItems = []; if (id === 'latest-movies' || id === 'trending' || id === 'top-rated') allItems = data.movies || []; else if (id === 'latest-series' || id === 'web-series' || id === 'binge') allItems = data.tvs || []; if (allItems.length === 0) return; if (track) { track.innerHTML = ''; allItems.forEach(function(item) { var art = document.createElement('article'); art.className = 'content-card'; art.setAttribute('data-title', item.title); art.setAttribute('data-type', item.type); art.setAttribute('data-poster', item.poster); art.setAttribute('data-year', String(item.year)); art.setAttribute('data-runtime', String(item.runtime)); art.setAttribute('data-genre', item.genre); var label = item.type === 'TVSeries' ? 'Series' : 'Movie'; art.innerHTML = '<a href="#" title="' + item.title.replace(/"/g,'&quot;') + '" data-open>' + '<div class="card-poster-wrap">' + '<img src="' + item.poster.replace(/"/g,'&quot;') + '" alt="' + item.title.replace(/"/g,'&quot;') + '" loading="lazy" decoding="async" width="342" height="513">' + '<div class="card-play-overlay"><div class="card-play-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>' + '<div class="card-info-overlay"><h3 class="card-title">' + item.title.replace(/</g,'&lt;') + '</h3>' + '<div class="card-meta"><span>' + label + '</span><span class="sep">&middot;</span><span>' + item.year + '</span></div></div></div></a>'; track.appendChild(art); }); } }).catch(function(){}); }); </script>
+<script> /* Fallback: sign-in toast */ (function(){ var btn = document.getElementById('signInBtn'); if (btn) btn.addEventListener('click', function(e){ e.preventDefault(); var t = document.createElement('div'); t.className = 'mf-toast'; t.setAttribute('role', 'status'); t.textContent = 'Sign in is coming soon. Stay tuned!'; document.body.appendChild(t); requestAnimationFrame(function(){ t.classList.add('mf-toast-visible'); }); setTimeout(function(){ t.classList.remove('mf-toast-visible'); setTimeout(function(){ t.remove(); }, 300); }, 2500); }); })(); /* Fix yFlix/RamoFlix servers: redirect to new tab instead of broken iframe */ (function(){ document.addEventListener('click', function(e){ var btn = e.target.closest('.player-server-btn'); if (!btn) return; var text = btn.textContent || ''; if (text.indexOf('yFlix') < 0 && text.indexOf('RamoFlix') < 0 && text.indexOf('AnimeCube') < 0) return; e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); var watchLink = document.getElementById('playerWatchLink'); var url = watchLink && watchLink.href && watchLink.href !== '#' ? watchLink.href : ''; if (!url) return; var hint = document.getElementById('playerHint'); if (hint) { var orig = hint.dataset.original || hint.innerHTML; if (!hint.dataset.original) hint.dataset.original = orig; hint.innerHTML = '<strong>Opening in new tab...</strong> ' + orig; clearTimeout(hint.__mfTimer); hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000); } var a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.style.display = 'none'; document.body.appendChild(a); a.click(); document.body.removeChild(a); }, true); })(); /* Focus-steal guard: aggressive refocus loop during player mode */ (function(){ var _focusInterval = null; var _focusCount = 0; document.addEventListener('player-opened', function(){ }); var _origOpenPlayer = window.__mfOpenPlayer; var _origClosePlayer = window.__mfClosePlayer; document.addEventListener('click', function(e){ var po = document.getElementById('playerOverlay'); if (!po || po.hidden) { if (_focusInterval) { clearInterval(_focusInterval); _focusInterval = null; } return; } if (!_focusInterval) { _focusInterval = setInterval(function(){ try { if (!document.hasFocus() && po && !po.hidden) { _focusCount++; window.focus(); var hint = document.getElementById('playerHint'); if (hint && _focusCount < 3) { var orig = hint.dataset.original || hint.innerHTML; if (!hint.dataset.original) hint.dataset.original = orig; hint.innerHTML = '<strong style="color:#ff6b6b">Pop-up blocked!</strong> ' + orig; clearTimeout(hint.__mfTimer); hint.__mfTimer = setTimeout(function(){ hint.innerHTML = hint.dataset.original || orig; }, 3000); } } } catch(e){} }, 200); } }); })(); /* View All: show full grid of all items in category */ var _viewMode = false; document.addEventListener('click', function(e) { var btn = e.target.closest('.btn-view-all'); if (!btn) return; e.preventDefault(); var section = btn.closest('.section'); if (!section) return; var id = section.id; _viewMode = true; var sections = document.querySelectorAll('.section'); sections.forEach(function(s) { if (s.id !== id) s.style.display = 'none'; }); /* Expand this section to show all items in full grid */ var track = section.querySelector('.slider-track'); if (track) { track.style.display = 'grid'; track.style.gridTemplateColumns = 'repeat(auto-fill, minmax(160px, 1fr))'; track.style.gridAutoFlow = 'row'; track.style.overflow = 'visible'; track.style.maxHeight = 'none'; track.style.scrollSnapType = 'none'; track.style.cursor = 'auto'; } section.style.maxWidth = 'none'; section.style.padding = '28px 28px 60px'; /* Remove slider buttons */ var btns = section.querySelectorAll('.slider-btn'); btns.forEach(function(b) { b.style.display = 'none'; }); /* Add back button */ var existingBack = section.querySelector('.view-all-back'); if (!existingBack) { var back = document.createElement('a'); back.href = '#'; back.className = 'view-all-back'; back.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:var(--surface);box-shadow:0 4px 12px rgba(0,0,0,0.08);font-size:13px;font-weight:700;margin-bottom:18px;margin-right:12px'; back.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg> Back'; var header = section.querySelector('.section-header'); if (header) header.prepend(back); back.addEventListener('click', function(ev) { ev.preventDefault(); _viewMode = false; sections.forEach(function(s) { s.style.display = ''; }); if (track) { track.style.display = ''; track.style.gridTemplateColumns = ''; track.style.gridAutoFlow = ''; track.style.overflow = ''; track.style.maxHeight = ''; track.style.scrollSnapType = ''; track.style.cursor = ''; } section.style.maxWidth = ''; section.style.padding = ''; btns.forEach(function(b) { b.style.display = ''; }); back.remove(); /* Reload cards */ if (typeof loadAndRenderCards === 'function') loadAndRenderCards(); }); } /* Load more items from full_data.json */ var header2 = section.querySelector('.section-header'); if (!header2 || header2.dataset.fullLoaded) return; header2.dataset.fullLoaded = '1'; fetch('assets/full_data.json').then(function(r) { return r.json(); }).then(function(data) { var allItems = []; if (id === 'latest-movies' || id === 'trending' || id === 'top-rated') allItems = data.movies || []; else if (id === 'latest-series' || id === 'web-series' || id === 'binge') allItems = data.tvs || []; if (allItems.length === 0) return; if (track) { track.innerHTML = ''; allItems.forEach(function(item) { var art = document.createElement('article'); art.className = 'content-card'; art.setAttribute('data-title', item.title); art.setAttribute('data-type', item.type); art.setAttribute('data-poster', item.poster); art.setAttribute('data-year', String(item.year)); art.setAttribute('data-runtime', String(item.runtime)); art.setAttribute('data-genre', item.genre); var label = item.type === 'TVSeries' ? 'Series' : 'Movie'; art.innerHTML = '<a href="#" title="' + item.title.replace(/"/g,'&quot;') + '" data-open>' + '<div class="card-poster-wrap">' + '<img src="' + item.poster.replace(/"/g,'&quot;') + '" alt="' + item.title.replace(/"/g,'&quot;') + '" loading="lazy" decoding="async" width="342" height="513">' + '<div class="card-play-overlay"><div class="card-play-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div>' + '<div class="card-info-overlay"><h3 class="card-title">' + item.title.replace(/</g,'&lt;') + '</h3>' + '<div class="card-meta"><span>' + label + '</span><span class="sep">&middot;</span><span>' + item.year + '</span></div></div></div></a>'; track.appendChild(art); }); } }).catch(function(){}); }); </script>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+(function(){
+  var CID = "180163774862-t09uaappdu3433fj1e4fr676hdjh9kbc.apps.googleusercontent.com";
+  var ok = false, done = false;
+  
+  function init() {
+    if (typeof google === "undefined" || !google.accounts) { setTimeout(init, 300); return; }
+    try { google.accounts.id.initialize({ client_id: CID, callback: cb, cancel_on_tap_outside: false }); ok = true; render(); } catch(e) { console.warn("[mf] init fail:", e); }
+  }
+  init();
+  
+  function render() {
+    if (done || !ok) return; done = true;
+    var b1 = document.getElementById("googleSignInBtn"), b2 = document.getElementById("googleSignUpBtn");
+    if (b1) { b1.innerHTML = ""; try { google.accounts.id.renderButton(b1, { theme: "outline", size: "large", text: "signin_with" }); } catch(e) { console.warn("[mf] render1 fail:", e); } }
+    if (b2) { b2.innerHTML = ""; try { google.accounts.id.renderButton(b2, { theme: "outline", size: "large", text: "signup_with" }); } catch(e) { console.warn("[mf] render2 fail:", e); } }
+  }
+  
+  function cb(r) {
+    if (!r || !r.credential) return;
+    try {
+      var p = JSON.parse(atob(r.credential.split(".")[1]));
+      fetch('/api/auth/google', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name: p.name, email: p.email, picture: p.picture, googleId: p.sub }) }).then(function(r2){ return r2.json(); }).then(function(result){
+        if (!result.ok) return;
+        var u = result.user;
+        localStorage.setItem("mf_user", JSON.stringify(u));
+        var o = document.getElementById("signinOverlay"); if (o) { o.hidden = true; document.body.style.overflow = ""; }
+        var t = document.createElement("div"); t.className = "mf-toast"; t.setAttribute("role", "status"); t.textContent = "Welcome, " + u.name + "!";
+        document.body.appendChild(t);
+        requestAnimationFrame(function(){ t.classList.add("mf-toast-visible"); });
+        setTimeout(function(){ t.classList.remove("mf-toast-visible"); setTimeout(function(){ t.remove(); }, 300); }, 2500);
+        var b = document.getElementById("signInBtn"); if (b) { b.textContent = u.name; b.style.padding = "10px 16px"; }
+      });
+    } catch(e) { console.warn("[mf] cb error:", e); }
+  }
+  
+  window.googlePick = function(m) {
+    if (ok && typeof google !== "undefined" && google.accounts) {
+      if (!done) { render(); }
+      setTimeout(function() {
+        var b = document.getElementById(m === "in" ? "googleSignInBtn" : "googleSignUpBtn");
+        if (b && b.firstChild) { b.firstChild.click(); }
+        else { try { google.accounts.id.prompt(); } catch(e) {} }
+      }, 100);
+    } else if (!ok) {
+      setTimeout(function(){ window.googlePick(m); }, 500);
+    }
+  };
+})();
+</script>
+<script>/* Zoom/Fullscreen */
+(function(){
+var z=document.getElementById('playerZoom');
+var fw=z&&document.querySelector('.player-frame-wrap');
+var fi=fw&&fw.querySelector('.player-frame');
+if(!z||!fw)return;
+function _zs(){
+z.style.transition='none';
+z.style.opacity='1';
+z.style.pointerEvents='auto';
+clearTimeout(z._zt);
+z._zt=setTimeout(function(){
+z.style.transition='opacity 0.3s ease';
+z.style.opacity='0';
+z.style.pointerEvents='none';
+},3000);
+}
+window.addEventListener('mousemove',_zs,true);
+if(fi)fi.addEventListener('mousemove',_zs);
+z.addEventListener('click',function(){
+if(document.fullscreenElement)document.exitFullscreen();
+else fw.requestFullscreen();
+});
+document.addEventListener('fullscreenchange',function(){
+var b=document.getElementById('playerZoom');
+if(!b)return;
+b.classList.toggle('is-active',!!document.fullscreenElement);
+b.setAttribute('aria-label',document.fullscreenElement?'Exit fullscreen':'Toggle fullscreen');
+b.style.transition='none';
+b.style.opacity='0';
+b.style.pointerEvents='none';
+clearTimeout(b._zt);
+});
+})();</script>
 </body>
 </html>
