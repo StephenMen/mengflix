@@ -1,0 +1,42 @@
+﻿[build]
+  command = "echo 'Static site - no build needed'"
+  publish = "/"
+
+[build.processing]
+  skip_processing = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "fullscreen=(), clipboard-write=()"
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/assets/*.json"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/assets/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/assets/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[redirects]]
+  from = "/assets/posters/*"
+  to = "/assets/posters/:splat"
+  status = 200
