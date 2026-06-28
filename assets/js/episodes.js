@@ -101,8 +101,8 @@ async function openDonghuaPicker(card) {
   var episodes = match.episodes || [];
 
   openPlayerOverlay(title, type, card.dataset.poster || '');
-  if (epContainer) epContainer.hidden = false;
-  buildEpisodeGrid(title, episodes);
+  if (epContainer) epContainer.hidden = true;
+  if (episodes.length > 0) playEpisode(title, episodes[0].number);
 }
 
 function playEpisode(title, episodeNum) {
